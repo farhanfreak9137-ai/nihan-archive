@@ -1,0 +1,162 @@
+[
+  {
+    "id": "ily",
+    "label": "I love you",
+    "category": "love",
+    "pattern": "\\bi\\s*(love|luv)\\s*(you|u)\\b",
+    "totalOccurrences": {
+      "total": 310,
+      "NILU": 107,
+      "farhannn": 203
+    },
+    "messagesCount": {
+      "total": 270,
+      "NILU": 105,
+      "farhannn": 165
+    }
+  },
+  {
+    "id": "sorry",
+    "label": "sorry",
+    "category": "apology",
+    "pattern": "\\b(sorry+|sry|sori)\\b",
+    "totalOccurrences": {
+      "total": 1441,
+      "NILU": 193,
+      "farhannn": 1248
+    },
+    "messagesCount": {
+      "total": 740,
+      "NILU": 185,
+      "farhannn": 555
+    }
+  },
+  {
+    "id": "thank_you",
+    "label": "thank you",
+    "category": "gratitude",
+    "pattern": "\\bthank\\s+you\\b",
+    "totalOccurrences": {
+      "total": 27,
+      "NILU": 12,
+      "farhannn": 15
+    },
+    "messagesCount": {
+      "total": 24,
+      "NILU": 12,
+      "farhannn": 12
+    }
+  },
+  {
+    "id": "thank_u",
+    "label": "thank u",
+    "category": "gratitude",
+    "pattern": "\\bthank\\s+u\\b",
+    "totalOccurrences": {
+      "total": 16,
+      "NILU": 15,
+      "farhannn": 1
+    },
+    "messagesCount": {
+      "total": 16,
+      "NILU": 15,
+      "farhannn": 1
+    }
+  },
+  {
+    "id": "thanks",
+    "label": "thanks",
+    "category": "gratitude",
+    "pattern": "\\bthanks\\b",
+    "totalOccurrences": {
+      "total": 16,
+      "NILU": 9,
+      "farhannn": 7
+    },
+    "messagesCount": {
+      "total": 16,
+      "NILU": 9,
+      "farhannn": 7
+    }
+  },
+  {
+    "id": "miss_you",
+    "label": "miss you",
+    "category": "missing",
+    "pattern": "\\bmiss\\s*(you|u)\\b",
+    "totalOccurrences": {
+      "total": 2,
+      "NILU": 2,
+      "farhannn": 0
+    },
+    "messagesCount": {
+      "total": 2,
+      "NILU": 2,
+      "farhannn": 0
+    }
+  },
+  {
+    "id": "good_morning",
+    "label": "good morning",
+    "category": "greetings",
+    "pattern": "\\bgood\\s*morning\\b|\\bgm\\b",
+    "totalOccurrences": {
+      "total": 8,
+      "NILU": 2,
+      "farhannn": 6
+    },
+    "messagesCount": {
+      "total": 8,
+      "NILU": 2,
+      "farhannn": 6
+    }
+  },
+  {
+    "id": "good_night",
+    "label": "good night",
+    "category": "greetings",
+    "pattern": "\\bgood\\s*night\\b|\\bgn\\b",
+    "totalOccurrences": {
+      "total": 48,
+      "NILU": 30,
+      "farhannn": 18
+    },
+    "messagesCount": {
+      "total": 47,
+      "NILU": 29,
+      "farhannn": 18
+    }
+  },
+  {
+    "id": "promise",
+    "label": "promise",
+    "category": "promises",
+    "pattern": "\\bpromise\\b",
+    "totalOccurrences": {
+      "total": 23,
+      "NILU": 1,
+      "farhannn": 22
+    },
+    "messagesCount": {
+      "total": 23,
+      "NILU": 1,
+      "farhannn": 22
+    }
+  },
+  {
+    "id": "forgive",
+    "label": "forgive",
+    "category": "forgiveness",
+    "pattern": "\\bforgive\\b",
+    "totalOccurrences": {
+      "total": 1,
+      "NILU": 1,
+      "farhannn": 0
+    },
+    "messagesCount": {
+      "total": 1,
+      "NILU": 1,
+      "farhannn": 0
+    }
+  }
+]

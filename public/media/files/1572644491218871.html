@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheer up Faijaaaaaa!</title>
+<style>
+body {
+    margin:0;
+    padding:0;
+    font-family: Poppins, Arial, sans-serif;
+    background:
+radial-gradient(circle at top left,#6d28d9 0%,transparent 35%),
+radial-gradient(circle at bottom right,#ec4899 0%,transparent 35%),
+linear-gradient(135deg,#241734,#121826);
+    min-height:100vh;
+    text-align:center;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+    width:90%;
+    max-width:450px;
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:20px;
+    padding:25px 20px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.15);
+    position:relative;
+}
+
+h1{
+    color:#ffffff;
+    margin-bottom:10px;
+}
+
+p{
+    color:#E9D5FF;
+    font-size:16px;
+    line-height:1.5;
+}
+
+button{
+    width:90%;
+    max-width:300px;
+    padding:14px;
+    margin:10px auto;
+    border:none;
+    border-radius:30px;
+    font-size:16px;
+    cursor:pointer;
+    display:block;
+    background:linear-gradient(135deg,#EC4899,#C026D3);box-shadow:0 12px 30px rgba(236,72,153,.45);
+    color:white;
+    transition:.35s ease;
+}
+
+button:active{transform:scale(0.96);}
+
+.nav{
+    margin-top:15px;
+    display:flex;
+    justify-content:space-around;
+}
+
+.nav button{
+    width:45%;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+    color:#E9D5FF;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.emoji{
+    position:fixed;
+    font-size:24px;
+    pointer-events:none;
+    animation:float 1.5s linear forwards;
+}
+
+@keyframes float{
+    from{transform:translateY(0); opacity:1;}
+    to{transform:translateY(-80px); opacity:0;}
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <!-- Navigation -->
+    <div class="nav">
+        <button onclick="showPage('quotes')">Quotes</button>
+        <button onclick="showPage('compliments')">Compliments</button>
+    </div>
+
+    <!-- Pages -->
+    <div id="quotes" class="page active">
+        <h1>Hi Faija! 🌸</h1>
+        <p id="quote">“You are stronger than you think.”</p>
+        <button onclick="newQuote()">Arekta Quote</button>
+    </div>
+
+    <div id="compliments" class="page">
+        <h1>Compliments 💛</h1>
+        <p id="compliment">“Your smile can brighten anyone’s day! (specially mine)”</p>
+        <button onclick="newCompliment()">Arekta Compliment</button>
+        <button onclick="showPage('game')">Choto ekta game kheli 🎮</button>
+    </div>
+
+    <div id="game" class="page">
+        <h1>Emoj gula dhoro!</h1>
+        <p>Emoji gulai tap koro and collect points!</p>
+        <p>Score: <span id="score">0</span></p>
+        <button onclick="showPage('message')">Finish Game & Surprise</button>
+    </div>
+
+    <div id="message" class="page">
+        <h1>Special Message ❤️</h1>
+        <p>Hi Faija. 🤍
+
+Shudhu ekta kotha mone rekho...
+
+Jotoi mon kharap hok na keno, tumi onek special, onek appreciated, ar tomar hashi ta onek valuable.
+
+Ei chotto website ta shudhu ekta cheshta... jeno ektu holeo tomar mukhe hashi back ante pari. 🧸❤️</p>
+        <button onclick="showPage('quotes')">Go Back & Smile Again</button>
+    </div>
+</div>
+
+<script>
+const quotes = [
+    "Tumi jemon acho, amar kache temon bhabei onek special. 🤍",
+
+"Ajker din ta hoyto bhalo chilo na... kintu tumi ekhono onek precious. 🌸",
+
+"Tomar hashi ta abar dekhte chai. Shetai amar favourite. 😊",
+
+"Tomake niye amar ekta jinis kokhono bodlay na... ami shobshomoy tomake niye care kori. ❤️",
+
+"Ektu nijer upor kom pressure dao. Tumi already onek bhalo korcho. 🌷",
+
+"Jokhon mon kharap thake, tokhon mone rekho... keu ekjon ache je tomar hashi ta abar dekhte chai. 🤍",
+
+"Shob shomoy strong thakar dorkar nei. Ektu rest nileo thik ache. 🌙",
+
+"Tumi jano na, tomar ekta chotto hashi o karo din ta shundor kore dite pare. ✨",
+
+"Jodi ajke kichu bhalo na lage, tahole amar ei chotto hug ta rekhe dao. 🤗",
+
+];
+
+const compliments = [
+    "Tomar hashi ta shotti onek shundor. 😊",
+
+"Tumi jemon manus, sheta asholei onek rare. 🤍",
+
+"Tomar sathe kotha bolle mon ta automatically bhalo hoye jay. 🌸",
+
+"Tomar kindness ta amar shobcheye favourite jinis. ❤️",
+
+"Tumi khub naturally onno der comfortable feel korate paro. 🌷",
+
+"Tomar moddhe ekta shanti ache... jeta khub kom manusher moddhe dekha jay. 🌙",
+
+"Tumi joto ta bhabo, tar cheyeo onek beshi amazing. ✨",
+
+"Tomar chotto chotto kothagulo o onek meaningful lage amar. 💖",
+
+"Tumi nijer moto thako... karon oi version tai shobcheye shundor. 🧸",
+
+"Tomar presence tai onek kichu better kore dey. 🌼"
+   
+];
+
+function newQuote(){
+    const idx = Math.floor(Math.random() * quotes.length);
+    document.getElementById("quote").innerText = "“" + quotes[idx] + "”";
+}
+
+function newCompliment(){
+    const idx = Math.floor(Math.random() * compliments.length);
+    document.getElementById("compliment").innerText = "“" + compliments[idx] + "”";
+}
+
+function showPage(id){
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+// Emoji Game
+let score = 0;
+function spawnEmoji(){
+    const emoji = document.createElement("div");
+    emoji.className = "emoji";
+    const emojis = ["😊","🌸","💛","🌞","✨","🌈","🍀"];
+    emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    emoji.style.left = Math.random() * window.innerWidth * 0.8 + "px";
+    emoji.style.top = Math.random() * window.innerHeight * 0.8 + "px";
+
+    emoji.onclick = function(){
+        if(document.getElementById('game').classList.contains('active')){
+            score++;
+            document.getElementById("score").innerText = score;
+            emoji.remove();
+        }
+    }
+
+    document.body.appendChild(emoji);
+    setTimeout(()=>{emoji.remove();},2000);
+}
+
+// Spawn emojis every 500ms when on game page
+setInterval(function(){
+    if(document.getElementById('game').classList.contains('active')){
+        spawnEmoji();
+    }
+}, 400);
+
+// Floating emojis on general taps
+document.addEventListener("click", function(e){
+    const floating = document.createElement("div");
+    floating.className = "emoji";
+    const emojis = ["😊","🌸","💛","🌞","✨","🌈","🍀"];
+    floating.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    floating.style.left = e.clientX + "px";
+    floating.style.top = e.clientY + "px";
+    document.body.appendChild(floating);
+    setTimeout(()=>{floating.remove();},1500);
+});
+</script>
+
+</body>
+</html>
