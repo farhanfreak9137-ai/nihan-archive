@@ -113,7 +113,7 @@ function ArchiveAppInner() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-base)] text-[#f0f6fc] flex flex-col selection:bg-rose-500/20 selection:text-rose-200">
+    <div className="h-screen overflow-hidden bg-[var(--bg-base)] text-[#f0f6fc] flex flex-col selection:bg-rose-500/20 selection:text-rose-200">
       {/* Top Navigation Bar */}
       <Navbar
         metadata={metadata}
@@ -126,7 +126,7 @@ function ArchiveAppInner() {
       />
 
       {/* Main Layout Body */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 min-h-0 flex overflow-hidden">
         {/* Desktop Sidebar */}
         <Sidebar
           activeTab={activeTab}
@@ -136,7 +136,13 @@ function ArchiveAppInner() {
         />
 
         {/* Content Viewport */}
-        <main className="flex-1 overflow-y-auto pb-24 md:pb-8">
+        <main
+          className={`flex-1 min-h-0 ${
+            activeTab === 'conversation'
+              ? 'overflow-hidden flex flex-col h-full'
+              : 'overflow-y-auto pb-24 md:pb-8'
+          }`}
+        >
           {activeTab === 'calendar' && (
             <div className="p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto animate-fade-in">
               <CalendarView
@@ -148,7 +154,7 @@ function ArchiveAppInner() {
           )}
 
           {activeTab === 'conversation' && (
-            <div className="animate-fade-in">
+            <div className="flex-1 flex flex-col h-full overflow-hidden animate-fade-in">
               <ConversationViewer
                 date={selectedDate}
                 messages={currentDayMessages}
@@ -156,7 +162,7 @@ function ArchiveAppInner() {
                 isLoading={isLoadingDay}
                 onSelectDate={setSelectedDate}
                 highlightMessageId={highlightMessageId}
-                onOpenAiSummary={() => setIsAiModalOpen(false)}
+                onOpenAiSummary={() => setIsAiModalOpen(true)}
               />
             </div>
           )}

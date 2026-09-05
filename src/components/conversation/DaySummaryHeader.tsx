@@ -48,6 +48,20 @@ export const DaySummaryHeader: React.FC<DaySummaryHeaderProps> = ({
     }
   }, [date]);
 
+  // Mobile compact date e.g. "Sep 4, 2026"
+  const shortFormattedDate = React.useMemo(() => {
+    try {
+      const d = new Date(date + 'T12:00:00');
+      return d.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+    } catch {
+      return date;
+    }
+  }, [date]);
+
   const activeHoursStr = React.useMemo(() => {
     if (!stats) return '';
     const h = Math.floor(stats.activeDurationMinutes / 60);
@@ -56,45 +70,37 @@ export const DaySummaryHeader: React.FC<DaySummaryHeaderProps> = ({
   }, [stats]);
 
   return (
-    <div className="border-b border-[#21262d] bg-[#0b0d10] p-4 sm:p-6 space-y-4">
-      {/* Top Bar: Navigation + Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <h1 className="font-editorial text-2xl sm:text-3xl text-white font-medium tracking-tight">
-              {formattedDate}
-            </h1>
-            {stats && stats.totalMessages >= 1200 && (
-              <span className="flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300">
-                <Flame className="w-3 h-3 text-rose-500 fill-rose-500" />
-                Marathon Day
-              </span>
-            )}
-          </div>
+    <div className="border-b border-[#21262d] bg-[#0b0d10] px-3 sm:px-6 py-2.5 sm:py-3 space-y-2 shrink-0 z-20">
+      {/* Top Bar: Navigation + Title + Quick Actions */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+          <h1 className="font-editorial text-base sm:text-2xl text-white font-medium tracking-tight truncate">
+            <span className="sm:hidden">{shortFormattedDate}</span>
+            <span className="hidden sm:inline">{formattedDate}</span>
+          </h1>
           {stats && (
-            <p className="text-xs text-[#8b949e] font-mono flex items-center gap-2 flex-wrap">
-              <span>{stats.totalMessages.toLocaleString()} messages</span>
-              <span>•</span>
-              <span>{activeHoursStr}</span>
-              <span>•</span>
-              <span className="flex items-center gap-1 text-slate-300">
-                <Clock className="w-3 h-3 text-rose-400" />
-                Peak {stats.peakHour % 12 || 12} {stats.peakHour >= 12 ? 'PM' : 'AM'} ({stats.peakHourCount} msgs)
-              </span>
-            </p>
+            <span className="text-[11px] font-mono text-[#8b949e] hidden md:inline">
+              • {stats.totalMessages.toLocaleString()} msgs • {activeHoursStr}
+            </span>
+          )}
+          {stats && stats.totalMessages >= 1200 && (
+            <span className="flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 sm:px-2 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 shrink-0">
+              <Flame className="w-3 h-3 text-rose-500 fill-rose-500" />
+              <span className="hidden sm:inline">Marathon</span>
+            </span>
           )}
         </div>
 
         {/* Date Prev/Next Buttons & AI Action */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {onOpenAiSummary && (
             <button
               onClick={onOpenAiSummary}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 text-purple-300 text-xs font-mono transition-colors"
+              className="flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 text-purple-300 text-xs font-mono transition-colors"
               title="Generate Scoped AI Summary with Gemini"
             >
               <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-              <span>AI Day Summary</span>
+              <span className="hidden sm:inline">AI Day Summary</span>
             </button>
           )}
 
@@ -102,104 +108,80 @@ export const DaySummaryHeader: React.FC<DaySummaryHeaderProps> = ({
             <button
               onClick={() => prevDate && onSelectDate(prevDate)}
               disabled={!prevDate}
-              className="p-1.5 rounded-lg text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#1c222c] disabled:opacity-25 transition-colors"
+              className="p-1 sm:p-1.5 rounded-lg text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#1c222c] disabled:opacity-25 transition-colors"
               title={prevDate ? `Go to ${prevDate}` : 'No previous day'}
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
-            <span className="px-2 text-xs font-mono text-[#8b949e]">
-              Day {currentIndex + 1} of {allDates.length}
+            <span className="px-1.5 sm:px-2 text-[11px] sm:text-xs font-mono text-[#8b949e]">
+              {currentIndex + 1} / {allDates.length}
             </span>
             <button
               onClick={() => nextDate && onSelectDate(nextDate)}
               disabled={!nextDate}
-              className="p-1.5 rounded-lg text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#1c222c] disabled:opacity-25 transition-colors"
+              className="p-1 sm:p-1.5 rounded-lg text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#1c222c] disabled:opacity-25 transition-colors"
               title={nextDate ? `Go to ${nextDate}` : 'No next day'}
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Day in Review Summary Metrics Cards */}
-      {stats && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-          {/* NILA Card */}
-          <div className="p-3 rounded-xl bg-[#161b22] border border-[#21262d] relative overflow-hidden">
-            <div className="absolute top-0 left-0 bottom-0 w-1 bg-rose-500" />
-            <div className="text-[10px] uppercase font-mono tracking-wider text-rose-400 font-medium">
-              NILA
+      {/* Second Bar: Compact Stat Pills Strip & Search */}
+      <div className="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+        {stats && (
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5 text-xs font-mono shrink-0">
+            {/* NILA Pill */}
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#161b22] border border-rose-500/25 shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+              <span className="text-rose-400 font-semibold text-[11px]">NILA</span>
+              <span className="text-white font-semibold">{stats.nilaMessages.toLocaleString()}</span>
+              <span className="text-[#8b949e] text-[10px]">({stats.nilaPercentage}%)</span>
             </div>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-mono text-xl text-white font-semibold">
-                {stats.nilaMessages.toLocaleString()}
-              </span>
-              <span className="text-[11px] text-[#8b949e] font-mono">
-                {stats.nilaPercentage}%
-              </span>
+
+            {/* FARHAN Pill */}
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#161b22] border border-sky-500/25 shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+              <span className="text-sky-400 font-semibold text-[11px]">FARHAN</span>
+              <span className="text-white font-semibold">{stats.farhanMessages.toLocaleString()}</span>
+              <span className="text-[#8b949e] text-[10px]">({stats.farhanPercentage}%)</span>
+            </div>
+
+            {/* Shares Pill */}
+            {stats.shares > 0 && (
+              <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#161b22] border border-[#21262d] text-[#8b949e] shrink-0">
+                <Share2 className="w-3 h-3 text-amber-400" />
+                <span className="text-white font-medium">{stats.shares}</span>
+                <span className="text-[10px]">({stats.reels} reels)</span>
+              </div>
+            )}
+
+            {/* Reactions Pill */}
+            {stats.reactions > 0 && (
+              <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#161b22] border border-[#21262d] text-[#8b949e] shrink-0">
+                <Smile className="w-3 h-3 text-emerald-400" />
+                <span className="text-white font-medium">{stats.reactions}</span>
+                <span className="text-[10px]">({stats.nilaReactions}N/{stats.farhanReactions}F)</span>
+              </div>
+            )}
+
+            {/* Peak Hour */}
+            <div className="hidden md:flex items-center gap-1 px-2 py-1 rounded-lg bg-[#161b22] border border-[#21262d] text-[#8b949e] text-[11px] shrink-0">
+              <Clock className="w-3 h-3 text-rose-400" />
+              <span>Peak {stats.peakHour % 12 || 12}{stats.peakHour >= 12 ? 'PM' : 'AM'}</span>
             </div>
           </div>
+        )}
 
-          {/* FARHAN Card */}
-          <div className="p-3 rounded-xl bg-[#161b22] border border-[#21262d] relative overflow-hidden">
-            <div className="absolute top-0 left-0 bottom-0 w-1 bg-sky-400" />
-            <div className="text-[10px] uppercase font-mono tracking-wider text-sky-400 font-medium">
-              FARHAN
-            </div>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-mono text-xl text-white font-semibold">
-                {stats.farhanMessages.toLocaleString()}
-              </span>
-              <span className="text-[11px] text-[#8b949e] font-mono">
-                {stats.farhanPercentage}%
-              </span>
-            </div>
-          </div>
-
-          {/* SHARES Card */}
-          <div className="p-3 rounded-xl bg-[#161b22] border border-[#21262d]">
-            <div className="flex items-center justify-between text-[10px] uppercase font-mono tracking-wider text-[#8b949e]">
-              <span>Shares</span>
-              <Share2 className="w-3 h-3 text-amber-400" />
-            </div>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-mono text-xl text-white font-semibold">
-                {stats.shares}
-              </span>
-              <span className="text-[10px] text-[#8b949e] font-mono">
-                ({stats.reels} reels)
-              </span>
-            </div>
-          </div>
-
-          {/* REACTIONS Card */}
-          <div className="p-3 rounded-xl bg-[#161b22] border border-[#21262d]">
-            <div className="flex items-center justify-between text-[10px] uppercase font-mono tracking-wider text-[#8b949e]">
-              <span>Reactions</span>
-              <Smile className="w-3 h-3 text-emerald-400" />
-            </div>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-mono text-xl text-white font-semibold">
-                {stats.reactions}
-              </span>
-              <span className="text-[10px] text-[#8b949e] font-mono">
-                ({stats.nilaReactions} N / {stats.farhanReactions} F)
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Filter in Day Search Input */}
-      <div className="flex items-center justify-between pt-1">
-        <div className="relative w-full max-w-xs">
+        {/* Filter Input */}
+        <div className="relative w-full sm:w-56 shrink-0">
           <input
             type="text"
             value={filterQuery}
             onChange={(e) => onFilterChange(e.target.value)}
-            placeholder="Filter messages in this day..."
-            className="w-full pl-3 pr-8 py-1.5 rounded-lg bg-[#12161c] border border-[#21262d] focus:border-rose-500 focus:outline-none text-xs text-white placeholder:text-[#484f58] transition-colors"
+            placeholder="Filter messages..."
+            className="w-full pl-2.5 pr-7 py-1 rounded-lg bg-[#12161c] border border-[#21262d] focus:border-rose-500 focus:outline-none text-xs text-white placeholder:text-[#484f58] transition-colors font-mono"
           />
           {filterQuery && (
             <button
@@ -210,12 +192,6 @@ export const DaySummaryHeader: React.FC<DaySummaryHeaderProps> = ({
             </button>
           )}
         </div>
-
-        {stats && (
-          <div className="text-[11px] text-[#8b949e] font-mono hidden sm:block">
-            {stats.firstMessage} → {stats.lastMessage}
-          </div>
-        )}
       </div>
     </div>
   );

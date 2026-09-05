@@ -52,7 +52,7 @@ export const ConversationViewer: React.FC<ConversationViewerProps> = ({
   const rowVirtualizer = useVirtualizer({
     count: filteredMessages.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 72,
+    estimateSize: () => 105,
     overscan: 12,
   });
 
@@ -91,7 +91,7 @@ export const ConversationViewer: React.FC<ConversationViewerProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-61px)] bg-[#0b0d10] overflow-hidden">
+    <div className="flex flex-col h-full bg-[#0b0d10] overflow-hidden">
       {/* Day Summary & Review Header */}
       <DaySummaryHeader
         stats={currentStats}
@@ -120,13 +120,13 @@ export const ConversationViewer: React.FC<ConversationViewerProps> = ({
         ) : (
           <div
             ref={parentRef}
-            className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 relative"
+            className="flex-1 overflow-y-auto px-3 sm:px-6 md:px-8 py-6 pb-28 sm:pb-24 relative flex justify-center"
           >
-            {/* Virtualized Container */}
+            {/* Centered Conversation Column for human reading scale */}
             <div
+              className="max-w-2xl lg:max-w-3xl w-full relative"
               style={{
                 height: `${rowVirtualizer.getTotalSize()}px`,
-                width: '100%',
                 position: 'relative',
               }}
             >
@@ -169,17 +169,17 @@ export const ConversationViewer: React.FC<ConversationViewerProps> = ({
             </div>
 
             {/* Jump Top & Bottom Float Controls */}
-            <div className="fixed bottom-16 right-36 z-30 hidden md:flex flex-col gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
+            <div className="absolute bottom-6 right-4 sm:right-6 z-30 hidden sm:flex flex-col gap-2 opacity-80 hover:opacity-100 transition-opacity">
               <button
                 onClick={scrollToTop}
-                className="p-2 rounded-full bg-[#161b22] border border-[#30363d] text-[#8b949e] hover:text-white shadow-lg transition-colors"
+                className="p-2.5 rounded-full bg-[#161b22]/90 backdrop-blur border border-[#30363d] text-[#8b949e] hover:text-white hover:border-white/30 shadow-lg transition-all hover:scale-105"
                 title="Jump to beginning of day"
               >
                 <ArrowUp className="w-4 h-4" />
               </button>
               <button
                 onClick={scrollToBottom}
-                className="p-2 rounded-full bg-[#161b22] border border-[#30363d] text-[#8b949e] hover:text-white shadow-lg transition-colors"
+                className="p-2.5 rounded-full bg-[#161b22]/90 backdrop-blur border border-[#30363d] text-[#8b949e] hover:text-white hover:border-white/30 shadow-lg transition-all hover:scale-105"
                 title="Jump to end of day"
               >
                 <ArrowDown className="w-4 h-4" />

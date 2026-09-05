@@ -34,13 +34,25 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const isNila = message.sender === 'NILU';
 
+  // Detect standalone emoji messages (e.g. 🐵, 🥺😍, ❤️, etc.)
+  const isEmojiOnly = React.useMemo(() => {
+    if (!message.content || message.type !== 'text') return false;
+    const trimmed = message.content.replace(' (edited)', '').trim();
+    if (!trimmed || trimmed.length > 20) return false;
+    const stripped = trimmed.replace(
+      /[\p{Extended_Pictographic}\p{Emoji_Presentation}\p{Emoji_Modifier}\p{Emoji_Component}\u200D\uFE0F\s]/gu,
+      ''
+    );
+    return stripped.length === 0;
+  }, [message.content, message.type]);
+
   return (
     <div
       id={message.id}
       className={`group w-full flex flex-col transition-all duration-200 ${
         isNila ? 'items-start' : 'items-end'
-      } ${isGroupedWithPrevious ? 'mt-0.5' : 'mt-2.5'} ${
-        isGroupedWithNext ? 'mb-0.5' : 'mb-1.5'
+      } ${isGroupedWithPrevious ? 'mt-1' : 'mt-3 sm:mt-4'} ${
+        isGroupedWithNext ? 'mb-0.5' : 'mb-2 sm:mb-2.5'
       } ${
         isHighlighted
           ? 'bg-rose-500/15 p-2 rounded-2xl ring-2 ring-rose-500/60 shadow-lg'
@@ -50,7 +62,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
       {/* Sender name label (only if not grouped with previous) */}
       {!isGroupedWithPrevious && (
         <div
-          className={`flex items-center gap-1.5 text-[10px] text-[#8b949e] font-mono px-2 mb-1 ${
+          className={`flex items-center gap-1.5 text-xs text-[#8b949e] font-mono px-2 mb-1 ${
             isNila ? 'flex-row' : 'flex-row-reverse'
           }`}
         >
@@ -62,23 +74,27 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
             {message.senderDisplay}
           </span>
           <span>•</span>
-          <span>{message.time}</span>
+          <span className="text-[11px]">{message.time}</span>
           {message.isEdited && (
-            <span className="text-[9px] text-[#8b949e] italic">(edited)</span>
+            <span className="text-[10px] text-[#8b949e] italic">(edited)</span>
           )}
         </div>
       )}
 
       {/* Main Bubble Container */}
       <div
-        className={`relative max-w-[88%] sm:max-w-[75%] md:max-w-[62%] px-3.5 sm:px-4 py-2 sm:py-2.5 shadow-sm text-sm leading-relaxed transition-all ${
-          isNila
-            ? `bg-[#181a20] border border-[#262c36] text-[#f0f6fc] ${
-                isGroupedWithPrevious ? 'rounded-tl-md' : 'rounded-tl-2xl'
-              } ${isGroupedWithNext ? 'rounded-bl-md' : 'rounded-bl-2xl'} rounded-tr-2xl rounded-br-2xl`
-            : `bg-[#131e2b] border border-[#1d3147] text-[#f0f6fc] ${
-                isGroupedWithPrevious ? 'rounded-tr-md' : 'rounded-tr-2xl'
-              } ${isGroupedWithNext ? 'rounded-br-md' : 'rounded-br-2xl'} rounded-tl-2xl rounded-bl-2xl`
+        className={`relative transition-all ${
+          isEmojiOnly
+            ? 'p-1 select-text'
+            : `min-w-[68px] sm:min-w-[76px] max-w-[85%] sm:max-w-[78%] px-4 py-2.5 sm:px-5 sm:py-3 shadow-md text-[15px] sm:text-[16px] leading-[1.55] ${
+                isNila
+                  ? `bg-[#181a20] border border-[#282f3a] text-[#f0f6fc] ${
+                      isGroupedWithPrevious ? 'rounded-tl-sm' : 'rounded-tl-2xl'
+                    } ${isGroupedWithNext ? 'rounded-bl-sm' : 'rounded-bl-2xl'} rounded-tr-2xl rounded-br-2xl`
+                  : `bg-[#132030] border border-[#1e3857] text-[#f0f6fc] ${
+                      isGroupedWithPrevious ? 'rounded-tr-sm' : 'rounded-tr-2xl'
+                    } ${isGroupedWithNext ? 'rounded-br-sm' : 'rounded-br-2xl'} rounded-tl-2xl rounded-bl-2xl`
+              }`
         }`}
       >
         {/* Rich Instagram Share Card */}
@@ -202,17 +218,25 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         {message.content &&
           message.content !== 'NILU sent an attachment.' &&
           message.content !== 'farhannn sent an attachment.' && (
-            <p className="whitespace-pre-wrap break-words selection:bg-rose-500/30">
+            <div
+              className={`selection:bg-rose-500/30 ${
+                isEmojiOnly
+                  ? 'text-3xl sm:text-4xl py-1 leading-none select-text'
+                  : 'whitespace-pre-wrap break-words'
+              }`}
+            >
               {message.content.replace(' (edited)', '')}
-            </p>
+            </div>
           )}
 
         {/* Floating Reactions Pill with Spring Physics */}
         {message.reactions && message.reactions.length > 0 && (
           <div
-            className={`absolute -bottom-3 ${
+            className={`absolute ${
+              isEmojiOnly ? '-bottom-4' : '-bottom-3'
+            } ${
               isNila ? 'left-2' : 'right-2'
-            } flex items-center gap-1 bg-[#161b22]/95 backdrop-blur-md border border-[#30363d] rounded-full px-2 py-0.5 shadow-lg z-10`}
+            } flex items-center gap-1.5 bg-[#161b22]/95 backdrop-blur-md border border-[#30363d] rounded-full px-2.5 py-0.5 shadow-lg z-10`}
           >
             {message.reactions.map((r, i) => (
               <motion.span
@@ -220,7 +244,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
                 whileHover={{ scale: 1.35, rotate: [-5, 5, 0] }}
                 whileTap={{ scale: 0.9 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                className="text-xs cursor-pointer select-none"
+                className="text-xs sm:text-sm cursor-pointer select-none"
                 title={`${r.actorDisplay} reacted with ${r.reaction}`}
               >
                 {r.reaction}
@@ -233,7 +257,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
       {/* Subtle timestamp on end of cluster or when not grouped */}
       {isGroupedWithNext === false && isGroupedWithPrevious && (
         <span
-          className={`text-[9px] font-mono text-[#8b949e]/60 px-2 mt-0.5 ${
+          className={`text-[10px] font-mono text-[#8b949e]/80 px-2 mt-0.5 ${
             isNila ? 'text-left' : 'text-right'
           }`}
         >
