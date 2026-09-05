@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Search, Heart, Sparkles, Dices, Palette, ChevronDown } from 'lucide-react';
+import { Calendar, Search, Sparkles, Dices, Palette, ChevronDown } from 'lucide-react';
 import { ArchiveMetadata } from '../../types/archive';
 import { ActiveTab } from '../../hooks/useArchive';
 import { useTheme, THEMES } from '../../context/ThemeContext';
@@ -35,11 +35,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setActiveTab('calendar')}
             className="flex items-center gap-2.5 text-left group"
           >
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] p-[1.5px] shadow-sm shadow-rose-950/40 shrink-0">
-              <div className="w-full h-full rounded-[10px] bg-[#0b0d10] flex items-center justify-center">
-                <Heart className="w-4 h-4 text-rose-400 group-hover:scale-110 transition-transform" />
-              </div>
-            </div>
+            <img
+              src="/logo.png"
+              alt="Nila Archive Logo"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-cover shadow-sm ring-1 ring-white/10 group-hover:scale-105 group-hover:ring-rose-500/40 transition-all shrink-0"
+            />
             <div>
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <span className="font-editorial text-base sm:text-lg tracking-wide text-white font-medium">
