@@ -3,14 +3,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Flame,
-  MessageCircle,
-  Share2,
-  Smile,
-  Clock,
   Calendar as CalendarIcon,
-  TrendingUp,
+  Trophy,
 } from 'lucide-react';
 import { DailyStats } from '../../types/archive';
+import { DaySnippetCard } from './DaySnippetCard';
 
 interface CalendarViewProps {
   dailyStats: DailyStats[];
@@ -34,6 +31,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     return availableMonths[availableMonths.length - 1] || '2026-09';
   });
   const [hoveredDate, setHoveredDate] = useState<string | null>(null);
+  const [mobileInspectDate, setMobileInspectDate] = useState<string | null>(null);
 
   // Month navigation
   const currentMonthIdx = availableMonths.indexOf(currentYearMonth);
@@ -86,37 +84,43 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
       'November',
       'December',
     ];
+
     const monthName = monthNames[month];
 
-    // First day of month (0 = Sunday, 1 = Monday ... 6 = Saturday)
-    const firstDayIndex = new Date(year, month - 1, 1).getDay();
-    // Adjust to Monday start: 0 = Mon, 6 = Sun
-    const startOffset = (firstDayIndex + 6) % 7;
+    // First day of month
+    const firstDay = new Date(year, month - 1, 1);
+    // Day of week: 0 is Sun, 1 is Mon... convert to Monday-first (0 is Mon, 6 is Sun)
+    let startDayOfWeek = firstDay.getDay() - 1;
+    if (startDayOfWeek === -1) startDayOfWeek = 6;
 
     // Number of days in month
-    const totalDays = new Date(year, month, 0).getDate();
+    const daysInMonth = new Date(year, month, 0).getDate();
 
-    // Generate grid items
-    const cells: { dateStr?: string; dayNumber?: number; isCurrentMonth: boolean }[] = [];
+    const cells: {
+      dayNumber: number;
+      dateStr: string;
+      isCurrentMonth: boolean;
+    }[] = [];
 
     // Empty lead cells
-    for (let i = 0; i < startOffset; i++) {
-      cells.push({ isCurrentMonth: false });
-    }
-
-    // Days in current month
-    for (let d = 1; d <= totalDays; d++) {
-      const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    for (let i = 0; i < startDayOfWeek; i++) {
       cells.push({
-        dateStr,
-        dayNumber: d,
-        isCurrentMonth: true,
+        dayNumber: 0,
+        dateStr: '',
+        isCurrentMonth: false,
       });
     }
 
-    // Trailing cells to complete 7-column rows
-    while (cells.length % 7 !== 0) {
-      cells.push({ isCurrentMonth: false });
+    // Days of current month
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dayPad = d < 10 ? `0${d}` : `${d}`;
+      const monthPad = month < 10 ? `0${month}` : `${month}`;
+      const dateStr = `${year}-${monthPad}-${dayPad}`;
+      cells.push({
+        dayNumber: d,
+        dateStr,
+        isCurrentMonth: true,
+      });
     }
 
     return {
@@ -127,34 +131,75 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     };
   }, [currentYearMonth]);
 
-  // Total messages for current selected month
+  // Current month total messages
   const currentMonthTotal = useMemo(() => {
     return dailyStats
       .filter((d) => d.date.startsWith(currentYearMonth))
-      .reduce((acc, d) => acc + d.totalMessages, 0);
+      .reduce((sum, d) => sum + d.totalMessages, 0);
   }, [dailyStats, currentYearMonth]);
 
-  const hoveredStat = hoveredDate ? statsMap.get(hoveredDate) : null;
+  const displayedStat = useMemo(() => {
+    const target = hoveredDate || selectedDate;
+    return statsMap.get(target) || dailyStats[0];
+  }, [hoveredDate, selectedDate, statsMap, dailyStats]);
+
+  const mobileStat = mobileInspectDate ? statsMap.get(mobileInspectDate) : null;
 
   return (
     <div className="space-y-6">
-      {/* Header Controls & Quick Stats */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#21262d]">
+      {/* 60-Day Unbroken Chat Streak Banner */}
+      <div className="relative overflow-hidden rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-rose-500/15 via-purple-500/10 to-sky-500/15 border border-rose-500/25 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-rose-500 to-amber-500 flex items-center justify-center shadow-lg shadow-rose-500/30 shrink-0">
+              <Flame className="w-6 h-6 fill-white text-white animate-bounce" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-editorial text-white font-semibold">
+                  60-Day Unbroken Chat Streak
+                </h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                  100% Active
+                </span>
+              </div>
+              <p className="text-xs text-[#8b949e]">
+                Talked every single day from July 6 to September 4, 2026 without missing a day.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0 text-xs font-mono">
+            <div className="px-3 py-1.5 rounded-xl bg-[#0b0d10]/60 border border-white/10">
+              <span className="text-[#8b949e]">Total: </span>
+              <span className="text-white font-semibold">52,784 msgs</span>
+            </div>
+            <div className="px-3 py-1.5 rounded-xl bg-[#0b0d10]/60 border border-white/10">
+              <span className="text-[#8b949e]">Daily Avg: </span>
+              <span className="text-rose-400 font-semibold">~880 msgs/day</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Header & Month Navigation */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#21262d] pb-4">
         <div>
-          <h2 className="text-2xl font-editorial text-[#f0f6fc] tracking-tight">
-            Calendar Explorer
+          <h2 className="text-2xl sm:text-3xl font-editorial text-white tracking-tight flex items-center gap-2.5">
+            <CalendarIcon className="w-6 h-6 text-rose-500" />
+            <span>Archive Calendar Heatmap</span>
           </h2>
-          <p className="text-xs text-[#8b949e]">
-            Interactive conversation heat map across July, August, and September 2026.
+          <p className="text-xs text-[#8b949e] mt-0.5">
+            Explore 60 days of conversations. Tap any day to inspect highlights or jump straight to that day's dialogue.
           </p>
         </div>
 
         {/* Month Navigation Buttons */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="flex items-center bg-[#12161c] border border-[#21262d] rounded-xl p-1 shadow-sm">
             <button
               onClick={prevMonth}
-              disabled={currentYearMonth === '2026-07'}
+              disabled={currentMonthIdx <= 0}
               className="p-1.5 rounded-lg text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#1c222c] disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
               title="Previous Month"
             >
@@ -165,7 +210,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             </span>
             <button
               onClick={nextMonth}
-              disabled={currentYearMonth === '2026-09'}
+              disabled={currentMonthIdx >= availableMonths.length - 1}
               className="p-1.5 rounded-lg text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#1c222c] disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
               title="Next Month"
             >
@@ -186,7 +231,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         {/* Main Calendar Grid (3 Columns on Large Screens) */}
         <div className="lg:col-span-3 space-y-3">
           {/* Weekday Labels (Monday to Sunday) */}
-          <div className="grid grid-cols-7 gap-2 text-center text-[11px] font-mono tracking-wider text-[#8b949e] uppercase py-1">
+          <div className="grid grid-cols-7 gap-1.5 sm:gap-2 text-center text-[10px] sm:text-[11px] font-mono tracking-wider text-[#8b949e] uppercase py-1">
             <span>Mon</span>
             <span>Tue</span>
             <span>Wed</span>
@@ -197,13 +242,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           </div>
 
           {/* Day Grid */}
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
             {monthInfo.cells.map((cell, idx) => {
               if (!cell.isCurrentMonth || !cell.dateStr) {
                 return (
                   <div
                     key={`empty_${idx}`}
-                    className="min-h-[96px] sm:min-h-[110px] rounded-xl border border-transparent bg-[#0b0d10]/40 opacity-20 pointer-events-none"
+                    className="min-h-[75px] sm:min-h-[105px] rounded-xl border border-transparent bg-[#0b0d10]/40 opacity-20 pointer-events-none"
                   />
                 );
               }
@@ -211,6 +256,11 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               const stat = statsMap.get(cell.dateStr);
               const hasMessages = !!stat && stat.totalMessages > 0;
               const isSelected = selectedDate === cell.dateStr;
+
+              // Top peak day crown badges
+              const isRank1 = cell.dateStr === '2026-08-14';
+              const isRank2 = cell.dateStr === '2026-08-13';
+              const isRank3 = cell.dateStr === '2026-08-15';
 
               // Intensity styles based on activityScore / message count
               let intensityBorder = 'border-[#21262d]';
@@ -246,190 +296,183 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               return (
                 <button
                   key={cell.dateStr}
-                  onClick={() => hasMessages && onSelectDate(cellDate)}
+                  onClick={() => {
+                    if (!hasMessages) return;
+                    if (window.innerWidth < 1024) {
+                      setMobileInspectDate(cellDate);
+                    } else {
+                      onSelectDate(cellDate);
+                    }
+                  }}
                   onMouseEnter={() => setHoveredDate(cellDate)}
                   onMouseLeave={() => setHoveredDate(null)}
                   disabled={!hasMessages}
-                  className={`relative p-2 sm:p-2.5 min-h-[96px] sm:min-h-[110px] rounded-xl border text-left flex flex-col justify-between transition-all duration-150 ${intensityBorder} ${intensityBg} ${glowEffect} ${
+                  className={`relative p-1.5 sm:p-2.5 min-h-[75px] sm:min-h-[105px] rounded-xl border text-left flex flex-col justify-between transition-all duration-150 ${intensityBorder} ${intensityBg} ${glowEffect} ${
                     isSelected ? 'ring-2 ring-rose-500 border-rose-500 bg-rose-950/30' : ''
-                  } ${!hasMessages ? 'cursor-not-allowed' : 'cursor-pointer group'}`}
+                  } ${!hasMessages ? 'cursor-not-allowed' : 'cursor-pointer group active:scale-95'}`}
                 >
-                  {/* Top Bar: Date number + indicator */}
+                  {/* Top Bar: Date number + Peak Badges */}
                   <div className="flex items-center justify-between w-full">
                     <span
-                      className={`text-xs font-mono font-medium ${
-                        isSelected
-                          ? 'text-rose-400 font-bold'
-                          : hasMessages
-                          ? 'text-[#f0f6fc]'
-                          : 'text-[#484f58]'
+                      className={`text-xs sm:text-sm font-mono font-medium ${
+                        isSelected ? 'text-rose-400 font-bold' : hasMessages ? 'text-[#f0f6fc]' : 'text-[#8b949e]'
                       }`}
                     >
                       {cell.dayNumber}
                     </span>
 
-                    {hasMessages && stat.totalMessages >= 1200 && (
-                      <span className="flex items-center text-rose-400 text-[10px]" title="Heavy marathon day">
-                        <Flame className="w-3 h-3 fill-rose-500 text-rose-500" />
+                    {/* Peak Day Badges */}
+                    {isRank1 && (
+                      <span className="text-xs" title="Rank #1 Peak Day in Archive!">
+                        👑
                       </span>
+                    )}
+                    {isRank2 && (
+                      <span className="text-xs" title="Rank #2 Most Active Day!">
+                        🥈
+                      </span>
+                    )}
+                    {isRank3 && (
+                      <span className="text-xs" title="Rank #3 Most Active Day!">
+                        🥉
+                      </span>
+                    )}
+
+                    {hasMessages && !isRank1 && !isRank2 && !isRank3 && stat.activityScore >= 80 && (
+                      <Flame className="w-3 h-3 text-rose-400 fill-rose-400/80" />
                     )}
                   </div>
 
-                  {/* Center/Bottom: Message count & Split Bar */}
+                  {/* Message Count Metric */}
                   {hasMessages ? (
-                    <div className="mt-auto space-y-1.5 w-full">
-                      <div className="text-[11px] font-mono text-[#f0f6fc] font-medium leading-none">
+                    <div className="space-y-0.5 mt-1">
+                      <div className="text-[11px] sm:text-xs font-mono font-semibold text-white tracking-tight">
                         {stat.totalMessages.toLocaleString()}
-                        <span className="text-[9px] text-[#8b949e] font-sans ml-0.5 hidden sm:inline">
+                        <span className="hidden sm:inline text-[9px] text-[#8b949e] font-normal ml-0.5">
                           msgs
                         </span>
                       </div>
 
-                      {/* Sender distribution bar */}
-                      <div className="w-full h-1 rounded-full bg-[#21262d] overflow-hidden flex">
+                      {/* Mini balance bar */}
+                      <div className="h-1 w-full rounded-full bg-slate-800/80 overflow-hidden flex">
                         <div
-                          style={{ width: `${stat.nilaPercentage}%` }}
-                          className="h-full bg-rose-500/80 transition-all"
+                          style={{
+                            width: `${stat.nilaPercentage}%`,
+                          }}
+                          className="h-full bg-rose-500"
                         />
                         <div
-                          style={{ width: `${stat.farhanPercentage}%` }}
-                          className="h-full bg-sky-400/80 transition-all"
+                          style={{
+                            width: `${stat.farhanPercentage}%`,
+                          }}
+                          className="h-full bg-sky-400"
                         />
-                      </div>
-
-                      {/* Mini counts */}
-                      <div className="flex items-center justify-between text-[9px] font-mono text-[#8b949e] leading-none pt-0.5">
-                        <span className="text-rose-400/80">{stat.nilaMessages}</span>
-                        <span className="text-sky-400/80">{stat.farhanMessages}</span>
                       </div>
                     </div>
                   ) : (
-                    <div className="mt-auto text-[10px] text-[#484f58] font-mono">
-                      —
-                    </div>
+                    <span className="text-[10px] font-mono text-[#8b949e]/40">—</span>
                   )}
                 </button>
               );
             })}
           </div>
-        </div>
 
-        {/* Sidebar: Hover Info Card & Top Active Days */}
-        <div className="space-y-4">
-          {/* Day Inspection Card */}
-          <div className="p-4 rounded-2xl border border-[#21262d] bg-[#12161c] space-y-4 min-h-[220px]">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#8b949e] uppercase tracking-wider">
-              <CalendarIcon className="w-3.5 h-3.5 text-rose-400" />
-              <span>Day Inspection</span>
+          {/* Activity Legend */}
+          <div className="flex flex-wrap items-center justify-between text-xs text-[#8b949e] pt-3 px-1 border-t border-[#21262d] gap-3">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[11px]">Intensity:</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded bg-[#12161c] border border-[#21262d]" title="Light (<500 msgs)" />
+                <span className="w-3 h-3 rounded bg-[#161b22] border border-[#30363d]" title="Medium (500-1k msgs)" />
+                <span className="w-3 h-3 rounded bg-[#1a1420] border border-rose-500/30" title="Heavy (1k-1.5k msgs)" />
+                <span className="w-3 h-3 rounded bg-rose-950/40 border border-rose-500" title="Peak (>1.5k msgs)" />
+              </div>
             </div>
 
-            {hoveredStat ? (
-              <div className="space-y-3.5 animate-fade-in">
-                <div>
-                  <div className="font-editorial text-lg text-white font-medium">
-                    {hoveredStat.date}
-                  </div>
-                  <div className="text-xs text-rose-400 font-mono font-medium">
-                    {hoveredStat.totalMessages.toLocaleString()} Total Messages
-                  </div>
-                </div>
-
-                {/* Sender Breakdown */}
-                <div className="space-y-1.5 text-xs bg-[#0b0d10] p-2.5 rounded-xl border border-[#21262d]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-rose-300 font-medium">NILA:</span>
-                    <span className="font-mono text-[#f0f6fc]">
-                      {hoveredStat.nilaMessages.toLocaleString()}{' '}
-                      <span className="text-[#8b949e] text-[10px]">
-                        ({hoveredStat.nilaPercentage}%)
-                      </span>
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sky-300 font-medium">FARHAN:</span>
-                    <span className="font-mono text-[#f0f6fc]">
-                      {hoveredStat.farhanMessages.toLocaleString()}{' '}
-                      <span className="text-[#8b949e] text-[10px]">
-                        ({hoveredStat.farhanPercentage}%)
-                      </span>
-                    </span>
-                  </div>
-                </div>
-
-                {/* Shares & Reactions */}
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="flex items-center gap-1.5 p-2 rounded-lg bg-[#161b22] border border-[#21262d]">
-                    <Share2 className="w-3.5 h-3.5 text-amber-400" />
-                    <div>
-                      <div className="text-[10px] text-[#8b949e]">Shares</div>
-                      <div className="font-mono font-medium">{hoveredStat.shares}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 p-2 rounded-lg bg-[#161b22] border border-[#21262d]">
-                    <Smile className="w-3.5 h-3.5 text-emerald-400" />
-                    <div>
-                      <div className="text-[10px] text-[#8b949e]">Reactions</div>
-                      <div className="font-mono font-medium">{hoveredStat.reactions}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Peak Hour */}
-                <div className="flex items-center gap-2 text-xs text-[#8b949e] pt-1 border-t border-[#21262d]">
-                  <Clock className="w-3.5 h-3.5 text-slate-400" />
-                  <span>
-                    Peak:{' '}
-                    <strong className="text-white font-mono">
-                      {hoveredStat.peakHour % 12 || 12} {hoveredStat.peakHour >= 12 ? 'PM' : 'AM'}
-                    </strong>{' '}
-                    ({hoveredStat.peakHourCount} msgs)
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="h-36 flex flex-col items-center justify-center text-center text-xs text-[#8b949e] space-y-1">
-                <MessageCircle className="w-6 h-6 text-[#30363d]" />
-                <p>Hover over any calendar cell to view daily metrics</p>
-              </div>
-            )}
+            <div className="flex items-center gap-3 font-mono text-[11px]">
+              <span className="flex items-center gap-1 text-rose-400">
+                <span className="w-2 h-2 rounded-full bg-rose-500" />
+                NILA
+              </span>
+              <span className="flex items-center gap-1 text-sky-400">
+                <span className="w-2 h-2 rounded-full bg-sky-400" />
+                FARHAN
+              </span>
+            </div>
           </div>
+        </div>
+
+        {/* Right Sidebar: Dynamic Day Snippet Card & Top Active Days */}
+        <div className="space-y-4">
+          {/* Day Snippet Inspector */}
+          {displayedStat && (
+            <div className="hidden lg:block">
+              <DaySnippetCard
+                stats={displayedStat}
+                onOpenDay={(date) => onSelectDate(date)}
+              />
+            </div>
+          )}
 
           {/* Top 5 Most Active Days Section */}
           <div className="p-4 rounded-2xl border border-[#21262d] bg-[#12161c] space-y-3">
             <div className="flex items-center gap-2 text-xs font-mono text-[#8b949e] uppercase tracking-wider">
-              <TrendingUp className="w-3.5 h-3.5 text-rose-400" />
-              <span>Most Active Days</span>
+              <Trophy className="w-3.5 h-3.5 text-amber-400" />
+              <span>Record Peak Days</span>
             </div>
 
             <div className="space-y-1.5">
-              {topActiveDays.map((day, idx) => (
-                <button
-                  key={day.date}
-                  onClick={() => onSelectDate(day.date)}
-                  className={`w-full flex items-center justify-between p-2 rounded-xl text-left text-xs transition-all border ${
-                    selectedDate === day.date
-                      ? 'bg-rose-500/10 border-rose-500/30 text-rose-200'
-                      : 'bg-[#161b22] border-[#21262d] hover:border-[#30363d] text-[#8b949e] hover:text-[#f0f6fc]'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-4 text-[10px] font-mono text-[#8b949e]">
-                      #{idx + 1}
-                    </span>
-                    <span className="font-mono text-white font-medium">{day.date}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-mono text-rose-400 font-medium">
-                      {day.totalMessages.toLocaleString()}
-                    </span>
-                    <span className="text-[10px] text-[#8b949e]">msgs</span>
-                  </div>
-                </button>
-              ))}
+              {topActiveDays.map((day, idx) => {
+                const crowns = ['👑', '🥈', '🥉', '#4', '#5'];
+                return (
+                  <button
+                    key={day.date}
+                    onClick={() => onSelectDate(day.date)}
+                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left text-xs transition-all border ${
+                      selectedDate === day.date
+                        ? 'bg-rose-500/10 border-rose-500/30 text-rose-200 shadow-sm'
+                        : 'bg-[#161b22] border-[#21262d] hover:border-[#30363d] text-[#8b949e] hover:text-[#f0f6fc]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-5 text-xs text-center font-mono">
+                        {crowns[idx]}
+                      </span>
+                      <div>
+                        <span className="font-mono text-white font-medium block">
+                          {day.date}
+                        </span>
+                        <span className="text-[10px] text-[#8b949e]">
+                          {Math.round(day.activeDurationMinutes / 60)}h active
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-mono text-rose-400 font-semibold text-xs">
+                        {day.totalMessages.toLocaleString()}
+                      </span>
+                      <span className="text-[10px] text-[#8b949e]">msgs</span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Mobile Day Inspection Drawer */}
+      {mobileStat && (
+        <DaySnippetCard
+          stats={mobileStat}
+          onOpenDay={(date) => {
+            setMobileInspectDate(null);
+            onSelectDate(date);
+          }}
+          onClose={() => setMobileInspectDate(null)}
+          isMobileDrawer={true}
+        />
+      )}
     </div>
   );
 };

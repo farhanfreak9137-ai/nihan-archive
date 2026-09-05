@@ -11,6 +11,9 @@ import {
 } from '../../types/archive';
 import { fetchExpressions, fetchNicknames } from '../../lib/data';
 
+import { ArchiveWrappedModal } from './ArchiveWrappedModal';
+import { Sparkles, Play } from 'lucide-react';
+
 interface AnalyticsViewProps {
   metadata: ArchiveMetadata | null;
   dailyStats: DailyStats[];
@@ -24,6 +27,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
   const [expressions, setExpressions] = useState<ExpressionEntry[]>([]);
   const [nicknames, setNicknames] = useState<NicknameEntry[]>([]);
   const [activeTab, setActiveTab] = useState<'balance' | 'time' | 'expressions' | 'nicknames' | 'reactions'>('balance');
+  const [isWrappedOpen, setIsWrappedOpen] = useState(false);
 
   useEffect(() => {
     let isCancelled = false;
@@ -58,6 +62,30 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-8">
+      {/* Archive Wrapped Hero Banner */}
+      <div className="relative overflow-hidden rounded-3xl p-5 sm:p-8 bg-gradient-to-r from-purple-950/80 via-rose-950/70 to-[#0b0d10] border border-rose-500/30 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="space-y-2 max-w-xl">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+            <Sparkles className="w-3.5 h-3.5 text-rose-400" />
+            <span>ANNUAL STORYTELLING</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-editorial text-white font-bold tracking-tight">
+            Our Archive Wrapped
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+            Experience the story of your connection through an interactive, full-screen animated retrospective. From 3 AM chats to voice note marathons and peak milestones.
+          </p>
+        </div>
+
+        <button
+          onClick={() => setIsWrappedOpen(true)}
+          className="px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-white font-semibold text-xs sm:text-sm font-mono flex items-center gap-2.5 shadow-lg shadow-rose-500/30 active:scale-95 transition-all shrink-0"
+        >
+          <Play className="w-4 h-4 fill-white" />
+          <span>Launch Story Mode</span>
+        </button>
+      </div>
+
       {/* Header */}
       <div>
         <h2 className="text-2xl font-editorial text-white tracking-tight">
@@ -432,6 +460,13 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* Interactive Archive Wrapped Modal */}
+      <ArchiveWrappedModal
+        isOpen={isWrappedOpen}
+        onClose={() => setIsWrappedOpen(false)}
+        metadata={metadata}
+      />
     </div>
   );
 };

@@ -5,20 +5,60 @@
 @layer base {
   :root {
     color-scheme: dark;
+    --bg-base: #0b0d10;
+    --bg-surface: #12161c;
+    --bg-card: #161b22;
+    --border-subtle: #21262d;
+    --border-hover: #30363d;
+    --accent-primary: #f43f5e;
+    --accent-secondary: #38bdf8;
+    --glow-primary: rgba(244, 63, 94, 0.15);
+  }
+
+  [data-theme="starlight-obsidian"] {
+    --bg-base: #000000;
+    --bg-surface: #0a0a0f;
+    --bg-card: #12111a;
+    --border-subtle: #272338;
+    --border-hover: #3b3554;
+    --accent-primary: #a855f7;
+    --accent-secondary: #06b6d4;
+    --glow-primary: rgba(168, 85, 247, 0.18);
+  }
+
+  [data-theme="warm-amber"] {
+    --bg-base: #0c0a09;
+    --bg-surface: #1c1917;
+    --bg-card: #292524;
+    --border-subtle: #44403c;
+    --border-hover: #57534e;
+    --accent-primary: #f59e0b;
+    --accent-secondary: #fb7185;
+    --glow-primary: rgba(245, 158, 11, 0.18);
   }
 
   body {
-    background-color: #0b0d10;
+    background-color: var(--bg-base);
     color: #f0f6fc;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
+}
+
+/* Safe Area Insets for Mobile / Notch devices */
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+}
+
+.pt-safe {
+  padding-top: max(0.5rem, env(safe-area-inset-top, 0.5rem));
 }
 
 /* Custom Sleek Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -26,33 +66,58 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #21262d;
+  background: var(--border-subtle);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #30363d;
+  background: var(--border-hover);
 }
 
 /* Glass panel */
 .glass-panel {
-  background: rgba(18, 22, 28, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(18, 22, 28, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="starlight-obsidian"] .glass-panel {
+  background: rgba(10, 10, 15, 0.85);
+  border: 1px solid rgba(168, 85, 247, 0.15);
+}
+
+[data-theme="warm-amber"] .glass-panel {
+  background: rgba(28, 25, 23, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.15);
 }
 
 .glass-card {
-  background: rgba(22, 27, 34, 0.6);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(22, 27, 34, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Polaroid Vintage card effect */
+.polaroid-card {
+  background: #fdfbf7;
+  color: #1a1a1a;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.polaroid-card:hover {
+  transform: translateY(-4px) scale(1.02) rotate(0deg) !important;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.8);
+  z-index: 20;
 }
 
 /* Animation utilities */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -61,5 +126,20 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
 }

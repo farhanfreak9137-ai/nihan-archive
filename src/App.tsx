@@ -10,9 +10,14 @@ import { AnalyticsView } from './components/analytics/AnalyticsView';
 import { MediaVaultView } from './components/media/MediaVaultView';
 import { MomentsView } from './components/moments/MomentsView';
 import { AiDaySummaryModal } from './components/ai/AiDaySummaryModal';
+import { ArchiveWrappedModal } from './components/analytics/ArchiveWrappedModal';
+import { SurpriseMemoryModal } from './components/moments/SurpriseMemoryModal';
+import { StickyAudioDock } from './components/ui/StickyAudioDock';
+import { ThemeProvider } from './context/ThemeContext';
+import { AudioPlayerProvider, useAudioPlayer } from './context/AudioPlayerContext';
 import { Loader2 } from 'lucide-react';
 
-export function App() {
+function ArchiveAppInner() {
   const {
     metadata,
     dailyStats,
@@ -32,7 +37,18 @@ export function App() {
   } = useArchive();
 
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [isWrappedOpen, setIsWrappedOpen] = useState(false);
+  const [isSurpriseOpen, setIsSurpriseOpen] = useState(false);
   const [searchInitialQuery, setSearchInitialQuery] = useState('');
+
+  const { setOnJumpToMessage } = useAudioPlayer();
+
+  // Wire jump to message from sticky dock
+  useEffect(() => {
+    setOnJumpToMessage((date, msgId) => {
+      navigateToDay(date, msgId);
+    });
+  }, [navigateToDay, setOnJumpToMessage]);
 
   // Global Keyboard shortcuts: '/' or 'Cmd+K' to launch search
   useEffect(() => {
@@ -97,7 +113,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0d10] text-[#f0f6fc] flex flex-col selection:bg-rose-500/20 selection:text-rose-200">
+    <div className="min-h-screen bg-[var(--bg-base)] text-[#f0f6fc] flex flex-col selection:bg-rose-500/20 selection:text-rose-200">
       {/* Top Navigation Bar */}
       <Navbar
         metadata={metadata}
@@ -105,6 +121,8 @@ export function App() {
         setActiveTab={setActiveTab}
         selectedDate={selectedDate}
         onOpenSearch={() => setActiveTab('search')}
+        onOpenWrapped={() => setIsWrappedOpen(true)}
+        onOpenSurprise={() => setIsSurpriseOpen(true)}
       />
 
       {/* Main Layout Body */}
@@ -118,9 +136,9 @@ export function App() {
         />
 
         {/* Content Viewport */}
-        <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
+        <main className="flex-1 overflow-y-auto pb-24 md:pb-8">
           {activeTab === 'calendar' && (
-            <div className="p-4 sm:p-8 max-w-7xl mx-auto animate-fade-in">
+            <div className="p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto animate-fade-in">
               <CalendarView
                 dailyStats={dailyStats}
                 selectedDate={selectedDate}
@@ -138,13 +156,13 @@ export function App() {
                 isLoading={isLoadingDay}
                 onSelectDate={setSelectedDate}
                 highlightMessageId={highlightMessageId}
-                onOpenAiSummary={() => setIsAiModalOpen(true)}
+                onOpenAiSummary={() => setIsAiModalOpen(false)}
               />
             </div>
           )}
 
           {activeTab === 'search' && (
-            <div className="p-4 sm:p-8 animate-fade-in">
+            <div className="p-3 sm:p-6 lg:p-8 animate-fade-in">
               <SearchView
                 onSelectResult={handleSearchJump}
                 initialQuery={searchInitialQuery}
@@ -153,7 +171,7 @@ export function App() {
           )}
 
           {activeTab === 'analytics' && (
-            <div className="p-4 sm:p-8 animate-fade-in">
+            <div className="p-3 sm:p-6 lg:p-8 animate-fade-in">
               <AnalyticsView
                 metadata={metadata}
                 dailyStats={dailyStats}
@@ -163,13 +181,13 @@ export function App() {
           )}
 
           {activeTab === 'media' && (
-            <div className="p-4 sm:p-8 animate-fade-in">
+            <div className="p-3 sm:p-6 lg:p-8 animate-fade-in">
               <MediaVaultView onSelectMedia={handleSearchJump} />
             </div>
           )}
 
           {activeTab === 'moments' && (
-            <div className="p-4 sm:p-8 animate-fade-in">
+            <div className="p-3 sm:p-6 lg:p-8 animate-fade-in">
               <MomentsView
                 moments={moments}
                 onSelectMoment={navigateToDay}
@@ -180,6 +198,9 @@ export function App() {
           )}
         </main>
       </div>
+
+      {/* Persistent Global Sticky Audio Dock */}
+      <StickyAudioDock />
 
       {/* Mobile Bottom Navigation */}
       <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -192,6 +213,32 @@ export function App() {
         stats={currentStats}
         messages={currentDayMessages}
       />
+
+      {/* Our Archive Wrapped Story Modal */}
+      {metadata && (
+        <ArchiveWrappedModal
+          isOpen={isWrappedOpen}
+          onClose={() => setIsWrappedOpen(false)}
+          metadata={metadata}
+        />
+      )}
+
+      {/* Surprise Memory Generator Modal */}
+      <SurpriseMemoryModal
+        isOpen={isSurpriseOpen}
+        onClose={() => setIsSurpriseOpen(false)}
+        onJumpToMessage={handleSearchJump}
+      />
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <ThemeProvider>
+      <AudioPlayerProvider>
+        <ArchiveAppInner />
+      </AudioPlayerProvider>
+    </ThemeProvider>
   );
 }

@@ -8,11 +8,14 @@ import {
   ArrowRight,
   Filter,
   Loader2,
+  Play,
+  Grid,
 } from 'lucide-react';
 import { MediaRecord } from '../../types/archive';
 import { fetchMediaIndex } from '../../lib/data';
 import { VoiceNotePlayer } from '../ui/VoiceNotePlayer';
 import { PhotoLightbox } from '../ui/PhotoLightbox';
+import { useAudioPlayer } from '../../context/AudioPlayerContext';
 
 interface MediaVaultViewProps {
   onSelectMedia: (date: string, messageId: string) => void;
@@ -29,6 +32,9 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
   const [senderFilter, setSenderFilter] = useState<'all' | 'NILU' | 'farhannn'>('all');
   const [displayCount, setDisplayCount] = useState(40);
   const [selectedPhoto, setSelectedPhoto] = useState<MediaRecord | null>(null);
+  const [photoLayout, setPhotoLayout] = useState<'grid' | 'polaroid'>('polaroid');
+
+  const { playTrack } = useAudioPlayer();
 
   useEffect(() => {
     let isCancelled = false;
@@ -84,16 +90,77 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
     return filteredMedia.slice(0, displayCount);
   }, [filteredMedia, displayCount]);
 
+  // Play all voice notes continuously in a playlist queue
+  const handlePlayAllVoiceNotes = () => {
+    const voiceNotes = filteredMedia
+      .filter((m) => m.type === 'audio' && m.uri)
+      .map((m) => ({
+        uri: m.uri!,
+        senderDisplay: m.sender === 'NILU' ? ('NILA' as const) : ('FARHAN' as const),
+        filename: m.filename,
+        date: m.date,
+        time: m.time,
+        messageId: m.messageId,
+      }));
+
+    if (voiceNotes.length > 0) {
+      playTrack(voiceNotes[0], voiceNotes);
+    }
+  };
+
+  const polaroidRotations = ['-rotate-1', 'rotate-1', '-rotate-2', 'rotate-2', 'rotate-0'];
+
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div>
-        <h2 className="text-2xl font-editorial text-white tracking-tight">
-          Shared Media & Reels Vault
-        </h2>
-        <p className="text-xs text-[#8b949e]">
-          Explore shared Instagram reels, posts, voice notes, photos, and links exchanged across the archive.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-editorial text-white tracking-tight">
+            Shared Media & Reels Vault
+          </h2>
+          <p className="text-xs text-[#8b949e]">
+            Explore shared Instagram reels, posts, voice notes, photos, and links exchanged across the archive.
+          </p>
+        </div>
+
+        {/* Dynamic Context Action: Play All Voice Notes */}
+        {activeTab === 'audio' && (
+          <button
+            onClick={handlePlayAllVoiceNotes}
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-mono font-semibold flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition-all shrink-0"
+          >
+            <Play className="w-3.5 h-3.5 fill-white" />
+            <span>Play All Voice Notes (Tape Mode)</span>
+          </button>
+        )}
+
+        {/* Dynamic Context Action: Photo Layout Switcher */}
+        {activeTab === 'photo' && (
+          <div className="flex items-center gap-1 bg-[#12161c] p-1 rounded-xl border border-[#21262d] shrink-0 text-xs font-mono">
+            <button
+              onClick={() => setPhotoLayout('polaroid')}
+              className={`px-3 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
+                photoLayout === 'polaroid'
+                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                  : 'text-[#8b949e] hover:text-white'
+              }`}
+            >
+              <span>🎞️</span>
+              <span>Polaroid</span>
+            </button>
+            <button
+              onClick={() => setPhotoLayout('grid')}
+              className={`px-3 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
+                photoLayout === 'grid'
+                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                  : 'text-[#8b949e] hover:text-white'
+              }`}
+            >
+              <Grid className="w-3.5 h-3.5" />
+              <span>Grid</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Media Type Tabs */}
@@ -161,7 +228,48 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
           <Loader2 className="w-6 h-6 animate-spin text-rose-500" />
           <p className="text-xs font-mono">Loading media records...</p>
         </div>
+      ) : activeTab === 'photo' && photoLayout === 'polaroid' ? (
+        /* VINTAGE POLAROID PHOTO GALLERY */
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 pt-4">
+          {displayedList.map((item, idx) => {
+            const rot = polaroidRotations[idx % polaroidRotations.length];
+            const isNila = item.sender === 'NILU';
+
+            return (
+              <div
+                key={item.id}
+                onClick={() => setSelectedPhoto(item)}
+                className={`polaroid-card p-3 pb-5 rounded-sm cursor-pointer ${rot} group transition-all`}
+              >
+                {/* Polaroid Square Image Box */}
+                <div className="relative aspect-square overflow-hidden bg-black/10 rounded-sm mb-3">
+                  <img
+                    src={item.uri}
+                    alt={item.filename || 'Photo memory'}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                </div>
+
+                {/* Handwritten Style Bottom Label */}
+                <div className="px-1 text-center font-editorial">
+                  <span className="text-xs font-semibold text-slate-900 block truncate">
+                    {item.date}
+                  </span>
+                  <span
+                    className={`text-[10px] font-mono ${
+                      isNila ? 'text-rose-600' : 'text-sky-700'
+                    }`}
+                  >
+                    by {isNila ? 'NILA' : 'FARHAN'}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       ) : (
+        /* STANDARD MEDIA GRID */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {displayedList.map((item) => {
             const isNila = item.sender === 'NILU';
@@ -215,6 +323,9 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                         src={item.uri}
                         senderDisplay={isNila ? 'NILA' : 'FARHAN'}
                         filename={item.filename}
+                        date={item.date}
+                        time={item.time}
+                        messageId={item.messageId}
                       />
                     </div>
                   )}
@@ -253,23 +364,23 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                       href={item.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-sky-400 hover:text-sky-300 text-[11px]"
+                      className="text-[#8b949e] hover:text-white flex items-center gap-1 font-mono text-[11px] transition-colors"
                     >
-                      <span>Open Instagram</span>
+                      <span>Open link</span>
                       <ExternalLink className="w-3 h-3" />
                     </a>
                   ) : (
-                    <span className="text-[11px] text-[#8b949e] font-mono">
+                    <span className="text-[11px] font-mono text-[#8b949e] uppercase">
                       {item.type}
                     </span>
                   )}
 
                   <button
                     onClick={() => onSelectMedia(item.date, item.messageId)}
-                    className="flex items-center gap-1 text-[11px] font-mono text-[#8b949e] group-hover:text-rose-400 transition-colors"
+                    className="text-rose-400 hover:text-rose-300 flex items-center gap-1 font-mono text-[11px] transition-colors"
                   >
                     <span>View in chat</span>
-                    <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                    <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
               </div>
@@ -278,28 +389,28 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
         </div>
       )}
 
-      {/* Lightbox Modal */}
-      {selectedPhoto && (
+      {/* Load More Button */}
+      {displayedList.length < filteredMedia.length && (
+        <div className="pt-4 flex justify-center">
+          <button
+            onClick={() => setDisplayCount((prev) => prev + 40)}
+            className="px-6 py-2.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-xs font-mono text-white transition-colors"
+          >
+            Load More (+40 items)
+          </button>
+        </div>
+      )}
+
+      {/* Fullscreen Photo Lightbox */}
+      {selectedPhoto && selectedPhoto.uri && (
         <PhotoLightbox
-          src={selectedPhoto.uri || ''}
+          src={selectedPhoto.uri}
           filename={selectedPhoto.filename}
           senderDisplay={selectedPhoto.sender === 'NILU' ? 'NILA' : 'FARHAN'}
           date={selectedPhoto.date}
           time={selectedPhoto.time}
           onClose={() => setSelectedPhoto(null)}
         />
-      )}
-
-      {/* Pagination Load More */}
-      {filteredMedia.length > displayCount && (
-        <div className="text-center pt-6">
-          <button
-            onClick={() => setDisplayCount((prev) => prev + 40)}
-            className="px-4 py-2 rounded-xl bg-[#161b22] border border-[#21262d] hover:border-[#30363d] text-xs text-white font-mono transition-colors"
-          >
-            Load more items ({displayedList.length} of {filteredMedia.length.toLocaleString()})
-          </button>
-        </div>
       )}
     </div>
   );

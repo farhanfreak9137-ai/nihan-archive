@@ -134,9 +134,19 @@ export const ConversationViewer: React.FC<ConversationViewerProps> = ({
                 const message = filteredMessages[virtualRow.index];
                 const isHighlighted = message.id === highlightMessageId;
 
+                const isGroupedWithPrevious =
+                  virtualRow.index > 0 &&
+                  filteredMessages[virtualRow.index - 1].sender === message.sender &&
+                  Math.abs(message.timestamp - filteredMessages[virtualRow.index - 1].timestamp) < 120000;
+
+                const isGroupedWithNext =
+                  virtualRow.index < filteredMessages.length - 1 &&
+                  filteredMessages[virtualRow.index + 1].sender === message.sender &&
+                  Math.abs(filteredMessages[virtualRow.index + 1].timestamp - message.timestamp) < 120000;
+
                 return (
                   <div
-                    key={message.id}
+                    key={virtualRow.key}
                     data-index={virtualRow.index}
                     ref={rowVirtualizer.measureElement}
                     style={{
@@ -150,6 +160,8 @@ export const ConversationViewer: React.FC<ConversationViewerProps> = ({
                     <MessageBubble
                       message={message}
                       isHighlighted={isHighlighted}
+                      isGroupedWithPrevious={isGroupedWithPrevious}
+                      isGroupedWithNext={isGroupedWithNext}
                     />
                   </div>
                 );

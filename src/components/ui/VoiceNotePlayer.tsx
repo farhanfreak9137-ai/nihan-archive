@@ -1,100 +1,88 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, AlertCircle } from 'lucide-react';
+import React from 'react';
+import { Play, Pause } from 'lucide-react';
+import { useAudioPlayer } from '../../context/AudioPlayerContext';
 
 interface VoiceNotePlayerProps {
   src: string;
   senderDisplay: 'NILA' | 'FARHAN';
   filename?: string;
+  date?: string;
+  time?: string;
+  messageId?: string;
 }
 
 export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
   src,
   senderDisplay,
   filename,
+  date,
+  time,
+  messageId,
 }) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [playbackRate, setPlaybackRate] = useState<number>(1);
-  const [hasError, setHasError] = useState(false);
+  const {
+    currentTrack,
+    isPlaying: globalIsPlaying,
+    currentTime: globalCurrentTime,
+    duration: globalDuration,
+    playbackRate: globalPlaybackRate,
+    playTrack,
+    togglePlay,
+    seek,
+    setSpeed,
+  } = useAudioPlayer();
+
+  const isCurrent = currentTrack?.uri === src;
+  const isPlaying = isCurrent && globalIsPlaying;
+  const currentTime = isCurrent ? globalCurrentTime : 0;
+  const duration = isCurrent ? globalDuration : 0;
+  const playbackRate = isCurrent ? globalPlaybackRate : 1;
 
   const isNila = senderDisplay === 'NILA';
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const onTimeUpdate = () => setCurrentTime(audio.currentTime);
-    const onLoadedMetadata = () => {
-      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
-        setDuration(audio.duration);
-      }
-    };
-    const onEnded = () => {
-      setIsPlaying(false);
-      setCurrentTime(0);
-    };
-    const onError = () => setHasError(true);
-
-    audio.addEventListener('timeupdate', onTimeUpdate);
-    audio.addEventListener('loadedmetadata', onLoadedMetadata);
-    audio.addEventListener('durationchange', onLoadedMetadata);
-    audio.addEventListener('ended', onEnded);
-    audio.addEventListener('error', onError);
-
-    return () => {
-      audio.removeEventListener('timeupdate', onTimeUpdate);
-      audio.removeEventListener('loadedmetadata', onLoadedMetadata);
-      audio.removeEventListener('durationchange', onLoadedMetadata);
-      audio.removeEventListener('ended', onEnded);
-      audio.removeEventListener('error', onError);
-    };
-  }, [src]);
-
-  const togglePlay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
+  const handleToggle = () => {
+    if (isCurrent) {
+      togglePlay();
     } else {
-      audio
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch((e) => {
-          console.warn('Playback prevented:', e);
-          setIsPlaying(false);
-        });
+      playTrack({
+        uri: src,
+        senderDisplay,
+        filename,
+        date,
+        time,
+        messageId,
+      });
     }
   };
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current;
-    if (!audio || !duration) return;
-
+    if (!isCurrent) {
+      playTrack({
+        uri: src,
+        senderDisplay,
+        filename,
+        date,
+        time,
+        messageId,
+      });
+      return;
+    }
+    if (!duration) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const fraction = Math.max(0, Math.min(1, clickX / rect.width));
-    const newTime = fraction * duration;
-    audio.currentTime = newTime;
-    setCurrentTime(newTime);
+    seek(fraction * duration);
   };
 
-  const cycleSpeed = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const rates = [1, 1.5, 2];
-    const nextIdx = (rates.indexOf(playbackRate) + 1) % rates.length;
-    const nextRate = rates[nextIdx];
-    audio.playbackRate = nextRate;
-    setPlaybackRate(nextRate);
+  const cycleSpeed = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isCurrent) return;
+    const speeds = [1, 1.25, 1.5, 2];
+    const nextIdx = (speeds.indexOf(playbackRate) + 1) % speeds.length;
+    setSpeed(speeds[nextIdx]);
   };
 
   const formatTime = (secs: number) => {
-    if (isNaN(secs) || !isFinite(secs)) return '0:00';
+    if (isNaN(secs) || !isFinite(secs) || secs === 0) return '0:00';
     const m = Math.floor(secs / 60);
     const s = Math.floor(secs % 60);
     return `${m}:${s < 10 ? '0' : ''}${s}`;
@@ -107,28 +95,17 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
     6, 12, 18, 10, 22, 14, 8, 16, 24, 18, 12, 20, 16, 10, 14, 22, 8, 16, 12, 6,
   ];
 
-  if (hasError) {
-    return (
-      <div className="p-2.5 rounded-xl bg-[#0b0d10]/60 border border-[#21262d] flex items-center gap-2 text-xs text-[#8b949e]">
-        <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-        <span className="truncate">{filename || 'Audio file'}</span>
-      </div>
-    );
-  }
-
   return (
-    <div className="p-3 rounded-2xl bg-[#0b0d10]/80 border border-[#21262d] space-y-2 min-w-[260px] sm:min-w-[300px]">
-      <audio ref={audioRef} src={src} preload="metadata" />
-
+    <div className="p-2.5 sm:p-3 rounded-2xl bg-[#0b0d10]/85 border border-[#21262d] space-y-2 min-w-[240px] sm:min-w-[290px] shadow-sm">
       {/* Controls Bar */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
         {/* Play/Pause Button */}
         <button
-          onClick={togglePlay}
-          className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shrink-0 shadow-md ${
+          onClick={handleToggle}
+          className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shrink-0 shadow-md active:scale-95 ${
             isNila
-              ? 'bg-rose-500 hover:bg-rose-600 text-white'
-              : 'bg-sky-400 hover:bg-sky-500 text-black'
+              ? 'bg-gradient-to-tr from-rose-600 to-pink-500 hover:from-rose-500 hover:to-pink-400 text-white'
+              : 'bg-gradient-to-tr from-sky-500 to-cyan-400 hover:from-sky-400 hover:to-cyan-300 text-black'
           }`}
           title={isPlaying ? 'Pause' : 'Play voice message'}
         >
@@ -153,9 +130,9 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
               <div
                 key={idx}
                 style={{
-                  height: `${isPlaying ? Math.max(4, (h * (idx % 2 === 0 ? 1 : 1.3))) : h}px`,
+                  height: `${isPlaying ? Math.max(4, h * (idx % 2 === 0 ? 1 : 1.3)) : h}px`,
                 }}
-                className={`flex-1 rounded-full transition-all ${
+                className={`flex-1 rounded-full transition-all duration-150 ${
                   isPassed
                     ? isNila
                       ? 'bg-rose-500'
@@ -167,7 +144,7 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
           })}
         </div>
 
-        {/* Speed button (1x, 1.5x, 2x) */}
+        {/* Speed button (1x, 1.25x, 1.5x, 2x) */}
         <button
           onClick={cycleSpeed}
           className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#161b22] hover:bg-[#21262d] text-[#8b949e] hover:text-white border border-[#30363d] transition-colors shrink-0"
@@ -180,7 +157,7 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
       {/* Elapsed / Duration Time */}
       <div className="flex items-center justify-between text-[10px] font-mono text-[#8b949e] px-1">
         <span>{formatTime(currentTime)}</span>
-        <span>{formatTime(duration)}</span>
+        <span>{duration > 0 ? formatTime(duration) : filename || 'Voice note'}</span>
       </div>
     </div>
   );
