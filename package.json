@@ -9,9 +9,14 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "build:data": "tsx scripts/build-archive.ts",
-    "verify:data": "tsx scripts/verify-data.ts"
+    "verify:data": "tsx scripts/verify-data.ts",
+    "cap:sync": "npx cap sync android",
+    "build:apk": "npm run build && npx cap sync android && powershell -Command \"$env:JAVA_HOME = 'C:\\Users\\RCP\\.jdk21\\jdk-21.0.6+7'; $env:ANDROID_HOME = 'C:\\Users\\RCP\\AppData\\Local\\Android\\Sdk'; cd android; .\\gradlew assembleDebug; Copy-Item app\\build\\outputs\\apk\\debug\\app-debug.apk ..\\NilaArchive.apk -Force\""
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/cli": "^8.5.1",
+    "@capacitor/core": "^8.5.1",
     "@tanstack/react-virtual": "^3.13.2",
     "clsx": "^2.1.1",
     "framer-motion": "^12.4.7",
