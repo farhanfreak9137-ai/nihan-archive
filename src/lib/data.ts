@@ -17,9 +17,22 @@ let mediaIndexCache: MediaRecord[] | null = null;
 let expressionsCache: ExpressionEntry[] | null = null;
 let nicknamesCache: NicknameEntry[] | null = null;
 
+export function resolveDataUrl(path: string): string {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('blob:') || path.startsWith('data:')) {
+    return path;
+  }
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  const base = import.meta.env.BASE_URL || './';
+  if (base.endsWith('/')) {
+    return `${base}${cleanPath}`;
+  }
+  return `${base}/${cleanPath}`;
+}
+
 export async function fetchMetadata(): Promise<ArchiveMetadata> {
   if (metadataCache) return metadataCache;
-  const res = await fetch('/data/archive_metadata.json');
+  const res = await fetch(resolveDataUrl('data/archive_metadata.json'));
   if (!res.ok) throw new Error('Failed to load archive metadata');
   metadataCache = await res.json();
   return metadataCache!;
@@ -27,7 +40,7 @@ export async function fetchMetadata(): Promise<ArchiveMetadata> {
 
 export async function fetchDailyStats(): Promise<DailyStats[]> {
   if (dailyStatsCache) return dailyStatsCache;
-  const res = await fetch('/data/daily_stats.json');
+  const res = await fetch(resolveDataUrl('data/daily_stats.json'));
   if (!res.ok) throw new Error('Failed to load daily stats');
   dailyStatsCache = await res.json();
   return dailyStatsCache!;
@@ -37,7 +50,7 @@ export async function fetchDayConversation(date: string): Promise<Message[]> {
   if (dayCache.has(date)) {
     return dayCache.get(date)!;
   }
-  const res = await fetch(`/data/days/${date}.json`);
+  const res = await fetch(resolveDataUrl(`data/days/${date}.json`));
   if (!res.ok) {
     throw new Error(`Conversation data for ${date} not found`);
   }
@@ -48,7 +61,7 @@ export async function fetchDayConversation(date: string): Promise<Message[]> {
 
 export async function fetchSearchIndex(): Promise<SearchItem[]> {
   if (searchIndexCache) return searchIndexCache;
-  const res = await fetch('/data/search_index.json');
+  const res = await fetch(resolveDataUrl('data/search_index.json'));
   if (!res.ok) throw new Error('Failed to load search index');
   searchIndexCache = await res.json();
   return searchIndexCache!;
@@ -56,7 +69,7 @@ export async function fetchSearchIndex(): Promise<SearchItem[]> {
 
 export async function fetchMediaIndex(): Promise<MediaRecord[]> {
   if (mediaIndexCache) return mediaIndexCache;
-  const res = await fetch('/data/media_index.json');
+  const res = await fetch(resolveDataUrl('data/media_index.json'));
   if (!res.ok) throw new Error('Failed to load media index');
   mediaIndexCache = await res.json();
   return mediaIndexCache!;
@@ -64,7 +77,7 @@ export async function fetchMediaIndex(): Promise<MediaRecord[]> {
 
 export async function fetchExpressions(): Promise<ExpressionEntry[]> {
   if (expressionsCache) return expressionsCache;
-  const res = await fetch('/data/expressions.json');
+  const res = await fetch(resolveDataUrl('data/expressions.json'));
   if (!res.ok) throw new Error('Failed to load expressions');
   expressionsCache = await res.json();
   return expressionsCache!;
@@ -72,7 +85,7 @@ export async function fetchExpressions(): Promise<ExpressionEntry[]> {
 
 export async function fetchNicknames(): Promise<NicknameEntry[]> {
   if (nicknamesCache) return nicknamesCache;
-  const res = await fetch('/data/nicknames.json');
+  const res = await fetch(resolveDataUrl('data/nicknames.json'));
   if (!res.ok) throw new Error('Failed to load nicknames');
   nicknamesCache = await res.json();
   return nicknamesCache!;

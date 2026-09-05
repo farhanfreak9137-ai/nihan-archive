@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
+import { resolveDataUrl } from '../lib/data';
 
 export interface AudioTrack {
   uri: string;
@@ -64,7 +65,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
           if (prevIndex >= 0 && prevIndex + 1 < currentPlaylist.length) {
             const nextTrack = currentPlaylist[prevIndex + 1];
             setCurrentTrack(nextTrack);
-            audio.src = nextTrack.uri;
+            audio.src = resolveDataUrl(nextTrack.uri);
             audio.play().then(() => setIsPlaying(true)).catch(() => {});
             return currentPlaylist;
           }
@@ -112,7 +113,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setPlaylistIndex(idx >= 0 ? idx : 0);
     }
 
-    audio.src = track.uri;
+    audio.src = resolveDataUrl(track.uri);
     audio.playbackRate = playbackRate;
     audio.play().catch((err) => {
       console.warn('Audio play request interrupted or prevented:', err);
@@ -154,7 +155,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setPlaylistIndex((i) => i + 1);
       setCurrentTrack(nextTrack);
       if (audioRef.current) {
-        audioRef.current.src = nextTrack.uri;
+        audioRef.current.src = resolveDataUrl(nextTrack.uri);
         audioRef.current.play().catch(() => {});
       }
     }
@@ -166,7 +167,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setPlaylistIndex((i) => i - 1);
       setCurrentTrack(prevTrack);
       if (audioRef.current) {
-        audioRef.current.src = prevTrack.uri;
+        audioRef.current.src = resolveDataUrl(prevTrack.uri);
         audioRef.current.play().catch(() => {});
       }
     }

@@ -5,7 +5,11 @@ const config: CapacitorConfig = {
   appName: 'NILA ARCHIVE',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    cleartext: true
+  },
+  android: {
+    allowMixedContent: true
   }
 };
 

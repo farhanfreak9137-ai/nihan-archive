@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { Message } from '../../types/archive';
 import { VoiceNotePlayer } from '../ui/VoiceNotePlayer';
 import { PhotoLightbox } from '../ui/PhotoLightbox';
+import { resolveDataUrl } from '../../lib/data';
 
 const InstagramIcon: React.FC = () => (
   <svg className="w-3.5 h-3.5 text-rose-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -134,7 +135,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
               className="relative rounded-xl overflow-hidden border border-[#21262d] max-h-80 cursor-pointer group/photo bg-[#0b0d10]"
             >
               <img
-                src={message.media[0].uri}
+                src={resolveDataUrl(message.media[0].uri)}
                 alt={message.media[0].filename || 'Shared photo'}
                 className="w-full h-auto object-cover max-h-80 rounded-xl group-hover/photo:scale-105 transition-transform duration-300"
                 loading="lazy"
@@ -150,7 +151,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
             </div>
             {isLightboxOpen && (
               <PhotoLightbox
-                src={message.media[0].uri}
+                src={resolveDataUrl(message.media[0].uri)}
                 filename={message.media[0].filename}
                 senderDisplay={message.senderDisplay}
                 date={message.date}
@@ -165,7 +166,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         {message.type === 'video' && message.media?.[0]?.uri && (
           <div className="mb-2 rounded-xl overflow-hidden border border-[#21262d] bg-[#0b0d10]">
             <video
-              src={message.media[0].uri}
+              src={resolveDataUrl(message.media[0].uri)}
               controls
               preload="metadata"
               className="w-full max-h-72 rounded-xl object-contain"
@@ -177,7 +178,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         {message.type === 'audio' && message.media?.[0]?.uri && (
           <div className="mb-1">
             <VoiceNotePlayer
-              src={message.media[0].uri}
+              src={resolveDataUrl(message.media[0].uri)}
               senderDisplay={message.senderDisplay}
               filename={message.media[0].filename}
               date={message.date}

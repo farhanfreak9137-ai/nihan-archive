@@ -56,7 +56,7 @@ export const StickyAudioDock: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-[74px] sm:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[95%] sm:w-[540px] max-w-xl transition-all duration-300 animate-fade-in">
+    <div className="fixed bottom-[calc(64px+env(safe-area-inset-bottom,0px)+8px)] sm:bottom-6 inset-x-2.5 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-40 sm:w-[540px] max-w-xl transition-all duration-300 animate-fade-in-opacity">
       <div className="relative rounded-2xl glass-panel p-3 sm:p-3.5 shadow-2xl border border-white/10 flex flex-col gap-2">
         {/* Glow ambient background tint */}
         <div
@@ -67,10 +67,10 @@ export const StickyAudioDock: React.FC = () => {
 
         {/* Top Info Bar */}
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             {/* Sender Badge */}
             <span
-              className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold tracking-wide ${
+              className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold tracking-wide shrink-0 ${
                 isNila
                   ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
                   : 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
@@ -80,13 +80,13 @@ export const StickyAudioDock: React.FC = () => {
             </span>
 
             {/* Track Info & Date */}
-            <div className="min-w-0 flex items-center gap-1.5 text-xs">
-              <span className="text-white font-medium truncate">
+            <div className="min-w-0 flex items-center gap-1.5 text-xs truncate">
+              <span className="text-white font-medium truncate max-w-[130px] sm:max-w-[240px]">
                 {currentTrack.filename || 'Voice Note'}
               </span>
               {currentTrack.date && (
-                <span className="text-[11px] font-mono text-[#8b949e] shrink-0">
-                  • {currentTrack.date} {currentTrack.time ? `(${currentTrack.time})` : ''}
+                <span className="text-[10px] sm:text-[11px] font-mono text-[#8b949e] shrink-0">
+                  • {currentTrack.date}
                 </span>
               )}
             </div>

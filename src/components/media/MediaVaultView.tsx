@@ -12,7 +12,7 @@ import {
   Grid,
 } from 'lucide-react';
 import { MediaRecord } from '../../types/archive';
-import { fetchMediaIndex } from '../../lib/data';
+import { fetchMediaIndex, resolveDataUrl } from '../../lib/data';
 import { VoiceNotePlayer } from '../ui/VoiceNotePlayer';
 import { PhotoLightbox } from '../ui/PhotoLightbox';
 import { useAudioPlayer } from '../../context/AudioPlayerContext';
@@ -95,7 +95,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
     const voiceNotes = filteredMedia
       .filter((m) => m.type === 'audio' && m.uri)
       .map((m) => ({
-        uri: m.uri!,
+        uri: resolveDataUrl(m.uri!),
         senderDisplay: m.sender === 'NILU' ? ('NILA' as const) : ('FARHAN' as const),
         filename: m.filename,
         date: m.date,
@@ -301,7 +301,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                       className="relative rounded-xl overflow-hidden border border-[#21262d] max-h-48 cursor-pointer group/img bg-[#0b0d10]"
                     >
                       <img
-                        src={item.uri}
+                        src={resolveDataUrl(item.uri)}
                         alt={item.filename || 'Photo'}
                         className="w-full h-44 object-cover rounded-xl group-hover/img:scale-105 transition-transform duration-300"
                         loading="lazy"
@@ -320,7 +320,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                   {item.type === 'audio' && item.uri && (
                     <div className="pt-1">
                       <VoiceNotePlayer
-                        src={item.uri}
+                        src={resolveDataUrl(item.uri)}
                         senderDisplay={isNila ? 'NILA' : 'FARHAN'}
                         filename={item.filename}
                         date={item.date}
@@ -333,7 +333,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                   {item.type === 'video' && item.uri && (
                     <div className="rounded-xl overflow-hidden border border-[#21262d] bg-[#0b0d10]">
                       <video
-                        src={item.uri}
+                        src={resolveDataUrl(item.uri)}
                         controls
                         preload="metadata"
                         className="w-full max-h-44 rounded-xl object-contain"
@@ -404,7 +404,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
       {/* Fullscreen Photo Lightbox */}
       {selectedPhoto && selectedPhoto.uri && (
         <PhotoLightbox
-          src={selectedPhoto.uri}
+          src={resolveDataUrl(selectedPhoto.uri)}
           filename={selectedPhoto.filename}
           senderDisplay={selectedPhoto.sender === 'NILU' ? 'NILA' : 'FARHAN'}
           date={selectedPhoto.date}
