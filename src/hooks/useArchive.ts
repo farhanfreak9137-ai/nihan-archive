@@ -49,6 +49,9 @@ export function useArchive() {
         ]);
         setMetadata(meta);
         setDailyStats(stats);
+        if (stats.length > 0) {
+          setSelectedDate(stats[stats.length - 1].date);
+        }
       } catch (err: any) {
         setError(err.message || 'Failed to initialize archive');
       } finally {

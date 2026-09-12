@@ -9,6 +9,7 @@ dist-ssr/
 
 # Raw export dump directories (media is organized under public/media and Messages/)
 nilu_*/
+new update/
 
 # Automation & MCP cache
 .playwright-mcp/

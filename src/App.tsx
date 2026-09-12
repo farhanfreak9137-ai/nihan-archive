@@ -12,6 +12,8 @@ import { MomentsView } from './components/moments/MomentsView';
 import { AiDaySummaryModal } from './components/ai/AiDaySummaryModal';
 import { ArchiveWrappedModal } from './components/analytics/ArchiveWrappedModal';
 import { SurpriseMemoryModal } from './components/moments/SurpriseMemoryModal';
+import { TriviaQuizModal } from './components/trivia/TriviaQuizModal';
+import { KeepsakeBookModal } from './components/export/KeepsakeBookModal';
 import { StickyAudioDock } from './components/ui/StickyAudioDock';
 import { ThemeProvider } from './context/ThemeContext';
 import { AudioPlayerProvider, useAudioPlayer } from './context/AudioPlayerContext';
@@ -39,6 +41,8 @@ function ArchiveAppInner() {
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isWrappedOpen, setIsWrappedOpen] = useState(false);
   const [isSurpriseOpen, setIsSurpriseOpen] = useState(false);
+  const [isTriviaOpen, setIsTriviaOpen] = useState(false);
+  const [isBookOpen, setIsBookOpen] = useState(false);
   const [searchInitialQuery, setSearchInitialQuery] = useState('');
 
   const { setOnJumpToMessage } = useAudioPlayer();
@@ -91,7 +95,7 @@ function ArchiveAppInner() {
         </div>
         <div className="text-center space-y-1">
           <h1 className="font-editorial text-xl text-white">NILA ARCHIVE</h1>
-          <p className="text-xs text-[#8b949e] font-mono">Initializing 52,784 conversations...</p>
+          <p className="text-xs text-[#8b949e] font-mono">Initializing archive conversations...</p>
         </div>
       </div>
     );
@@ -123,6 +127,8 @@ function ArchiveAppInner() {
         onOpenSearch={() => setActiveTab('search')}
         onOpenWrapped={() => setIsWrappedOpen(true)}
         onOpenSurprise={() => setIsSurpriseOpen(true)}
+        onOpenTrivia={() => setIsTriviaOpen(true)}
+        onOpenBook={() => setIsBookOpen(true)}
       />
 
       {/* Main Layout Body */}
@@ -226,6 +232,7 @@ function ArchiveAppInner() {
           isOpen={isWrappedOpen}
           onClose={() => setIsWrappedOpen(false)}
           metadata={metadata}
+          dailyStats={dailyStats}
         />
       )}
 
@@ -234,6 +241,20 @@ function ArchiveAppInner() {
         isOpen={isSurpriseOpen}
         onClose={() => setIsSurpriseOpen(false)}
         onJumpToMessage={handleSearchJump}
+      />
+
+      {/* Who Said It? Trivia Quiz Modal */}
+      <TriviaQuizModal
+        isOpen={isTriviaOpen}
+        onClose={() => setIsTriviaOpen(false)}
+        onJumpToMessage={handleSearchJump}
+      />
+
+      {/* The Story of Us Keepsake Book Modal */}
+      <KeepsakeBookModal
+        isOpen={isBookOpen}
+        onClose={() => setIsBookOpen(false)}
+        dailyStats={dailyStats}
       />
     </div>
   );

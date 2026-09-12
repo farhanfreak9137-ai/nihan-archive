@@ -136,7 +136,7 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
                 type="date"
                 value={newDate}
                 min="2026-07-06"
-                max="2026-09-04"
+                max="2026-09-10"
                 onChange={(e) => setNewDate(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl bg-[#0b0d10] border border-[#21262d] text-xs text-white focus:outline-none focus:border-rose-500 font-mono"
                 required

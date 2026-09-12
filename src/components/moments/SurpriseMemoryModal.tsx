@@ -105,7 +105,7 @@ export const SurpriseMemoryModal: React.FC<SurpriseMemoryModalProps> = ({
                 Remember When?
               </h3>
               <span className="text-[10px] font-mono text-[#8b949e]">
-                Surprise memory pulled from 52,784 conversations
+                Surprise memory pulled from archive conversations
               </span>
             </div>
           </div>

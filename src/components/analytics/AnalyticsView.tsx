@@ -22,6 +22,7 @@ interface AnalyticsViewProps {
 
 export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
   metadata,
+  dailyStats,
   onSearchExpression,
 }) => {
   const [expressions, setExpressions] = useState<ExpressionEntry[]>([]);
@@ -92,7 +93,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
           Relationship & Conversation Analytics
         </h2>
         <p className="text-xs text-[#8b949e]">
-          Empirical, data-driven analysis derived directly from 52,784 timestamped messages.
+          Empirical, data-driven analysis derived directly from {metadata.totalMessages.toLocaleString()} timestamped messages.
         </p>
       </div>
 
@@ -129,7 +130,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 Overall Message Balance
               </h3>
               <span className="text-xs font-mono text-[#8b949e]">
-                52,784 Total Messages
+                {metadata.totalMessages.toLocaleString()} Total Messages
               </span>
             </div>
 
@@ -466,6 +467,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
         isOpen={isWrappedOpen}
         onClose={() => setIsWrappedOpen(false)}
         metadata={metadata}
+        dailyStats={dailyStats}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Search, Sparkles, Dices, Palette, ChevronDown } from 'lucide-react';
+import { Calendar, Search, Sparkles, Dices, Palette, ChevronDown, HelpCircle, BookOpen } from 'lucide-react';
 import { ArchiveMetadata } from '../../types/archive';
 import { ActiveTab } from '../../hooks/useArchive';
 import { useTheme, THEMES } from '../../context/ThemeContext';
@@ -12,6 +12,8 @@ interface NavbarProps {
   onOpenSearch: () => void;
   onOpenWrapped: () => void;
   onOpenSurprise: () => void;
+  onOpenTrivia: () => void;
+  onOpenBook: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -22,6 +24,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSearch,
   onOpenWrapped,
   onOpenSurprise,
+  onOpenTrivia,
+  onOpenBook,
 }) => {
   const { theme, setTheme, currentThemeConfig } = useTheme();
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
@@ -50,7 +54,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-[#8b949e] font-sans hidden md:block">
-                52,784 Messages • 60 Active Days • July 6 – Sep 4
+                {metadata
+                  ? `${metadata.totalMessages.toLocaleString()} Messages • ${metadata.activeDays} Active Days`
+                  : 'Conversation Archive & Analytics'}
               </p>
             </div>
           </button>
@@ -113,6 +119,26 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Dices className="w-3.5 h-3.5 text-amber-400" />
             <span className="hidden md:inline">Surprise</span>
+          </button>
+
+          {/* Who Said It? Trivia Trigger */}
+          <button
+            onClick={onOpenTrivia}
+            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-sky-500/30 text-sky-300 text-xs font-mono transition-all active:scale-95 shadow-sm"
+            title="Who Said It? Relationship Trivia Game"
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-sky-400" />
+            <span className="hidden md:inline">Trivia</span>
+          </button>
+
+          {/* The Story of Us Book Trigger */}
+          <button
+            onClick={onOpenBook}
+            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-amber-500/30 text-amber-300 text-xs font-mono transition-all active:scale-95 shadow-sm"
+            title="Printable Keepsake Book & PDF Export"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden lg:inline">Keepsake Book</span>
           </button>
 
           {/* Theme Dropdown Toggle */}

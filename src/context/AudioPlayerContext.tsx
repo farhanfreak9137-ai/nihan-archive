@@ -28,6 +28,9 @@ interface AudioPlayerContextValue {
   closePlayer: () => void;
   onJumpToMessage?: (date: string, messageId: string) => void;
   setOnJumpToMessage: (fn: (date: string, messageId: string) => void) => void;
+  bookmarkedUris: string[];
+  toggleBookmark: (uri: string) => void;
+  isBookmarked: (uri: string) => boolean;
 }
 
 const AudioPlayerContext = createContext<AudioPlayerContextValue | undefined>(undefined);
@@ -40,6 +43,32 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [playbackRate, setPlaybackRateState] = useState(1);
   const [playlist, setPlaylist] = useState<AudioTrack[]>([]);
   const [playlistIndex, setPlaylistIndex] = useState(-1);
+
+  const [bookmarkedUris, setBookmarkedUris] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('nila_archive_audio_bookmarks');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const toggleBookmark = useCallback((uri: string) => {
+    setBookmarkedUris((prev) => {
+      const next = prev.includes(uri) ? prev.filter((u) => u !== uri) : [...prev, uri];
+      try {
+        localStorage.setItem('nila_archive_audio_bookmarks', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  }, []);
+
+  const isBookmarked = useCallback(
+    (uri: string) => {
+      return bookmarkedUris.includes(uri);
+    },
+    [bookmarkedUris]
+  );
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const onJumpRef = useRef<((date: string, messageId: string) => void) | undefined>(undefined);
@@ -210,6 +239,9 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
         closePlayer,
         onJumpToMessage,
         setOnJumpToMessage,
+        bookmarkedUris,
+        toggleBookmark,
+        isBookmarked,
       }}
     >
       {children}

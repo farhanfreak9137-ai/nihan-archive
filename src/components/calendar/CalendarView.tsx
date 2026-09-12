@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { DailyStats } from '../../types/archive';
 import { DaySnippetCard } from './DaySnippetCard';
+import { OnThisDayBanner } from '../ui/OnThisDayBanner';
 
 interface CalendarViewProps {
   dailyStats: DailyStats[];
@@ -61,6 +62,16 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     return [...dailyStats]
       .sort((a, b) => b.totalMessages - a.totalMessages)
       .slice(0, 5);
+  }, [dailyStats]);
+
+  const totalArchiveMessages = useMemo(() => {
+    return dailyStats.reduce((sum, d) => sum + d.totalMessages, 0);
+  }, [dailyStats]);
+
+  const streakDescription = useMemo(() => {
+    if (dailyStats.length === 0) return '';
+    const sorted = [...dailyStats].sort((a, b) => a.date.localeCompare(b.date));
+    return `Talked every single day from ${sorted[0].date} to ${sorted[sorted.length - 1].date} without missing a day.`;
   }, [dailyStats]);
 
   // Month metadata
@@ -147,6 +158,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* On This Day Time Machine Banner */}
+      <OnThisDayBanner
+        dailyStats={dailyStats}
+        currentDate={selectedDate}
+        onJumpToDate={onSelectDate}
+      />
+
       {/* 60-Day Unbroken Chat Streak Banner */}
       <div className="relative overflow-hidden rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-rose-500/15 via-purple-500/10 to-sky-500/15 border border-rose-500/25 shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -157,14 +175,14 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base sm:text-lg font-editorial text-white font-semibold">
-                  60-Day Unbroken Chat Streak
+                  {dailyStats.length}-Day Unbroken Chat Streak
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
                   100% Active
                 </span>
               </div>
               <p className="text-xs text-[#8b949e]">
-                Talked every single day from July 6 to September 4, 2026 without missing a day.
+                {streakDescription}
               </p>
             </div>
           </div>
@@ -172,11 +190,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           <div className="flex items-center gap-3 shrink-0 text-xs font-mono">
             <div className="px-3 py-1.5 rounded-xl bg-[#0b0d10]/60 border border-white/10">
               <span className="text-[#8b949e]">Total: </span>
-              <span className="text-white font-semibold">52,784 msgs</span>
+              <span className="text-white font-semibold">{totalArchiveMessages.toLocaleString()} msgs</span>
             </div>
             <div className="px-3 py-1.5 rounded-xl bg-[#0b0d10]/60 border border-white/10">
               <span className="text-[#8b949e]">Daily Avg: </span>
-              <span className="text-rose-400 font-semibold">~880 msgs/day</span>
+              <span className="text-rose-400 font-semibold">
+                ~{Math.round(totalArchiveMessages / Math.max(1, dailyStats.length)).toLocaleString()} msgs/day
+              </span>
             </div>
           </div>
         </div>

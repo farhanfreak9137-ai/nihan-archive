@@ -15,6 +15,7 @@ import { MediaRecord } from '../../types/archive';
 import { fetchMediaIndex, resolveDataUrl } from '../../lib/data';
 import { VoiceNotePlayer } from '../ui/VoiceNotePlayer';
 import { PhotoLightbox } from '../ui/PhotoLightbox';
+import { ScrapbookCollageModal } from './ScrapbookCollageModal';
 import { useAudioPlayer } from '../../context/AudioPlayerContext';
 
 interface MediaVaultViewProps {
@@ -33,8 +34,10 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
   const [displayCount, setDisplayCount] = useState(40);
   const [selectedPhoto, setSelectedPhoto] = useState<MediaRecord | null>(null);
   const [photoLayout, setPhotoLayout] = useState<'grid' | 'polaroid'>('polaroid');
+  const [isScrapbookOpen, setIsScrapbookOpen] = useState(false);
+  const [onlyKeepsakes, setOnlyKeepsakes] = useState(false);
 
-  const { playTrack } = useAudioPlayer();
+  const { playTrack, bookmarkedUris, isBookmarked } = useAudioPlayer();
 
   useEffect(() => {
     let isCancelled = false;
@@ -82,9 +85,14 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
     return mediaRecords.filter((m) => {
       if (activeTab !== 'all' && m.type !== activeTab) return false;
       if (senderFilter !== 'all' && m.sender !== senderFilter) return false;
+      if (activeTab === 'audio' && onlyKeepsakes && (!m.uri || !isBookmarked(m.uri))) return false;
       return true;
     });
-  }, [mediaRecords, activeTab, senderFilter]);
+  }, [mediaRecords, activeTab, senderFilter, onlyKeepsakes, isBookmarked]);
+
+  const validPhotos = useMemo(() => {
+    return mediaRecords.filter((m) => m.type === 'photo' && m.uri);
+  }, [mediaRecords]);
 
   const displayedList = useMemo(() => {
     return filteredMedia.slice(0, displayCount);
@@ -123,42 +131,64 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
           </p>
         </div>
 
-        {/* Dynamic Context Action: Play All Voice Notes */}
+        {/* Dynamic Context Action: Play All Voice Notes + Keepsakes Filter */}
         {activeTab === 'audio' && (
-          <button
-            onClick={handlePlayAllVoiceNotes}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-mono font-semibold flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition-all shrink-0"
-          >
-            <Play className="w-3.5 h-3.5 fill-white" />
-            <span>Play All Voice Notes (Tape Mode)</span>
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setOnlyKeepsakes(!onlyKeepsakes)}
+              className={`px-3 py-2 rounded-xl border text-xs font-mono font-medium flex items-center gap-1.5 transition-all ${
+                onlyKeepsakes
+                  ? 'bg-amber-500/20 border-amber-500/50 text-amber-300'
+                  : 'bg-[#12161c] border-[#21262d] text-[#8b949e] hover:text-white'
+              }`}
+            >
+              <span>⭐</span>
+              <span>Keepsakes ({bookmarkedUris.length})</span>
+            </button>
+            <button
+              onClick={handlePlayAllVoiceNotes}
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-mono font-semibold flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition-all shrink-0"
+            >
+              <Play className="w-3.5 h-3.5 fill-white" />
+              <span>Play All (Tape Mode)</span>
+            </button>
+          </div>
         )}
 
-        {/* Dynamic Context Action: Photo Layout Switcher */}
+        {/* Dynamic Context Action: Photo Layout Switcher + Scrapbook Studio */}
         {activeTab === 'photo' && (
-          <div className="flex items-center gap-1 bg-[#12161c] p-1 rounded-xl border border-[#21262d] shrink-0 text-xs font-mono">
+          <div className="flex items-center gap-2 shrink-0">
             <button
-              onClick={() => setPhotoLayout('polaroid')}
-              className={`px-3 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
-                photoLayout === 'polaroid'
-                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                  : 'text-[#8b949e] hover:text-white'
-              }`}
+              onClick={() => setIsScrapbookOpen(true)}
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-white text-xs font-mono font-semibold flex items-center gap-1.5 shadow-md shadow-rose-500/20 active:scale-95 transition-all"
             >
-              <span>🎞️</span>
-              <span>Polaroid</span>
+              <span>📸</span>
+              <span>Scrapbook Studio</span>
             </button>
-            <button
-              onClick={() => setPhotoLayout('grid')}
-              className={`px-3 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
-                photoLayout === 'grid'
-                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                  : 'text-[#8b949e] hover:text-white'
-              }`}
-            >
-              <Grid className="w-3.5 h-3.5" />
-              <span>Grid</span>
-            </button>
+            <div className="flex items-center gap-1 bg-[#12161c] p-1 rounded-xl border border-[#21262d] text-xs font-mono">
+              <button
+                onClick={() => setPhotoLayout('polaroid')}
+                className={`px-3 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
+                  photoLayout === 'polaroid'
+                    ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                    : 'text-[#8b949e] hover:text-white'
+                }`}
+              >
+                <span>🎞️</span>
+                <span>Polaroid</span>
+              </button>
+              <button
+                onClick={() => setPhotoLayout('grid')}
+                className={`px-3 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
+                  photoLayout === 'grid'
+                    ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                    : 'text-[#8b949e] hover:text-white'
+                }`}
+              >
+                <Grid className="w-3.5 h-3.5" />
+                <span>Grid</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -412,6 +442,14 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
           onClose={() => setSelectedPhoto(null)}
         />
       )}
+
+      {/* Polaroid Scrapbook Studio Modal */}
+      <ScrapbookCollageModal
+        isOpen={isScrapbookOpen}
+        onClose={() => setIsScrapbookOpen(false)}
+        photos={validPhotos}
+        onSelectPhoto={onSelectMedia}
+      />
     </div>
   );
 };

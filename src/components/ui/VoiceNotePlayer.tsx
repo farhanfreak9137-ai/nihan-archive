@@ -1,5 +1,5 @@
-import React from 'react';
-import { Play, Pause } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { Play, Pause, Star } from 'lucide-react';
 import { useAudioPlayer } from '../../context/AudioPlayerContext';
 
 interface VoiceNotePlayerProps {
@@ -29,6 +29,8 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
     togglePlay,
     seek,
     setSpeed,
+    isBookmarked,
+    toggleBookmark,
   } = useAudioPlayer();
 
   const isCurrent = currentTrack?.uri === src;
@@ -38,6 +40,25 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
   const playbackRate = isCurrent ? globalPlaybackRate : 1;
 
   const isNila = senderDisplay === 'NILA';
+  const bookmarked = isBookmarked(src);
+
+  // Generate deterministic realistic audio waveform bars from filename/src hash
+  const waveformBars = useMemo(() => {
+    const seedStr = filename || src || 'audiotrack';
+    let hash = 0;
+    for (let i = 0; i < seedStr.length; i++) {
+      hash = (hash << 5) - hash + seedStr.charCodeAt(i);
+      hash |= 0;
+    }
+    const count = 30;
+    const bars: number[] = [];
+    for (let i = 0; i < count; i++) {
+      const pseudo = Math.abs(Math.sin(hash + i * 1.7) * 10000);
+      const val = (pseudo % 18) + 6; // height between 6px and 24px
+      bars.push(Math.round(val));
+    }
+    return bars;
+  }, [filename, src]);
 
   const handleToggle = () => {
     if (isCurrent) {
@@ -90,11 +111,6 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
-  // Visual wave bars heights
-  const waveHeights = [
-    6, 12, 18, 10, 22, 14, 8, 16, 24, 18, 12, 20, 16, 10, 14, 22, 8, 16, 12, 6,
-  ];
-
   return (
     <div className="p-2.5 sm:p-3 rounded-2xl bg-[#0b0d10]/85 border border-[#21262d] space-y-2 min-w-[240px] sm:min-w-[290px] shadow-sm">
       {/* Controls Bar */}
@@ -116,48 +132,71 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
           )}
         </button>
 
-        {/* Interactive Scrubbable Waveform */}
+        {/* Interactive Dynamic SVG Waveform */}
         <div
           onClick={handleSeek}
-          className="flex-1 flex items-center gap-0.5 h-7 cursor-pointer group py-1"
+          className="flex-1 flex items-center gap-[2px] h-8 cursor-pointer group py-1 select-none"
           title="Click to seek"
         >
-          {waveHeights.map((h, idx) => {
-            const barProgress = (idx / waveHeights.length) * 100;
+          {waveformBars.map((h, idx) => {
+            const barProgress = (idx / waveformBars.length) * 100;
             const isPassed = progressPercent >= barProgress;
+            // Add subtle oscillation when actively playing
+            const currentHeight = isPlaying
+              ? Math.max(4, Math.min(26, h + Math.sin(currentTime * 8 + idx) * 4))
+              : h;
 
             return (
               <div
                 key={idx}
                 style={{
-                  height: `${isPlaying ? Math.max(4, h * (idx % 2 === 0 ? 1 : 1.3)) : h}px`,
+                  height: `${currentHeight}px`,
                 }}
-                className={`flex-1 rounded-full transition-all duration-150 ${
+                className={`flex-1 rounded-full transition-all duration-100 ${
                   isPassed
                     ? isNila
                       ? 'bg-rose-500'
                       : 'bg-sky-400'
-                    : 'bg-[#262c36] group-hover:bg-[#30363d]'
+                    : 'bg-[#262c36] group-hover:bg-[#38414f]'
                 }`}
               />
             );
           })}
         </div>
 
-        {/* Speed button (1x, 1.25x, 1.5x, 2x) */}
-        <button
-          onClick={cycleSpeed}
-          className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#161b22] hover:bg-[#21262d] text-[#8b949e] hover:text-white border border-[#30363d] transition-colors shrink-0"
-          title="Change playback speed"
-        >
-          {playbackRate}x
-        </button>
+        {/* Action Controls: Bookmark & Speed */}
+        <div className="flex items-center gap-1 shrink-0">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleBookmark(src);
+            }}
+            className={`p-1.5 rounded-lg transition-colors ${
+              bookmarked
+                ? 'text-amber-400 bg-amber-400/15 border border-amber-400/30'
+                : 'text-[#8b949e] hover:text-white hover:bg-[#161b22]'
+            }`}
+            title={bookmarked ? 'Remove from audio keepsakes' : 'Save to audio keepsakes'}
+          >
+            <Star className={`w-3.5 h-3.5 ${bookmarked ? 'fill-amber-400' : ''}`} />
+          </button>
+
+          <button
+            onClick={cycleSpeed}
+            className="text-[10px] font-mono px-1.5 py-1 rounded-lg bg-[#161b22] hover:bg-[#21262d] text-[#8b949e] hover:text-white border border-[#30363d] transition-colors"
+            title="Change playback speed"
+          >
+            {playbackRate}x
+          </button>
+        </div>
       </div>
 
-      {/* Elapsed / Duration Time */}
+      {/* Elapsed / Duration Time & Audio Metadata */}
       <div className="flex items-center justify-between text-[10px] font-mono text-[#8b949e] px-1">
         <span>{formatTime(currentTime)}</span>
-        <span>{duration > 0 ? formatTime(duration) : filename || 'Voice note'}</span>
+        <span className="truncate max-w-[170px] text-right">
+          {duration > 0 ? formatTime(duration) : filename || 'Voice note'}
+        </span>
       </div>
     </div>
   );

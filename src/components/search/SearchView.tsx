@@ -137,7 +137,7 @@ export const SearchView: React.FC<SearchViewProps> = ({
           Global Archive Search
         </h2>
         <p className="text-xs text-[#8b949e]">
-          Search through all 52,784 messages with real-time sender, date, and media filters.
+          Search through {searchIndex.length > 0 ? `all ${searchIndex.length.toLocaleString()}` : 'all'} messages with real-time sender, date, and media filters.
         </p>
       </div>
 

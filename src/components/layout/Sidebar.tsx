@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       id: 'search' as ActiveTab,
       label: 'Search Archive',
-      sublabel: '52,784 messages',
+      sublabel: 'Full-text instant search',
       icon: Search,
     },
     {
@@ -50,7 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       id: 'media' as ActiveTab,
       label: 'Media Vault',
-      sublabel: '1,014 reels • 166 posts',
+      sublabel: 'Reels, photos & audio',
       icon: Film,
     },
     {
@@ -110,7 +110,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="text-xs text-[#8b949e] space-y-1">
           <div className="font-editorial text-[#f0f6fc] text-sm">Private Archive</div>
           <p className="text-[11px] leading-relaxed text-[#8b949e]">
-            Deterministic analysis of 52,784 exported messages. Fully local & zero external storage.
+            Deterministic conversation analysis. Fully local & zero external storage.
           </p>
         </div>
       </div>
