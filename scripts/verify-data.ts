@@ -35,19 +35,19 @@ function assert(desc: string, actual: any, expected: any) {
 }
 
 console.log('1. Checking Authoritative Baseline Values:');
-assert('Total Messages', metadata.totalMessages, 61372);
-assert('NILU Messages', metadata.participants.NILU, 31481);
-assert('farhannn Messages', metadata.participants.farhannn, 29891);
-assert('Total Shares', metadata.shares.total, 1532);
-assert('Reels', metadata.shares.reels, 1233);
-assert('Posts', metadata.shares.posts, 206);
-assert('Stories', metadata.shares.stories, 41);
-assert('Total Reactions', metadata.reactions.total, 1720);
-assert('Active Days', metadata.activeDays, 66);
+assert('Total Messages', metadata.totalMessages, 66472);
+assert('NILU Messages', metadata.participants.NILU, 34179);
+assert('farhannn Messages', metadata.participants.farhannn, 32293);
+assert('Total Shares', metadata.shares.total, 1652);
+assert('Reels', metadata.shares.reels, 1325);
+assert('Posts', metadata.shares.posts, 230);
+assert('Stories', metadata.shares.stories, 44);
+assert('Total Reactions', metadata.reactions.total, 1929);
+assert('Active Days', metadata.activeDays, 71);
 
 console.log('\n2. Checking Daily Stats Aggregations:');
-assert('Daily Stats Count', dailyStats.length, 66);
-assert('Day Shards Count', dayFiles.length, 66);
+assert('Daily Stats Count', dailyStats.length, 71);
+assert('Day Shards Count', dayFiles.length, 71);
 
 let sumDailyMessages = 0;
 let sumDailyShares = 0;
@@ -59,12 +59,12 @@ for (const day of dailyStats) {
   sumDailyReactions += day.reactions;
 }
 
-assert('Sum of Daily Messages equals Total', sumDailyMessages, 61372);
-assert('Sum of Daily Shares equals Total Shares', sumDailyShares, 1532);
-assert('Sum of Daily Reactions equals Total Reactions', sumDailyReactions, 1720);
+assert('Sum of Daily Messages equals Total', sumDailyMessages, 66472);
+assert('Sum of Daily Shares equals Total Shares', sumDailyShares, 1652);
+assert('Sum of Daily Reactions equals Total Reactions', sumDailyReactions, 1929);
 
 console.log('\n3. Checking Search Index:');
-assert('Search Index Length', searchIndex.length, 61372);
+assert('Search Index Length', searchIndex.length, 66472);
 
 if (errors === 0) {
   console.log('\n✅ ALL VERIFICATION CHECKS PASSED SUCCESSFULLY!\n');

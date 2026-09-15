@@ -149,6 +149,8 @@ export interface MediaRecord {
   title?: string;
   caption?: string;
   contextSnippet?: string;
+  category?: 'screenshot' | 'portrait' | 'aesthetic' | 'memory' | 'other';
+  dimensions?: { width: number; height: number };
 }
 
 export interface ExpressionEntry {
