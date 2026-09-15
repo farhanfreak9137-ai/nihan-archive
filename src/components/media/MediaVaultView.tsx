@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Film,
   Image as ImageIcon,
@@ -10,6 +10,14 @@ import {
   Loader2,
   Play,
   Grid,
+  Calendar,
+  ArrowUpDown,
+  ChevronsDown,
+  ChevronsUp,
+  Sparkles,
+  Smartphone,
+  User,
+  Sun,
 } from 'lucide-react';
 import { MediaRecord } from '../../types/archive';
 import { fetchMediaIndex, resolveDataUrl } from '../../lib/data';
@@ -31,11 +39,20 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
     'all' | 'reel' | 'post' | 'story' | 'photo' | 'video' | 'audio' | 'file'
   >('reel');
   const [senderFilter, setSenderFilter] = useState<'all' | 'NILU' | 'farhannn'>('all');
-  const [displayCount, setDisplayCount] = useState(40);
+  const [selectedMonth, setSelectedMonth] = useState<'all' | '2026-07' | '2026-08' | '2026-09'>('all');
+  const [selectedDate, setSelectedDate] = useState<string>('all');
+  const [photoCategory, setPhotoCategory] = useState<'all' | 'screenshot' | 'portrait' | 'aesthetic' | 'memory'>('all');
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
+  const [displayCount, setDisplayCount] = useState(60);
   const [selectedPhoto, setSelectedPhoto] = useState<MediaRecord | null>(null);
   const [photoLayout, setPhotoLayout] = useState<'grid' | 'polaroid'>('polaroid');
   const [isScrapbookOpen, setIsScrapbookOpen] = useState(false);
   const [onlyKeepsakes, setOnlyKeepsakes] = useState(false);
+
+  // Scrubber state
+  const [scrubberPos, setScrubberPos] = useState<number>(0);
+  const [scrubberHoverDate, setScrubberHoverDate] = useState<string | null>(null);
+  const contentContainerRef = useRef<HTMLDivElement>(null);
 
   const { playTrack, bookmarkedUris, isBookmarked } = useAudioPlayer();
 
@@ -62,6 +79,16 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
     };
   }, []);
 
+  // Distinct dates for date dropdown
+  const availableDates = useMemo(() => {
+    const dates = new Set<string>();
+    for (const m of mediaRecords) {
+      if (m.date) dates.add(m.date);
+    }
+    return Array.from(dates).sort();
+  }, [mediaRecords]);
+
+  // Counts by media type
   const counts = useMemo(() => {
     const c: Record<string, number> = {
       all: mediaRecords.length,
@@ -81,14 +108,44 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
     return c;
   }, [mediaRecords]);
 
+  // Photo categories count
+  const photoCategoryCounts = useMemo(() => {
+    const pCounts = { all: 0, screenshot: 0, portrait: 0, aesthetic: 0, memory: 0 };
+    for (const m of mediaRecords) {
+      if (m.type === 'photo') {
+        pCounts.all++;
+        const cat = m.category || 'other';
+        if (cat === 'screenshot') pCounts.screenshot++;
+        else if (cat === 'portrait') pCounts.portrait++;
+        else if (cat === 'aesthetic') pCounts.aesthetic++;
+        else if (cat === 'memory') pCounts.memory++;
+      }
+    }
+    return pCounts;
+  }, [mediaRecords]);
+
+  // Multi-tier filtering
   const filteredMedia = useMemo(() => {
-    return mediaRecords.filter((m) => {
-      if (activeTab !== 'all' && m.type !== activeTab) return false;
-      if (senderFilter !== 'all' && m.sender !== senderFilter) return false;
-      if (activeTab === 'audio' && onlyKeepsakes && (!m.uri || !isBookmarked(m.uri))) return false;
-      return true;
-    });
-  }, [mediaRecords, activeTab, senderFilter, onlyKeepsakes, isBookmarked]);
+    return mediaRecords
+      .filter((m) => {
+        if (activeTab !== 'all' && m.type !== activeTab) return false;
+        if (senderFilter !== 'all' && m.sender !== senderFilter) return false;
+        if (selectedMonth !== 'all' && !m.date.startsWith(selectedMonth)) return false;
+        if (selectedDate !== 'all' && m.date !== selectedDate) return false;
+        if (activeTab === 'audio' && onlyKeepsakes && (!m.uri || !isBookmarked(m.uri))) return false;
+        if (activeTab === 'photo' && photoCategory !== 'all') {
+          if (m.category !== photoCategory) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortOrder === 'desc') {
+          return b.timestamp - a.timestamp;
+        } else {
+          return a.timestamp - b.timestamp;
+        }
+      });
+  }, [mediaRecords, activeTab, senderFilter, selectedMonth, selectedDate, onlyKeepsakes, isBookmarked, photoCategory, sortOrder]);
 
   const validPhotos = useMemo(() => {
     return mediaRecords.filter((m) => m.type === 'photo' && m.uri);
@@ -98,7 +155,36 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
     return filteredMedia.slice(0, displayCount);
   }, [filteredMedia, displayCount]);
 
-  // Play all voice notes continuously in a playlist queue
+  // Fast scrubber logic
+  const handleScrubberChange = (percentage: number) => {
+    const clamped = Math.max(0, Math.min(100, percentage));
+    setScrubberPos(clamped);
+
+    const targetIdx = Math.floor((clamped / 100) * (filteredMedia.length - 1));
+    const targetItem = filteredMedia[targetIdx];
+    if (targetItem) {
+      setScrubberHoverDate(`${targetItem.date} (${clamped.toFixed(0)}%)`);
+    }
+
+    const requiredCount = Math.max(60, targetIdx + 30);
+    if (requiredCount > displayCount) {
+      setDisplayCount(Math.min(filteredMedia.length, requiredCount));
+    }
+  };
+
+  const handleJumpToEnd = () => {
+    setDisplayCount(filteredMedia.length);
+    setScrubberPos(100);
+    setTimeout(() => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 50);
+  };
+
+  const handleJumpToStart = () => {
+    setScrubberPos(0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handlePlayAllVoiceNotes = () => {
     const voiceNotes = filteredMedia
       .filter((m) => m.type === 'audio' && m.uri)
@@ -118,79 +204,108 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
 
   const polaroidRotations = ['-rotate-1', 'rotate-1', '-rotate-2', 'rotate-2', 'rotate-0'];
 
+  const getCategoryBadge = (category?: string) => {
+    switch (category) {
+      case 'screenshot':
+        return { label: 'Screenshot', icon: Smartphone, color: 'text-indigo-400 bg-indigo-500/15 border-indigo-500/30' };
+      case 'portrait':
+        return { label: 'Portrait / Selfie', icon: User, color: 'text-rose-400 bg-rose-500/15 border-rose-500/30' };
+      case 'aesthetic':
+        return { label: 'Scenery / Aesthetic', icon: Sun, color: 'text-amber-400 bg-amber-500/15 border-amber-500/30' };
+      case 'memory':
+        return { label: 'Moment', icon: Sparkles, color: 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30' };
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
+    <div ref={contentContainerRef} className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6 relative pb-28">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-editorial text-white tracking-tight">
-            Shared Media & Reels Vault
+          <h2 className="text-2xl font-editorial text-white tracking-tight flex items-center gap-2">
+            <span>Shared Media & Reels Vault</span>
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-300 font-mono border border-rose-500/20">
+              {filteredMedia.length.toLocaleString()} items
+            </span>
           </h2>
           <p className="text-xs text-[#8b949e]">
-            Explore shared Instagram reels, posts, voice notes, photos, and links exchanged across the archive.
+            Intelligent timeline browsing, photo category tags, voice note keepsakes, and fast scrubber.
           </p>
         </div>
 
-        {/* Dynamic Context Action: Play All Voice Notes + Keepsakes Filter */}
-        {activeTab === 'audio' && (
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => setOnlyKeepsakes(!onlyKeepsakes)}
-              className={`px-3 py-2 rounded-xl border text-xs font-mono font-medium flex items-center gap-1.5 transition-all ${
-                onlyKeepsakes
-                  ? 'bg-amber-500/20 border-amber-500/50 text-amber-300'
-                  : 'bg-[#12161c] border-[#21262d] text-[#8b949e] hover:text-white'
-              }`}
-            >
-              <span>⭐</span>
-              <span>Keepsakes ({bookmarkedUris.length})</span>
-            </button>
-            <button
-              onClick={handlePlayAllVoiceNotes}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-mono font-semibold flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition-all shrink-0"
-            >
-              <Play className="w-3.5 h-3.5 fill-white" />
-              <span>Play All (Tape Mode)</span>
-            </button>
-          </div>
-        )}
+        {/* Action Controls */}
+        <div className="flex items-center gap-2 shrink-0">
+          {activeTab === 'audio' && (
+            <>
+              <button
+                onClick={() => setOnlyKeepsakes(!onlyKeepsakes)}
+                className={`px-3 py-2 rounded-xl border text-xs font-mono font-medium flex items-center gap-1.5 transition-all ${
+                  onlyKeepsakes
+                    ? 'bg-amber-500/20 border-amber-500/50 text-amber-300'
+                    : 'bg-[#12161c] border-[#21262d] text-[#8b949e] hover:text-white'
+                }`}
+              >
+                <span>⭐</span>
+                <span>Keepsakes ({bookmarkedUris.length})</span>
+              </button>
+              <button
+                onClick={handlePlayAllVoiceNotes}
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-mono font-semibold flex items-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition-all shrink-0"
+              >
+                <Play className="w-3.5 h-3.5 fill-white" />
+                <span>Play All (Tape Mode)</span>
+              </button>
+            </>
+          )}
 
-        {/* Dynamic Context Action: Photo Layout Switcher + Scrapbook Studio */}
-        {activeTab === 'photo' && (
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => setIsScrapbookOpen(true)}
-              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-white text-xs font-mono font-semibold flex items-center gap-1.5 shadow-md shadow-rose-500/20 active:scale-95 transition-all"
-            >
-              <span>📸</span>
-              <span>Scrapbook Studio</span>
-            </button>
-            <div className="flex items-center gap-1 bg-[#12161c] p-1 rounded-xl border border-[#21262d] text-xs font-mono">
+          {activeTab === 'photo' && (
+            <>
               <button
-                onClick={() => setPhotoLayout('polaroid')}
-                className={`px-3 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
-                  photoLayout === 'polaroid'
-                    ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                    : 'text-[#8b949e] hover:text-white'
-                }`}
+                onClick={() => setIsScrapbookOpen(true)}
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-white text-xs font-mono font-semibold flex items-center gap-1.5 shadow-md shadow-rose-500/20 active:scale-95 transition-all"
               >
-                <span>🎞️</span>
-                <span>Polaroid</span>
+                <span>📸</span>
+                <span>Scrapbook Studio</span>
               </button>
-              <button
-                onClick={() => setPhotoLayout('grid')}
-                className={`px-3 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
-                  photoLayout === 'grid'
-                    ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                    : 'text-[#8b949e] hover:text-white'
-                }`}
-              >
-                <Grid className="w-3.5 h-3.5" />
-                <span>Grid</span>
-              </button>
-            </div>
-          </div>
-        )}
+              <div className="flex items-center gap-1 bg-[#12161c] p-1 rounded-xl border border-[#21262d] text-xs font-mono">
+                <button
+                  onClick={() => setPhotoLayout('polaroid')}
+                  className={`px-3 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
+                    photoLayout === 'polaroid'
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                      : 'text-[#8b949e] hover:text-white'
+                  }`}
+                >
+                  <span>🎞️</span>
+                  <span>Polaroid</span>
+                </button>
+                <button
+                  onClick={() => setPhotoLayout('grid')}
+                  className={`px-3 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
+                    photoLayout === 'grid'
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                      : 'text-[#8b949e] hover:text-white'
+                  }`}
+                >
+                  <Grid className="w-3.5 h-3.5" />
+                  <span>Grid</span>
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Sort Order Toggle */}
+          <button
+            onClick={() => setSortOrder((prev) => (prev === 'desc' ? 'asc' : 'desc'))}
+            className="px-3 py-2 rounded-xl bg-[#12161c] hover:bg-[#161b22] border border-[#21262d] text-xs font-mono text-[#8b949e] hover:text-white flex items-center gap-1.5 transition-colors"
+            title={`Sort Order: ${sortOrder === 'desc' ? 'Newest First' : 'Oldest First'}`}
+          >
+            <ArrowUpDown className="w-3.5 h-3.5 text-rose-400" />
+            <span>{sortOrder === 'desc' ? 'Newest' : 'Oldest'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Media Type Tabs */}
@@ -211,7 +326,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
               key={tab.id}
               onClick={() => {
                 setActiveTab(tab.id as any);
-                setDisplayCount(40);
+                setDisplayCount(60);
               }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors ${
                 activeTab === tab.id
@@ -226,37 +341,181 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
         })}
       </div>
 
-      {/* Filter Bar: Sender filter + Count */}
-      <div className="flex items-center justify-between text-xs bg-[#12161c] p-3 rounded-xl border border-[#21262d]">
-        <div className="flex items-center gap-2">
-          <span className="text-[#8b949e] font-mono">Sender:</span>
-          <div className="flex items-center gap-1 bg-[#0b0d10] p-0.5 rounded-lg border border-[#21262d]">
-            {(['all', 'NILU', 'farhannn'] as const).map((s) => (
+      {/* DATE CATEGORY & SMART FILTERS BAR */}
+      <div className="space-y-3 bg-[#12161c] p-3.5 rounded-2xl border border-[#21262d]">
+        {/* Tier 1: Month Categories & Date Selector */}
+        <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[#8b949e] font-mono flex items-center gap-1 mr-1">
+              <Calendar className="w-3.5 h-3.5 text-rose-400" />
+              <span>Timeline:</span>
+            </span>
+            {[
+              { id: 'all', label: 'All Months' },
+              { id: '2026-07', label: 'July 2026' },
+              { id: '2026-08', label: 'August 2026' },
+              { id: '2026-09', label: 'September 2026' },
+            ].map((m) => (
               <button
-                key={s}
-                onClick={() => setSenderFilter(s)}
-                className={`px-2.5 py-1 rounded text-[11px] font-mono transition-colors ${
-                  senderFilter === s
-                    ? 'bg-rose-500 text-white font-medium'
-                    : 'text-[#8b949e] hover:text-white'
+                key={m.id}
+                onClick={() => {
+                  setSelectedMonth(m.id as any);
+                  setSelectedDate('all');
+                  setDisplayCount(60);
+                }}
+                className={`px-3 py-1 rounded-lg font-mono text-[11px] transition-all ${
+                  selectedMonth === m.id
+                    ? 'bg-rose-500/20 text-rose-200 border border-rose-500/40 font-semibold'
+                    : 'text-[#8b949e] hover:text-white bg-[#0b0d10] border border-[#21262d]'
                 }`}
               >
-                {s === 'all' ? 'All' : s === 'NILU' ? 'NILA' : 'FARHAN'}
+                {m.label}
               </button>
             ))}
           </div>
+
+          <div className="flex items-center gap-2">
+            <select
+              value={selectedDate}
+              onChange={(e) => {
+                setSelectedDate(e.target.value);
+                setDisplayCount(60);
+              }}
+              className="bg-[#0b0d10] border border-[#21262d] rounded-lg px-2.5 py-1 text-[11px] font-mono text-slate-300 focus:outline-none focus:border-rose-500/50"
+            >
+              <option value="all">Any Day ({availableDates.length} days)</option>
+              {availableDates
+                .filter((d) => selectedMonth === 'all' || d.startsWith(selectedMonth))
+                .map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+            </select>
+
+            <div className="flex items-center gap-1 bg-[#0b0d10] p-0.5 rounded-lg border border-[#21262d]">
+              {(['all', 'NILU', 'farhannn'] as const).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => {
+                    setSenderFilter(s);
+                    setDisplayCount(60);
+                  }}
+                  className={`px-2 py-0.5 rounded text-[11px] font-mono transition-colors ${
+                    senderFilter === s
+                      ? 'bg-rose-500 text-white font-medium'
+                      : 'text-[#8b949e] hover:text-white'
+                  }`}
+                >
+                  {s === 'all' ? 'All' : s === 'NILU' ? 'NILA' : 'FARHAN'}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="text-[11px] font-mono text-[#8b949e]">
-          Showing {displayedList.length} of {filteredMedia.length.toLocaleString()} items
+        {/* Tier 2: INTELLIGENT PHOTO CATEGORIES */}
+        {activeTab === 'photo' && (
+          <div className="pt-2 border-t border-[#21262d] flex flex-wrap items-center gap-2 text-xs">
+            <span className="text-[#8b949e] font-mono flex items-center gap-1 mr-1">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>Smart Photo Categories:</span>
+            </span>
+            {[
+              { id: 'all', label: `All Photos (${photoCategoryCounts.all})`, icon: ImageIcon },
+              { id: 'screenshot', label: `Screenshots (${photoCategoryCounts.screenshot})`, icon: Smartphone },
+              { id: 'portrait', label: `People & Selfies (${photoCategoryCounts.portrait})`, icon: User },
+              { id: 'aesthetic', label: `Scenery & Aesthetic (${photoCategoryCounts.aesthetic})`, icon: Sun },
+              { id: 'memory', label: `Square Moments (${photoCategoryCounts.memory})`, icon: Sparkles },
+            ].map((cat) => {
+              const Icon = cat.icon;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    setPhotoCategory(cat.id as any);
+                    setDisplayCount(60);
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-mono transition-all ${
+                    photoCategory === cat.id
+                      ? 'bg-gradient-to-r from-rose-500/20 to-amber-500/20 text-white border border-rose-500/40 font-semibold shadow-sm'
+                      : 'text-[#8b949e] hover:text-white bg-[#0b0d10] border border-[#21262d]'
+                  }`}
+                >
+                  <Icon className="w-3 h-3 text-rose-400" />
+                  <span>{cat.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Tier 3: FAST TIMELINE SCRUBBER & INSTANT JUMP BAR */}
+        <div className="pt-2 border-t border-[#21262d] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              onClick={handleJumpToStart}
+              className="px-2.5 py-1 rounded-lg bg-[#0b0d10] hover:bg-[#161b22] border border-[#21262d] text-[11px] font-mono text-slate-300 hover:text-white flex items-center gap-1 shrink-0 transition-colors"
+              title="Jump directly to beginning"
+            >
+              <ChevronsUp className="w-3.5 h-3.5 text-rose-400" />
+              <span>Start</span>
+            </button>
+
+            {/* Draggable timeline scrubber track */}
+            <div className="flex-1 sm:w-72 flex items-center gap-2 relative">
+              <input
+                type="range"
+                min={0}
+                max={100}
+                step={1}
+                value={scrubberPos}
+                onChange={(e) => handleScrubberChange(Number(e.target.value))}
+                className="w-full accent-rose-500 cursor-pointer h-1.5 bg-[#0b0d10] rounded-lg border border-[#21262d]"
+              />
+              {scrubberHoverDate && (
+                <span className="text-[10px] font-mono text-rose-300 whitespace-nowrap bg-rose-950/60 px-2 py-0.5 rounded border border-rose-800/40">
+                  {scrubberHoverDate}
+                </span>
+              )}
+            </div>
+
+            <button
+              onClick={handleJumpToEnd}
+              className="px-2.5 py-1 rounded-lg bg-[#0b0d10] hover:bg-[#161b22] border border-[#21262d] text-[11px] font-mono text-slate-300 hover:text-white flex items-center gap-1 shrink-0 transition-colors"
+              title="Jump directly to end"
+            >
+              <span>End</span>
+              <ChevronsDown className="w-3.5 h-3.5 text-rose-400" />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-3 text-[11px] font-mono text-[#8b949e]">
+            <span>
+              Showing {displayedList.length} of {filteredMedia.length.toLocaleString()} items
+            </span>
+            {displayedList.length < filteredMedia.length && (
+              <button
+                onClick={() => setDisplayCount(filteredMedia.length)}
+                className="text-rose-400 hover:text-rose-300 underline underline-offset-2"
+              >
+                Show All
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Media Cards Grid */}
+      {/* Media Cards Display */}
       {isLoading ? (
         <div className="py-20 flex flex-col items-center justify-center text-slate-400 gap-3">
           <Loader2 className="w-6 h-6 animate-spin text-rose-500" />
           <p className="text-xs font-mono">Loading media records...</p>
+        </div>
+      ) : filteredMedia.length === 0 ? (
+        <div className="py-20 flex flex-col items-center justify-center text-[#8b949e] border border-dashed border-[#21262d] rounded-2xl">
+          <p className="font-editorial text-lg text-white">No media found</p>
+          <p className="text-xs mt-1">Try adjusting your timeline, date, or category filters.</p>
         </div>
       ) : activeTab === 'photo' && photoLayout === 'polaroid' ? (
         /* VINTAGE POLAROID PHOTO GALLERY */
@@ -264,17 +523,28 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
           {displayedList.map((item, idx) => {
             const rot = polaroidRotations[idx % polaroidRotations.length];
             const isNila = item.sender === 'NILU';
+            const badge = getCategoryBadge(item.category);
 
             return (
               <div
                 key={item.id}
                 onClick={() => setSelectedPhoto(item)}
-                className={`polaroid-card p-3 pb-5 rounded-sm cursor-pointer ${rot} group transition-all`}
+                className={`polaroid-card p-3 pb-5 rounded-sm cursor-pointer ${rot} group transition-all relative`}
               >
+                {/* Category Badge */}
+                {badge && (
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full border shadow-sm backdrop-blur-md flex items-center gap-1 ${badge.color}`}>
+                      <badge.icon className="w-2.5 h-2.5" />
+                      <span>{badge.label}</span>
+                    </span>
+                  </div>
+                )}
+
                 {/* Polaroid Square Image Box */}
                 <div className="relative aspect-square overflow-hidden bg-black/10 rounded-sm mb-3">
                   <img
-                    src={item.uri}
+                    src={resolveDataUrl(item.uri || '')}
                     alt={item.filename || 'Photo memory'}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
@@ -303,6 +573,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {displayedList.map((item) => {
             const isNila = item.sender === 'NILU';
+            const badge = item.type === 'photo' ? getCategoryBadge(item.category) : null;
 
             return (
               <div
@@ -310,15 +581,23 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                 className="p-4 rounded-xl bg-[#12161c] border border-[#21262d] hover:border-[#30363d] transition-all flex flex-col justify-between space-y-3 group"
               >
                 <div className="space-y-2">
-                  {/* Top line: Sender & Time */}
+                  {/* Top line: Sender, Badge & Time */}
                   <div className="flex items-center justify-between text-xs">
-                    <span
-                      className={`font-semibold font-mono ${
-                        isNila ? 'text-rose-400' : 'text-sky-400'
-                      }`}
-                    >
-                      {isNila ? 'NILA' : 'FARHAN'}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`font-semibold font-mono ${
+                          isNila ? 'text-rose-400' : 'text-sky-400'
+                        }`}
+                      >
+                        {isNila ? 'NILA' : 'FARHAN'}
+                      </span>
+                      {badge && (
+                        <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border flex items-center gap-1 ${badge.color}`}>
+                          <badge.icon className="w-2.5 h-2.5" />
+                          <span>{badge.label}</span>
+                        </span>
+                      )}
+                    </div>
                     <span className="text-[11px] font-mono text-[#8b949e]">
                       {item.date} • {item.time}
                     </span>
@@ -419,14 +698,21 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
         </div>
       )}
 
-      {/* Load More Button */}
+      {/* Load More & Fast Jump Bottom Actions */}
       {displayedList.length < filteredMedia.length && (
-        <div className="pt-4 flex justify-center">
+        <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
           <button
-            onClick={() => setDisplayCount((prev) => prev + 40)}
+            onClick={() => setDisplayCount((prev) => Math.min(filteredMedia.length, prev + 60))}
             className="px-6 py-2.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-xs font-mono text-white transition-colors"
           >
-            Load More (+40 items)
+            Load More (+60 items)
+          </button>
+          <button
+            onClick={handleJumpToEnd}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500/20 to-purple-500/20 hover:from-rose-500/30 hover:to-purple-500/30 border border-rose-500/40 text-xs font-mono text-rose-200 flex items-center gap-1.5 transition-all"
+          >
+            <ChevronsDown className="w-3.5 h-3.5" />
+            <span>Load All ({filteredMedia.length}) & Jump to End</span>
           </button>
         </div>
       )}
