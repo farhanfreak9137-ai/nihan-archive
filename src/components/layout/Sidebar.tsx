@@ -6,6 +6,7 @@ import {
   BarChart2,
   Film,
   Sparkles,
+  Heart,
 } from 'lucide-react';
 import { ActiveTab } from '../../hooks/useArchive';
 
@@ -54,9 +55,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: Film,
     },
     {
+      id: 'journey' as ActiveTab,
+      label: 'The Journey',
+      sublabel: 'Milestones & love story',
+      icon: Heart,
+    },
+    {
       id: 'moments' as ActiveTab,
       label: 'Important Moments',
-      sublabel: 'Milestones & timeline',
+      sublabel: 'Custom memories & pins',
       icon: Sparkles,
     },
   ];

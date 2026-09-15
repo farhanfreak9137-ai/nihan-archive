@@ -9,6 +9,7 @@ import { SearchView } from './components/search/SearchView';
 import { AnalyticsView } from './components/analytics/AnalyticsView';
 import { MediaVaultView } from './components/media/MediaVaultView';
 import { MomentsView } from './components/moments/MomentsView';
+import { JourneyView } from './components/journey/JourneyView';
 import { AiDaySummaryModal } from './components/ai/AiDaySummaryModal';
 import { ArchiveWrappedModal } from './components/analytics/ArchiveWrappedModal';
 import { SurpriseMemoryModal } from './components/moments/SurpriseMemoryModal';
@@ -74,7 +75,7 @@ function ArchiveAppInner() {
     navigateToDay(date);
   };
 
-  const handleSearchJump = (date: string, messageId: string) => {
+  const handleSearchJump = (date: string, messageId?: string) => {
     navigateToDay(date, messageId);
   };
 
@@ -188,6 +189,7 @@ function ArchiveAppInner() {
                 metadata={metadata}
                 dailyStats={dailyStats}
                 onSearchExpression={handleSearchExpressionFromAnalytics}
+                onSelectDate={handleSelectCalendarDate}
               />
             </div>
           )}
@@ -195,6 +197,15 @@ function ArchiveAppInner() {
           {activeTab === 'media' && (
             <div className="p-3 sm:p-6 lg:p-8 animate-fade-in">
               <MediaVaultView onSelectMedia={handleSearchJump} />
+            </div>
+          )}
+
+          {activeTab === 'journey' && (
+            <div className="p-3 sm:p-6 lg:p-8 animate-fade-in">
+              <JourneyView
+                dailyStats={dailyStats}
+                onSelectDay={handleSearchJump}
+              />
             </div>
           )}
 

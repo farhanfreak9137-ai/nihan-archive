@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Search, Sparkles, Dices, Palette, ChevronDown, HelpCircle, BookOpen } from 'lucide-react';
+import { Calendar, Search, Sparkles, Dices, Palette, ChevronDown, HelpCircle, BookOpen, Heart } from 'lucide-react';
 import { ArchiveMetadata } from '../../types/archive';
 import { ActiveTab } from '../../hooks/useArchive';
 import { useTheme, THEMES } from '../../context/ThemeContext';
@@ -101,6 +101,20 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Actions: Wrapped, Surprise Me, Theme, Search, Date */}
         <div className="flex items-center gap-1.5 sm:gap-2.5">
+          {/* The Journey Trigger */}
+          <button
+            onClick={() => setActiveTab('journey')}
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs font-mono transition-all active:scale-95 shadow-sm ${
+              activeTab === 'journey'
+                ? 'bg-gradient-to-r from-rose-500/30 to-pink-500/30 border-rose-400 text-white font-semibold'
+                : 'bg-gradient-to-r from-rose-500/10 to-pink-500/10 hover:from-rose-500/20 hover:to-pink-500/20 border-rose-500/30 text-rose-300'
+            }`}
+            title="Explore The Journey of Us"
+          >
+            <Heart className="w-3.5 h-3.5 fill-rose-400 text-rose-400" />
+            <span className="hidden sm:inline font-semibold">The Journey</span>
+          </button>
+
           {/* Our Wrapped Trigger */}
           <button
             onClick={onOpenWrapped}
