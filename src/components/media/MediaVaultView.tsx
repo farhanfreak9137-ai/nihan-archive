@@ -48,10 +48,6 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
   const [photoLayout, setPhotoLayout] = useState<'grid' | 'polaroid'>('polaroid');
   const [isScrapbookOpen, setIsScrapbookOpen] = useState(false);
   const [onlyKeepsakes, setOnlyKeepsakes] = useState(false);
-
-  // Scrubber state
-  const [scrubberPos, setScrubberPos] = useState<number>(0);
-  const [scrubberHoverDate, setScrubberHoverDate] = useState<string | null>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
 
   const { playTrack, bookmarkedUris, isBookmarked } = useAudioPlayer();
@@ -155,34 +151,16 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
     return filteredMedia.slice(0, displayCount);
   }, [filteredMedia, displayCount]);
 
-  // Fast scrubber logic
-  const handleScrubberChange = (percentage: number) => {
-    const clamped = Math.max(0, Math.min(100, percentage));
-    setScrubberPos(clamped);
-
-    const targetIdx = Math.floor((clamped / 100) * (filteredMedia.length - 1));
-    const targetItem = filteredMedia[targetIdx];
-    if (targetItem) {
-      setScrubberHoverDate(`${targetItem.date} (${clamped.toFixed(0)}%)`);
-    }
-
-    const requiredCount = Math.max(60, targetIdx + 30);
-    if (requiredCount > displayCount) {
-      setDisplayCount(Math.min(filteredMedia.length, requiredCount));
-    }
+  const scrollToTop = () => {
+    const main = document.querySelector('main');
+    if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
+    else window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleJumpToEnd = () => {
-    setDisplayCount(filteredMedia.length);
-    setScrubberPos(100);
-    setTimeout(() => {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }, 50);
-  };
-
-  const handleJumpToStart = () => {
-    setScrubberPos(0);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollToBottom = () => {
+    const main = document.querySelector('main');
+    if (main) main.scrollTo({ top: main.scrollHeight, behavior: 'smooth' });
+    else window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   };
 
   const handlePlayAllVoiceNotes = () => {
@@ -202,7 +180,13 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
     }
   };
 
-  const polaroidRotations = ['-rotate-1', 'rotate-1', '-rotate-2', 'rotate-2', 'rotate-0'];
+  const polaroidRotations = [
+    'sm:-rotate-1 rotate-0',
+    'sm:rotate-1 rotate-0',
+    'sm:-rotate-2 rotate-0',
+    'sm:rotate-2 rotate-0',
+    'rotate-0',
+  ];
 
   const getCategoryBadge = (category?: string) => {
     switch (category) {
@@ -344,9 +328,9 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
       {/* DATE CATEGORY & SMART FILTERS BAR */}
       <div className="space-y-3 bg-[#12161c] p-3.5 rounded-2xl border border-[#21262d]">
         {/* Tier 1: Month Categories & Date Selector */}
-        <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-1.5">
-            <span className="text-[#8b949e] font-mono flex items-center gap-1 mr-1">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 max-w-full">
+            <span className="text-[#8b949e] font-mono flex items-center gap-1 mr-1 shrink-0 whitespace-nowrap">
               <Calendar className="w-3.5 h-3.5 text-rose-400" />
               <span>Timeline:</span>
             </span>
@@ -363,7 +347,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                   setSelectedDate('all');
                   setDisplayCount(60);
                 }}
-                className={`px-3 py-1 rounded-lg font-mono text-[11px] transition-all ${
+                className={`px-3 py-1 rounded-lg font-mono text-[11px] shrink-0 whitespace-nowrap transition-all ${
                   selectedMonth === m.id
                     ? 'bg-rose-500/20 text-rose-200 border border-rose-500/40 font-semibold'
                     : 'text-[#8b949e] hover:text-white bg-[#0b0d10] border border-[#21262d]'
@@ -374,14 +358,14 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <select
               value={selectedDate}
               onChange={(e) => {
                 setSelectedDate(e.target.value);
                 setDisplayCount(60);
               }}
-              className="bg-[#0b0d10] border border-[#21262d] rounded-lg px-2.5 py-1 text-[11px] font-mono text-slate-300 focus:outline-none focus:border-rose-500/50"
+              className="bg-[#0b0d10] border border-[#21262d] rounded-lg px-2.5 py-1 text-[11px] font-mono text-slate-300 focus:outline-none focus:border-rose-500/50 max-w-[200px] truncate"
             >
               <option value="all">Any Day ({availableDates.length} days)</option>
               {availableDates
@@ -416,17 +400,17 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
 
         {/* Tier 2: INTELLIGENT PHOTO CATEGORIES */}
         {activeTab === 'photo' && (
-          <div className="pt-2 border-t border-[#21262d] flex flex-wrap items-center gap-2 text-xs">
-            <span className="text-[#8b949e] font-mono flex items-center gap-1 mr-1">
+          <div className="pt-2 border-t border-[#21262d] flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
+            <span className="text-[#8b949e] font-mono flex items-center gap-1 mr-1 shrink-0 whitespace-nowrap">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Smart Photo Categories:</span>
+              <span>Smart Categories:</span>
             </span>
             {[
-              { id: 'all', label: `All Photos (${photoCategoryCounts.all})`, icon: ImageIcon },
+              { id: 'all', label: `All (${photoCategoryCounts.all})`, icon: ImageIcon },
               { id: 'screenshot', label: `Screenshots (${photoCategoryCounts.screenshot})`, icon: Smartphone },
               { id: 'portrait', label: `People & Selfies (${photoCategoryCounts.portrait})`, icon: User },
-              { id: 'aesthetic', label: `Scenery & Aesthetic (${photoCategoryCounts.aesthetic})`, icon: Sun },
-              { id: 'memory', label: `Square Moments (${photoCategoryCounts.memory})`, icon: Sparkles },
+              { id: 'aesthetic', label: `Scenery (${photoCategoryCounts.aesthetic})`, icon: Sun },
+              { id: 'memory', label: `Moments (${photoCategoryCounts.memory})`, icon: Sparkles },
             ].map((cat) => {
               const Icon = cat.icon;
               return (
@@ -436,7 +420,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                     setPhotoCategory(cat.id as any);
                     setDisplayCount(60);
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-mono transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-mono shrink-0 whitespace-nowrap transition-all ${
                     photoCategory === cat.id
                       ? 'bg-gradient-to-r from-rose-500/20 to-amber-500/20 text-white border border-rose-500/40 font-semibold shadow-sm'
                       : 'text-[#8b949e] hover:text-white bg-[#0b0d10] border border-[#21262d]'
@@ -450,58 +434,40 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
           </div>
         )}
 
-        {/* Tier 3: FAST TIMELINE SCRUBBER & INSTANT JUMP BAR */}
-        <div className="pt-2 border-t border-[#21262d] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <button
-              onClick={handleJumpToStart}
-              className="px-2.5 py-1 rounded-lg bg-[#0b0d10] hover:bg-[#161b22] border border-[#21262d] text-[11px] font-mono text-slate-300 hover:text-white flex items-center gap-1 shrink-0 transition-colors"
-              title="Jump directly to beginning"
-            >
-              <ChevronsUp className="w-3.5 h-3.5 text-rose-400" />
-              <span>Start</span>
-            </button>
-
-            {/* Draggable timeline scrubber track */}
-            <div className="flex-1 sm:w-72 flex items-center gap-2 relative">
-              <input
-                type="range"
-                min={0}
-                max={100}
-                step={1}
-                value={scrubberPos}
-                onChange={(e) => handleScrubberChange(Number(e.target.value))}
-                className="w-full accent-rose-500 cursor-pointer h-1.5 bg-[#0b0d10] rounded-lg border border-[#21262d]"
-              />
-              {scrubberHoverDate && (
-                <span className="text-[10px] font-mono text-rose-300 whitespace-nowrap bg-rose-950/60 px-2 py-0.5 rounded border border-rose-800/40">
-                  {scrubberHoverDate}
-                </span>
-              )}
-            </div>
-
-            <button
-              onClick={handleJumpToEnd}
-              className="px-2.5 py-1 rounded-lg bg-[#0b0d10] hover:bg-[#161b22] border border-[#21262d] text-[11px] font-mono text-slate-300 hover:text-white flex items-center gap-1 shrink-0 transition-colors"
-              title="Jump directly to end"
-            >
-              <span>End</span>
-              <ChevronsDown className="w-3.5 h-3.5 text-rose-400" />
-            </button>
-          </div>
-
-          <div className="flex items-center gap-3 text-[11px] font-mono text-[#8b949e]">
+        {/* Tier 3: Clean Responsive Counter & Jump Controls */}
+        <div className="pt-2 border-t border-[#21262d] flex flex-wrap items-center justify-between gap-2.5 text-xs">
+          <div className="flex items-center gap-2 text-[11px] font-mono text-[#8b949e]">
             <span>
-              Showing {displayedList.length} of {filteredMedia.length.toLocaleString()} items
+              Showing <strong className="text-white font-semibold">{displayedList.length}</strong> of{' '}
+              <strong className="text-white font-semibold">{filteredMedia.length.toLocaleString()}</strong> items
             </span>
             {displayedList.length < filteredMedia.length && (
               <button
                 onClick={() => setDisplayCount(filteredMedia.length)}
-                className="text-rose-400 hover:text-rose-300 underline underline-offset-2"
+                className="text-rose-400 hover:text-rose-300 underline underline-offset-2 font-medium"
               >
                 Show All
               </button>
             )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={scrollToTop}
+              className="px-2.5 py-1 rounded-lg bg-[#0b0d10] hover:bg-[#161b22] border border-[#21262d] text-[11px] font-mono text-slate-300 hover:text-white flex items-center gap-1 transition-colors"
+              title="Scroll to Top"
+            >
+              <ChevronsUp className="w-3.5 h-3.5 text-rose-400" />
+              <span>Top</span>
+            </button>
+            <button
+              onClick={scrollToBottom}
+              className="px-2.5 py-1 rounded-lg bg-[#0b0d10] hover:bg-[#161b22] border border-[#21262d] text-[11px] font-mono text-slate-300 hover:text-white flex items-center gap-1 transition-colors"
+              title="Scroll to Bottom"
+            >
+              <span>Bottom</span>
+              <ChevronsDown className="w-3.5 h-3.5 text-rose-400" />
+            </button>
           </div>
         </div>
       </div>
@@ -519,7 +485,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
         </div>
       ) : activeTab === 'photo' && photoLayout === 'polaroid' ? (
         /* VINTAGE POLAROID PHOTO GALLERY */
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 pt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6 pt-3">
           {displayedList.map((item, idx) => {
             const rot = polaroidRotations[idx % polaroidRotations.length];
             const isNila = item.sender === 'NILU';
@@ -652,7 +618,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
 
                   {/* Caption / Title / Context */}
                   {item.caption ? (
-                    <p className="text-xs text-[#f0f6fc] italic line-clamp-2">
+                    <p className="text-xs text-[#f0f6fc] italic line-clamp-2 break-words">
                       "{item.caption}"
                     </p>
                   ) : item.filename ? (
@@ -660,7 +626,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                       {item.filename}
                     </p>
                   ) : (
-                    <p className="text-xs text-[#8b949e] italic">
+                    <p className="text-xs text-[#8b949e] italic break-words">
                       {item.contextSnippet || 'Shared Instagram attachment'}
                     </p>
                   )}
@@ -698,21 +664,24 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
         </div>
       )}
 
-      {/* Load More & Fast Jump Bottom Actions */}
+      {/* Load More Bottom Actions */}
       {displayedList.length < filteredMedia.length && (
         <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
           <button
             onClick={() => setDisplayCount((prev) => Math.min(filteredMedia.length, prev + 60))}
-            className="px-6 py-2.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-xs font-mono text-white transition-colors"
+            className="px-6 py-2.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-xs font-mono text-white transition-colors shadow-sm"
           >
             Load More (+60 items)
           </button>
           <button
-            onClick={handleJumpToEnd}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500/20 to-purple-500/20 hover:from-rose-500/30 hover:to-purple-500/30 border border-rose-500/40 text-xs font-mono text-rose-200 flex items-center gap-1.5 transition-all"
+            onClick={() => {
+              setDisplayCount(filteredMedia.length);
+              setTimeout(scrollToBottom, 50);
+            }}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500/20 to-purple-500/20 hover:from-rose-500/30 hover:to-purple-500/30 border border-rose-500/40 text-xs font-mono text-rose-200 flex items-center gap-1.5 transition-all shadow-sm"
           >
             <ChevronsDown className="w-3.5 h-3.5" />
-            <span>Load All ({filteredMedia.length}) & Jump to End</span>
+            <span>Show All ({filteredMedia.length.toLocaleString()})</span>
           </button>
         </div>
       )}
