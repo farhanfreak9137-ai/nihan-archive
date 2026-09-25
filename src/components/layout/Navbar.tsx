@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Calendar, Search, Sparkles, Dices, Palette, ChevronDown, HelpCircle, BookOpen, Heart } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Search, Sparkles, Dices, Palette, ChevronDown, HelpCircle, BookOpen, Heart, MoreHorizontal } from 'lucide-react';
 import { ArchiveMetadata } from '../../types/archive';
 import { ActiveTab } from '../../hooks/useArchive';
 import { useTheme, THEMES } from '../../context/ThemeContext';
@@ -29,6 +29,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const { theme, setTheme, currentThemeConfig } = useTheme();
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setIsThemeMenuOpen(false);
+    setIsMoreMenuOpen(false);
+  }, [activeTab]);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[#21262d] glass-panel px-3 sm:px-6 lg:px-8 py-2.5 transition-colors">
@@ -101,10 +107,23 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Actions: Wrapped, Surprise Me, Theme, Search, Date */}
         <div className="flex items-center gap-1.5 sm:gap-2.5">
-          {/* The Journey Trigger */}
+          {/* Quick Search Button */}
+          <button
+            onClick={onOpenSearch}
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#161b22] border border-[#30363d] hover:border-[#484f58] text-[#8b949e] hover:text-[#f0f6fc] text-xs transition-colors shadow-sm"
+            title="Search Archive (Cmd+K)"
+          >
+            <Search className="w-3.5 h-3.5 text-slate-400" />
+            <span className="hidden sm:inline">Search...</span>
+            <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[10px] font-mono rounded bg-[#0b0d10] text-[#8b949e] border border-[#30363d]">
+              /
+            </kbd>
+          </button>
+
+          {/* The Journey Trigger (Tablet & Desktop; on mobile it's in bottom bar) */}
           <button
             onClick={() => setActiveTab('journey')}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs font-mono transition-all active:scale-95 shadow-sm ${
+            className={`hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs font-mono transition-all active:scale-95 shadow-sm ${
               activeTab === 'journey'
                 ? 'bg-gradient-to-r from-rose-500/30 to-pink-500/30 border-rose-400 text-white font-semibold'
                 : 'bg-gradient-to-r from-rose-500/10 to-pink-500/10 hover:from-rose-500/20 hover:to-pink-500/20 border-rose-500/30 text-rose-300'
@@ -112,54 +131,54 @@ export const Navbar: React.FC<NavbarProps> = ({
             title="Explore The Journey of Us"
           >
             <Heart className="w-3.5 h-3.5 fill-rose-400 text-rose-400" />
-            <span className="hidden sm:inline font-semibold">The Journey</span>
+            <span className="font-semibold">The Journey</span>
           </button>
 
           {/* Our Wrapped Trigger */}
           <button
             onClick={onOpenWrapped}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-500/15 via-rose-500/15 to-pink-500/15 hover:from-purple-500/25 hover:to-pink-500/25 border border-rose-500/30 text-rose-300 text-xs font-mono transition-all shadow-sm active:scale-95"
+            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-500/15 via-rose-500/15 to-pink-500/15 hover:from-purple-500/25 hover:to-pink-500/25 border border-rose-500/30 text-rose-300 text-xs font-mono transition-all shadow-sm active:scale-95"
             title="Open Our Archive Wrapped"
           >
             <Sparkles className="w-3.5 h-3.5 text-rose-400" />
             <span className="hidden sm:inline font-semibold">Wrapped</span>
           </button>
 
-          {/* Surprise Me Trigger */}
+          {/* Surprise Me Trigger (Desktop) */}
           <button
             onClick={onOpenSurprise}
-            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-amber-300 text-xs font-mono transition-all active:scale-95"
+            className="hidden md:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-amber-300 text-xs font-mono transition-all active:scale-95"
             title="Remember When? (Random Memory)"
           >
             <Dices className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden md:inline">Surprise</span>
+            <span>Surprise</span>
           </button>
 
-          {/* Who Said It? Trivia Trigger */}
+          {/* Who Said It? Trivia Trigger (Desktop) */}
           <button
             onClick={onOpenTrivia}
-            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-sky-500/30 text-sky-300 text-xs font-mono transition-all active:scale-95 shadow-sm"
+            className="hidden md:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-sky-500/30 text-sky-300 text-xs font-mono transition-all active:scale-95 shadow-sm"
             title="Who Said It? Relationship Trivia Game"
           >
             <HelpCircle className="w-3.5 h-3.5 text-sky-400" />
-            <span className="hidden md:inline">Trivia</span>
+            <span>Trivia</span>
           </button>
 
-          {/* The Story of Us Book Trigger */}
+          {/* The Story of Us Book Trigger (Desktop) */}
           <button
             onClick={onOpenBook}
-            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-amber-500/30 text-amber-300 text-xs font-mono transition-all active:scale-95 shadow-sm"
+            className="hidden lg:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-amber-500/30 text-amber-300 text-xs font-mono transition-all active:scale-95 shadow-sm"
             title="Printable Keepsake Book & PDF Export"
           >
             <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden lg:inline">Keepsake Book</span>
+            <span>Keepsake Book</span>
           </button>
 
           {/* Theme Dropdown Toggle */}
           <div className="relative">
             <button
               onClick={() => setIsThemeMenuOpen(!isThemeMenuOpen)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-xs font-mono text-slate-300 transition-colors"
+              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-xs font-mono text-slate-300 transition-colors"
               title="Switch Visual Theme"
             >
               <Palette className="w-3.5 h-3.5 text-rose-400" />
@@ -209,24 +228,65 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* Quick Search Button */}
-          <button
-            onClick={onOpenSearch}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#161b22] border border-[#30363d] hover:border-[#484f58] text-[#8b949e] hover:text-[#f0f6fc] text-xs transition-colors shadow-sm"
-            title="Search Archive (Cmd+K)"
-          >
-            <Search className="w-3.5 h-3.5 text-slate-400" />
-            <span className="hidden sm:inline">Search...</span>
-            <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[10px] font-mono rounded bg-[#0b0d10] text-[#8b949e] border border-[#30363d]">
-              /
-            </kbd>
-          </button>
+          {/* More Actions Menu (Mobile & Tablet) */}
+          <div className="relative md:hidden">
+            <button
+              onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
+              className="p-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-slate-300 transition-colors"
+              title="More Options"
+            >
+              <MoreHorizontal className="w-4 h-4 text-slate-300" />
+            </button>
 
-          {/* Current Date Badge */}
+            {isMoreMenuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setIsMoreMenuOpen(false)}
+                />
+                <div className="absolute right-0 mt-2 w-52 rounded-2xl glass-panel border border-white/10 shadow-2xl p-2 z-50 space-y-1 animate-fade-in">
+                  <button
+                    onClick={() => {
+                      onOpenSurprise();
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left text-xs font-mono text-amber-300 hover:bg-white/5 transition-colors"
+                  >
+                    <Dices className="w-4 h-4 text-amber-400" />
+                    <span>Surprise Memory</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      onOpenTrivia();
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left text-xs font-mono text-sky-300 hover:bg-white/5 transition-colors"
+                  >
+                    <HelpCircle className="w-4 h-4 text-sky-400" />
+                    <span>Who Said It? Trivia</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      onOpenBook();
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left text-xs font-mono text-amber-300 hover:bg-white/5 transition-colors"
+                  >
+                    <BookOpen className="w-4 h-4 text-amber-400" />
+                    <span>Keepsake Book</span>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Current Date Badge (Desktop) */}
           {selectedDate && (
             <button
               onClick={() => setActiveTab('conversation')}
-              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-mono transition-all ${
+              className={`hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-mono transition-all ${
                 activeTab === 'conversation'
                   ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-sm'
                   : 'bg-[#12161c] text-[#8b949e] hover:text-white border border-[#21262d]'

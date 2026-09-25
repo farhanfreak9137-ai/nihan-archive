@@ -210,7 +210,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             <span>Archive Calendar Heatmap</span>
           </h2>
           <p className="text-xs text-[#8b949e] mt-0.5">
-            Explore 60 days of conversations. Tap any day to inspect highlights or jump straight to that day's dialogue.
+            Explore {dailyStats.length} days of conversations. Tap any day to inspect highlights or jump straight to that day's dialogue.
           </p>
         </div>
 

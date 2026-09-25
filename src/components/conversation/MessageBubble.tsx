@@ -53,7 +53,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
       className={`group w-full flex flex-col transition-all duration-200 ${
         isNila ? 'items-start' : 'items-end'
       } ${isGroupedWithPrevious ? 'mt-1' : 'mt-3 sm:mt-4'} ${
-        isGroupedWithNext ? 'mb-0.5' : 'mb-2 sm:mb-2.5'
+        isGroupedWithNext
+          ? message.reactions?.length
+            ? 'mb-3 sm:mb-3.5'
+            : 'mb-0.5'
+          : message.reactions?.length
+          ? 'mb-4 sm:mb-4.5'
+          : 'mb-2 sm:mb-2.5'
       } ${
         isHighlighted
           ? 'bg-rose-500/15 p-2 rounded-2xl ring-2 ring-rose-500/60 shadow-lg'

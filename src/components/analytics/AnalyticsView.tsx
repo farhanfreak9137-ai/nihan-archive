@@ -92,14 +92,16 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       .slice(0, 5);
 
     // 4. Heart Reactions
-    const redHearts = metadata.reactions.byEmoji['❤']?.total || 0;
-    const whiteHearts = metadata.reactions.byEmoji['🤍']?.total || 0;
-    const totalHearts = redHearts + whiteHearts;
-    const heartPercentage = ((totalHearts / metadata.reactions.total) * 100).toFixed(1);
+    const redHeartsData = metadata.reactions.byEmoji['❤️'] || metadata.reactions.byEmoji['❤'] || { total: 0, NILU: 0, farhannn: 0 };
+    const whiteHeartsData = metadata.reactions.byEmoji['🤍'] || { total: 0, NILU: 0, farhannn: 0 };
+    const totalHearts = (redHeartsData.total || 0) + (whiteHeartsData.total || 0);
+    const heartPercentage = metadata.reactions.total > 0
+      ? ((totalHearts / metadata.reactions.total) * 100).toFixed(1)
+      : '0';
 
     // 5. Daily Velocity
-    const avgMessagesPerDay = Math.round(metadata.totalMessages / metadata.activeDays);
-    const avgVoiceNotesPerDay = (metadata.media.audio / metadata.activeDays).toFixed(1);
+    const avgMessagesPerDay = Math.round(metadata.totalMessages / Math.max(1, metadata.activeDays));
+    const avgVoiceNotesPerDay = (metadata.media.audio / Math.max(1, metadata.activeDays)).toFixed(1);
 
     return {
       nightMessages,
@@ -109,6 +111,8 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       marathons,
       totalHearts,
       heartPercentage,
+      redHeartsData,
+      whiteHeartsData,
       avgMessagesPerDay,
       avgVoiceNotesPerDay,
     };
@@ -151,7 +155,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       </div>
 
       {/* Analytics Category Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#21262d] pb-2 overflow-x-auto text-xs font-mono scrollbar-none">
+      <div className="flex items-center gap-1.5 sm:gap-2 border-b border-[#21262d] pb-2 overflow-x-auto text-xs font-mono no-scrollbar">
         {[
           { id: 'surprises', label: '✨ Deep Connection & Surprises' },
           { id: 'balance', label: 'Communication Balance' },
@@ -163,7 +167,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors ${
+            className={`px-3 py-1.5 rounded-lg shrink-0 whitespace-nowrap transition-colors ${
               activeTab === tab.id
                 ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30 font-medium'
                 : 'text-[#8b949e] hover:text-white hover:bg-[#12161c]'
@@ -207,13 +211,13 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
 
             {/* Night vs Day Visual Progress Bar */}
             <div className="space-y-2 relative z-10">
-              <div className="flex items-center justify-between text-xs font-mono">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs font-mono">
                 <span className="text-purple-300 flex items-center gap-1">
-                  <Moon className="w-3 h-3" />
+                  <Moon className="w-3 h-3 shrink-0" />
                   <span>Midnight to 5 AM: {surpriseStats.nightPercentage}%</span>
                 </span>
                 <span className="text-amber-300 flex items-center gap-1">
-                  <Sun className="w-3 h-3" />
+                  <Sun className="w-3 h-3 shrink-0" />
                   <span>Daylight Hours (7 AM - 7 PM): {surpriseStats.dayPercentage}%</span>
                 </span>
               </div>
@@ -292,19 +296,19 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                       <div className="w-10 h-10 rounded-2xl bg-[#0b0d10] border border-[#21262d] flex items-center justify-center text-base font-mono font-bold shrink-0">
                         {medals[idx]}
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-editorial text-base text-white font-semibold">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                          <span className="font-editorial text-base text-white font-semibold whitespace-nowrap">
                             {day.date}
                           </span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#0b0d10] text-[#8b949e] border border-[#21262d]">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#0b0d10] text-[#8b949e] border border-[#21262d] whitespace-nowrap">
                             Peak: {day.peakHour}:00 ({day.peakHourCount} msgs)
                           </span>
                         </div>
-                        <div className="text-xs text-[#8b949e] font-mono mt-0.5">
-                          <strong className="text-rose-400">Nila: {day.nilaMessages}</strong> ({nilaPct}%) •{' '}
-                          <strong className="text-sky-400">Farhan: {day.farhanMessages}</strong> ({farhanPct}%) •{' '}
-                          <span>🎙️ {day.audioNotes} voice notes</span>
+                        <div className="text-[11px] sm:text-xs text-[#8b949e] font-mono mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                          <strong className="text-rose-400 whitespace-nowrap">Nila: {day.nilaMessages}</strong> ({nilaPct}%) •{' '}
+                          <strong className="text-sky-400 whitespace-nowrap">Farhan: {day.farhanMessages}</strong> ({farhanPct}%) •{' '}
+                          <span className="whitespace-nowrap">🎙️ {day.audioNotes} voice notes</span>
                         </div>
                       </div>
                     </div>
@@ -356,13 +360,13 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 <div className="grid grid-cols-2 gap-2 pt-2 text-xs font-mono">
                   <div className="p-2.5 rounded-xl bg-[#0b0d10] border border-[#21262d]">
                     <span className="text-base block mb-1">❤️ Red Hearts</span>
-                    <span className="text-white font-bold">1,053 times</span>
-                    <span className="text-[10px] text-[#8b949e] block">N: 776 • F: 277</span>
+                    <span className="text-white font-bold">{surpriseStats.redHeartsData.total.toLocaleString()} times</span>
+                    <span className="text-[10px] text-[#8b949e] block">N: {surpriseStats.redHeartsData.NILU} • F: {surpriseStats.redHeartsData.farhannn}</span>
                   </div>
                   <div className="p-2.5 rounded-xl bg-[#0b0d10] border border-[#21262d]">
                     <span className="text-base block mb-1">🤍 White Hearts</span>
-                    <span className="text-white font-bold">261 times</span>
-                    <span className="text-[10px] text-[#8b949e] block">N: 40 • F: 221</span>
+                    <span className="text-white font-bold">{surpriseStats.whiteHeartsData.total.toLocaleString()} times</span>
+                    <span className="text-[10px] text-[#8b949e] block">N: {surpriseStats.whiteHeartsData.NILU} • F: {surpriseStats.whiteHeartsData.farhannn}</span>
                   </div>
                 </div>
               </div>
@@ -400,7 +404,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 </div>
 
                 <div className="p-3 rounded-xl bg-[#0b0d10] border border-[#21262d] text-xs font-mono text-[#8b949e]">
-                  Active Streak: <strong className="text-white">71 consecutive active days</strong> from July 6, 2026 to September 15, 2026.
+                  Active Streak: <strong className="text-white">{metadata.activeDays} consecutive active days</strong> from {metadata.startDate} to {metadata.endDate}.
                 </div>
               </div>
             </div>
@@ -413,7 +417,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
         <div className="space-y-6 animate-fade-in">
           {/* Main Balance Meter Card */}
           <div className="p-6 rounded-2xl bg-[#12161c] border border-[#21262d] space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5">
               <h3 className="font-editorial text-lg text-white font-medium">
                 Overall Message Balance
               </h3>
@@ -455,7 +459,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                   <strong className="text-white font-mono">
                     {Math.round(metadata.participantsDisplay.NILA / metadata.activeDays)}
                   </strong>{' '}
-                  messages per day across 60 active days.
+                  messages per day across {metadata.activeDays} active days.
                 </div>
               </div>
 
@@ -472,7 +476,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                   <strong className="text-white font-mono">
                     {Math.round(metadata.participantsDisplay.FARHAN / metadata.activeDays)}
                   </strong>{' '}
-                  messages per day across 60 active days.
+                  messages per day across {metadata.activeDays} active days.
                 </div>
               </div>
             </div>
@@ -498,47 +502,49 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
             </div>
 
             {/* Bar Chart */}
-            <div className="grid grid-cols-12 sm:grid-cols-24 gap-1 items-end h-48 pt-6 border-b border-[#21262d]">
-              {metadata.hourlyTotals.map((count, hour) => {
-                const heightPercent = Math.max(4, Math.round((count / maxHourlyTotal) * 100));
-                const ampm = hour >= 12 ? 'p' : 'a';
-                const displayH = hour % 12 === 0 ? 12 : hour % 12;
+            <div className="overflow-x-auto no-scrollbar pb-2">
+              <div className="flex items-end gap-1.5 h-48 pt-6 min-w-[560px] border-b border-[#21262d]">
+                {metadata.hourlyTotals.map((count, hour) => {
+                  const heightPercent = Math.max(4, Math.round((count / maxHourlyTotal) * 100));
+                  const ampm = hour >= 12 ? 'p' : 'a';
+                  const displayH = hour % 12 === 0 ? 12 : hour % 12;
 
-                return (
-                  <div
-                    key={hour}
-                    className="flex flex-col items-center gap-1.5 h-full justify-end group relative"
-                  >
-                    {/* Tooltip on hover */}
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 bg-[#161b22] border border-[#30363d] px-1.5 py-0.5 rounded text-[10px] font-mono text-white pointer-events-none z-20 whitespace-nowrap shadow-md">
-                      {hour}:00 • {count.toLocaleString()} msgs
-                    </div>
-
+                  return (
                     <div
-                      style={{ height: `${heightPercent}%` }}
-                      className={`w-full rounded-t transition-all ${
-                        count >= 3500
-                          ? 'bg-rose-500 group-hover:bg-rose-400'
-                          : count >= 2000
-                          ? 'bg-amber-400 group-hover:bg-amber-300'
-                          : 'bg-sky-500/70 group-hover:bg-sky-400'
-                      }`}
-                    />
-                    <span className="text-[9px] font-mono text-[#8b949e]">
-                      {displayH}{ampm}
-                    </span>
-                  </div>
-                );
-              })}
+                      key={hour}
+                      className="flex-1 min-w-[18px] flex flex-col items-center gap-1.5 h-full justify-end group relative"
+                    >
+                      {/* Tooltip on hover */}
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 bg-[#161b22] border border-[#30363d] px-1.5 py-0.5 rounded text-[10px] font-mono text-white pointer-events-none z-20 whitespace-nowrap shadow-md">
+                        {hour}:00 • {count.toLocaleString()} msgs
+                      </div>
+
+                      <div
+                        style={{ height: `${heightPercent}%` }}
+                        className={`w-full rounded-t transition-all ${
+                          count >= 3500
+                            ? 'bg-rose-500 group-hover:bg-rose-400'
+                            : count >= 2000
+                            ? 'bg-amber-400 group-hover:bg-amber-300'
+                            : 'bg-sky-500/70 group-hover:bg-sky-400'
+                        }`}
+                      />
+                      <span className="text-[9px] font-mono text-[#8b949e]">
+                        {displayH}{ampm}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
           {/* Day of Week Distribution */}
-          <div className="p-6 rounded-2xl bg-[#12161c] border border-[#21262d] space-y-4">
+          <div className="p-4 sm:p-6 rounded-2xl bg-[#12161c] border border-[#21262d] space-y-4">
             <h3 className="font-editorial text-lg text-white font-medium">
               Day of Week Activity
             </h3>
-            <div className="grid grid-cols-7 gap-2">
+            <div className="grid grid-cols-2 xs:grid-cols-4 sm:grid-cols-7 gap-2">
               {metadata.dayOfWeekTotals.map((total, idx) => {
                 const heightPercent = Math.round((total / maxDayOfWeekTotal) * 100);
                 return (
@@ -549,7 +555,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                     <div className="text-xs font-mono font-medium text-[#8b949e]">
                       {daysOfWeek[idx]}
                     </div>
-                    <div className="text-sm font-mono text-white font-semibold">
+                    <div className="text-xs sm:text-sm font-mono text-white font-semibold truncate" title={total.toLocaleString()}>
                       {total.toLocaleString()}
                     </div>
                     <div className="w-full h-1.5 rounded-full bg-[#0b0d10] overflow-hidden">
@@ -680,11 +686,11 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <div className="p-4 rounded-xl bg-[#161b22] border border-[#21262d] space-y-1">
                 <div className="text-[10px] uppercase font-mono text-[#8b949e]">Instagram Reels</div>
                 <div className="text-2xl font-mono text-white font-bold">{metadata.shares.reels}</div>
-                <div className="text-[11px] text-[#8b949e] font-mono">
+                <div className="text-[11px] text-[#8b949e] font-mono break-words">
                   NILA {metadata.sharesBySender.NILU.reels} • FARHAN {metadata.sharesBySender.farhannn.reels}
                 </div>
               </div>
@@ -692,7 +698,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               <div className="p-4 rounded-xl bg-[#161b22] border border-[#21262d] space-y-1">
                 <div className="text-[10px] uppercase font-mono text-[#8b949e]">Posts</div>
                 <div className="text-2xl font-mono text-white font-bold">{metadata.shares.posts}</div>
-                <div className="text-[11px] text-[#8b949e] font-mono">
+                <div className="text-[11px] text-[#8b949e] font-mono break-words">
                   NILA {metadata.sharesBySender.NILU.posts} • FARHAN {metadata.sharesBySender.farhannn.posts}
                 </div>
               </div>
@@ -700,7 +706,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               <div className="p-4 rounded-xl bg-[#161b22] border border-[#21262d] space-y-1">
                 <div className="text-[10px] uppercase font-mono text-[#8b949e]">Stories</div>
                 <div className="text-2xl font-mono text-white font-bold">{metadata.shares.stories}</div>
-                <div className="text-[11px] text-[#8b949e] font-mono">
+                <div className="text-[11px] text-[#8b949e] font-mono break-words">
                   NILA {metadata.sharesBySender.NILU.stories} • FARHAN {metadata.sharesBySender.farhannn.stories}
                 </div>
               </div>
@@ -708,7 +714,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               <div className="p-4 rounded-xl bg-[#161b22] border border-[#21262d] space-y-1">
                 <div className="text-[10px] uppercase font-mono text-[#8b949e]">Other Links</div>
                 <div className="text-2xl font-mono text-white font-bold">{metadata.shares.other}</div>
-                <div className="text-[11px] text-[#8b949e] font-mono">
+                <div className="text-[11px] text-[#8b949e] font-mono break-words">
                   NILA {metadata.sharesBySender.NILU.other} • FARHAN {metadata.sharesBySender.farhannn.other}
                 </div>
               </div>

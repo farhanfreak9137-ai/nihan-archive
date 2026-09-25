@@ -73,7 +73,7 @@ export const OnThisDayBanner: React.FC<OnThisDayBannerProps> = ({
                 {formattedDate}
               </span>
             </div>
-            <p className="text-xs text-[#8b949e] font-sans line-clamp-1">
+            <p className="text-xs text-[#8b949e] font-sans leading-relaxed break-words">
               You shared{' '}
               <strong className="text-white font-semibold">{memory.totalMessages.toLocaleString()} messages</strong>
               {memory.audioNotes > 0 && ` • ${memory.audioNotes} voice notes`}
@@ -84,7 +84,7 @@ export const OnThisDayBanner: React.FC<OnThisDayBannerProps> = ({
         </div>
 
         {/* Right actions */}
-        <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+        <div className="flex items-center justify-end gap-2 shrink-0 pt-1 sm:pt-0">
           <button
             onClick={() => onJumpToDate(memory.date)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs font-mono shadow-sm active:scale-95 transition-all"

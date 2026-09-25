@@ -58,7 +58,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
         date: '2026-07-06',
         time: '6:37 PM',
         title: 'The First Spark: Where It All Began',
-        subtitle: 'The very first exchange that started a 66,472-message journey',
+        subtitle: 'The very first exchange that started an extraordinary journey',
         category: 'origin',
         badge: 'Day 1 • First Interaction',
         icon: Compass,
@@ -265,6 +265,18 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
     return milestones.filter((m) => m.category === activeCategory);
   }, [milestones, activeCategory]);
 
+  const journeyStats = useMemo(() => {
+    const totalMsgs = dailyStats.reduce((acc, d) => acc + (d.totalMessages || 0), 0) || 75853;
+    const totalVoice = dailyStats.reduce((acc, d) => acc + (d.audioNotes || 0), 0) || 2078;
+    const totalReels = dailyStats.reduce((acc, d) => acc + (d.reels || 0), 0) || 1618;
+    return {
+      days: dailyStats.length || 81,
+      totalMessages: totalMsgs,
+      voiceNotes: totalVoice,
+      reels: totalReels,
+    };
+  }, [dailyStats]);
+
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-16">
       {/* Hero Editorial Header */}
@@ -283,26 +295,26 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
           </h1>
 
           <p className="text-sm text-[#8b949e] max-w-2xl leading-relaxed">
-            An intelligent milestone analysis tracing how two people met, set their playful rules, confessed their love, held 3 AM heart-to-hearts, and built an unbreakable bond across 66,472 messages.
+            An intelligent milestone analysis tracing how two people met, set their playful rules, confessed their love, held 3 AM heart-to-hearts, and built an unbreakable bond across {journeyStats.totalMessages.toLocaleString()} messages.
           </p>
 
           {/* Quick Metrics Bar */}
           <div className="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-[#0b0d10]/60 p-3 rounded-2xl border border-[#21262d]">
               <span className="text-[10px] font-mono text-[#8b949e] uppercase block">Days Traveled</span>
-              <span className="text-lg font-editorial font-bold text-white">71 Active Days</span>
+              <span className="text-lg font-editorial font-bold text-white">{journeyStats.days} Active Days</span>
             </div>
             <div className="bg-[#0b0d10]/60 p-3 rounded-2xl border border-[#21262d]">
               <span className="text-[10px] font-mono text-[#8b949e] uppercase block">Words & Moments</span>
-              <span className="text-lg font-editorial font-bold text-rose-300">66,472 Messages</span>
+              <span className="text-lg font-editorial font-bold text-rose-300">{journeyStats.totalMessages.toLocaleString()} Messages</span>
             </div>
             <div className="bg-[#0b0d10]/60 p-3 rounded-2xl border border-[#21262d]">
               <span className="text-[10px] font-mono text-[#8b949e] uppercase block">Voice Kept</span>
-              <span className="text-lg font-editorial font-bold text-amber-300">1,878 Voice Notes</span>
+              <span className="text-lg font-editorial font-bold text-amber-300">{journeyStats.voiceNotes.toLocaleString()} Voice Notes</span>
             </div>
             <div className="bg-[#0b0d10]/60 p-3 rounded-2xl border border-[#21262d]">
-              <span className="text-[10px] font-mono text-[#8b949e] uppercase block">Heart Reactions</span>
-              <span className="text-lg font-editorial font-bold text-pink-300">1,929 Reactions</span>
+              <span className="text-[10px] font-mono text-[#8b949e] uppercase block">Shared Reels</span>
+              <span className="text-lg font-editorial font-bold text-pink-300">{journeyStats.reels.toLocaleString()} Reels</span>
             </div>
           </div>
         </div>

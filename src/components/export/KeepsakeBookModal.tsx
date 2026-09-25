@@ -88,16 +88,16 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
     const farhanPct = totalMessages ? 100 - nilaPct : 50;
 
     return {
-      totalMessages: totalMessages || 61372,
-      nilaMessages: nilaMessages || 34157,
-      farhanMessages: farhanMessages || 27215,
+      totalMessages: totalMessages || 75853,
+      nilaMessages: nilaMessages || 41183,
+      farhanMessages: farhanMessages || 34670,
       nilaPct,
       farhanPct,
-      reels: reels || 1515,
-      shares: shares || 1532,
-      daysCount: stats.length || 66,
+      reels: reels || 1618,
+      shares: shares || 1635,
+      daysCount: stats.length || 81,
       startDate: stats[0]?.date || '2026-07-06',
-      endDate: stats[stats.length - 1]?.date || '2026-09-10',
+      endDate: stats[stats.length - 1]?.date || '2026-09-25',
       peakDay,
     };
   }, [stats]);
