@@ -869,26 +869,26 @@ async function runPipeline() {
   // Print Validation Summary
   console.log('\n=== ARCHIVE VERIFICATION & AUDIT ===');
   const isTargetBaseline =
-    metadata.totalMessages === 66472 &&
-    metadata.participants.NILU === 34179 &&
-    metadata.participants.farhannn === 32293 &&
-    metadata.shares.total === 1652 &&
-    metadata.reactions.total === 1929 &&
-    metadata.activeDays === 71;
+    metadata.totalMessages === 75853 &&
+    metadata.participants.NILU === 39069 &&
+    metadata.participants.farhannn === 36784 &&
+    metadata.shares.total === 1949 &&
+    metadata.reactions.total === 2393 &&
+    metadata.activeDays === 81;
 
-  console.log(`Total Messages:       ${metadata.totalMessages.toLocaleString()} -> ${metadata.totalMessages >= 52784 ? 'VALID ✅' : 'UNDER BASELINE ⚠️'}`);
+  console.log(`Total Messages:       ${metadata.totalMessages.toLocaleString()} -> ${metadata.totalMessages >= 66472 ? 'VALID ✅' : 'UNDER BASELINE ⚠️'}`);
   console.log(`NILU (NILA):          ${metadata.participants.NILU.toLocaleString()} (${((metadata.participants.NILU / metadata.totalMessages) * 100).toFixed(1)}%)`);
   console.log(`farhannn (FARHAN):    ${metadata.participants.farhannn.toLocaleString()} (${((metadata.participants.farhannn / metadata.totalMessages) * 100).toFixed(1)}%)`);
   console.log(`Total Shares:         ${metadata.shares.total.toLocaleString()} (Reels: ${metadata.shares.reels}, Posts: ${metadata.shares.posts}, Stories: ${metadata.shares.stories}, Other: ${metadata.shares.other})`);
   console.log(`Total Reactions:      ${metadata.reactions.total.toLocaleString()}`);
   console.log(`Active Days:          ${metadata.activeDays} days (${metadata.startDate} to ${metadata.endDate})`);
 
-  if (metadata.totalMessages < 52784) {
-    throw new Error(`Verification failed! Total messages (${metadata.totalMessages}) is less than baseline (52,784). Potential data loss!`);
+  if (metadata.totalMessages < 66472) {
+    throw new Error(`Verification failed! Total messages (${metadata.totalMessages}) is less than baseline (66,472). Potential data loss!`);
   }
 
   if (isTargetBaseline) {
-    console.log(`\n🎉 UNIFIED ARCHIVE TARGET VERIFIED WITH 100% PRECISION: 66,472 total messages (+5,100 new messages merged, zero duplicates) across 71 active days!\n`);
+    console.log(`\n🎉 UNIFIED ARCHIVE TARGET VERIFIED WITH 100% PRECISION: 75,853 total messages (+9,381 new messages merged, zero duplicates) across 81 active days!\n`);
   } else {
     console.log(`\n🎉 ARCHIVE EXPANSION VERIFIED: ${metadata.totalMessages.toLocaleString()} total messages indexed across ${metadata.activeDays} active days!\n`);
   }

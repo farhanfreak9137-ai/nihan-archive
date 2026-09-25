@@ -5,14 +5,14 @@
     "category": "love",
     "pattern": "\\bi\\s*(love|luv)\\s*(you|u)\\b",
     "totalOccurrences": {
-      "total": 431,
-      "NILU": 177,
-      "farhannn": 254
+      "total": 589,
+      "NILU": 263,
+      "farhannn": 326
     },
     "messagesCount": {
-      "total": 372,
-      "NILU": 169,
-      "farhannn": 203
+      "total": 484,
+      "NILU": 231,
+      "farhannn": 253
     }
   },
   {
@@ -21,14 +21,14 @@
     "category": "apology",
     "pattern": "\\b(sorry+|sry|sori)\\b",
     "totalOccurrences": {
-      "total": 1601,
-      "NILU": 248,
-      "farhannn": 1353
+      "total": 1767,
+      "NILU": 309,
+      "farhannn": 1458
     },
     "messagesCount": {
-      "total": 897,
-      "NILU": 239,
-      "farhannn": 658
+      "total": 1056,
+      "NILU": 297,
+      "farhannn": 759
     }
   },
   {
@@ -37,14 +37,14 @@
     "category": "gratitude",
     "pattern": "\\bthank\\s+you\\b",
     "totalOccurrences": {
-      "total": 34,
-      "NILU": 17,
-      "farhannn": 17
+      "total": 36,
+      "NILU": 18,
+      "farhannn": 18
     },
     "messagesCount": {
-      "total": 30,
-      "NILU": 16,
-      "farhannn": 14
+      "total": 32,
+      "NILU": 17,
+      "farhannn": 15
     }
   },
   {
@@ -53,13 +53,13 @@
     "category": "gratitude",
     "pattern": "\\bthank\\s+u\\b",
     "totalOccurrences": {
-      "total": 18,
-      "NILU": 17,
+      "total": 20,
+      "NILU": 19,
       "farhannn": 1
     },
     "messagesCount": {
-      "total": 17,
-      "NILU": 16,
+      "total": 19,
+      "NILU": 18,
       "farhannn": 1
     }
   },
@@ -69,14 +69,14 @@
     "category": "gratitude",
     "pattern": "\\bthanks\\b",
     "totalOccurrences": {
-      "total": 16,
+      "total": 19,
       "NILU": 9,
-      "farhannn": 7
+      "farhannn": 10
     },
     "messagesCount": {
-      "total": 16,
+      "total": 19,
       "NILU": 9,
-      "farhannn": 7
+      "farhannn": 10
     }
   },
   {
@@ -85,13 +85,13 @@
     "category": "missing",
     "pattern": "\\bmiss\\s*(you|u)\\b",
     "totalOccurrences": {
-      "total": 3,
-      "NILU": 2,
+      "total": 5,
+      "NILU": 4,
       "farhannn": 1
     },
     "messagesCount": {
-      "total": 3,
-      "NILU": 2,
+      "total": 4,
+      "NILU": 3,
       "farhannn": 1
     }
   },
@@ -101,14 +101,14 @@
     "category": "greetings",
     "pattern": "\\bgood\\s*morning\\b|\\bgm\\b",
     "totalOccurrences": {
-      "total": 11,
-      "NILU": 4,
-      "farhannn": 7
+      "total": 14,
+      "NILU": 6,
+      "farhannn": 8
     },
     "messagesCount": {
-      "total": 11,
-      "NILU": 4,
-      "farhannn": 7
+      "total": 14,
+      "NILU": 6,
+      "farhannn": 8
     }
   },
   {
@@ -117,14 +117,14 @@
     "category": "greetings",
     "pattern": "\\bgood\\s*night\\b|\\bgn\\b",
     "totalOccurrences": {
-      "total": 64,
-      "NILU": 40,
-      "farhannn": 24
+      "total": 80,
+      "NILU": 48,
+      "farhannn": 32
     },
     "messagesCount": {
-      "total": 63,
-      "NILU": 39,
-      "farhannn": 24
+      "total": 79,
+      "NILU": 47,
+      "farhannn": 32
     }
   },
   {
@@ -133,13 +133,13 @@
     "category": "promises",
     "pattern": "\\bpromise\\b",
     "totalOccurrences": {
-      "total": 29,
-      "NILU": 2,
+      "total": 30,
+      "NILU": 3,
       "farhannn": 27
     },
     "messagesCount": {
-      "total": 29,
-      "NILU": 2,
+      "total": 30,
+      "NILU": 3,
       "farhannn": 27
     }
   },
