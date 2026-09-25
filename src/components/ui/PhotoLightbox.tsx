@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Download, ExternalLink } from 'lucide-react';
 
 interface PhotoLightboxProps {
@@ -18,36 +19,65 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
   time,
   onClose,
 }) => {
-  return (
+  // Handle escape key and lock body scroll
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [onClose]);
+
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-fade-in select-none"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-3 sm:p-4 select-none touch-none animate-fade-in"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100vw',
+        height: '100vh',
+      }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative max-w-4xl max-h-[90vh] flex flex-col items-center"
+        className="relative w-full max-w-4xl max-h-[95vh] flex flex-col items-center gap-2"
       >
         {/* Top Floating Controls */}
-        <div className="w-full flex items-center justify-between pb-3 text-xs text-[#8b949e] font-mono">
-          <div className="flex items-center gap-2">
+        <div className="w-full flex items-center justify-between px-1 text-xs text-[#8b949e] font-mono">
+          <div className="flex items-center gap-1.5 sm:gap-2 truncate">
             {senderDisplay && (
               <span
-                className={`font-semibold ${
+                className={`font-semibold shrink-0 ${
                   senderDisplay === 'NILA' ? 'text-rose-400' : 'text-sky-400'
                 }`}
               >
                 {senderDisplay}
               </span>
             )}
-            {date && <span>• {date}</span>}
-            {time && <span>{time}</span>}
+            {date && <span className="truncate">• {date}</span>}
+            {time && <span className="hidden sm:inline">• {time}</span>}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <a
               href={src}
               download={filename || 'photo.jpg'}
-              className="p-1.5 rounded-lg bg-[#161b22] hover:bg-[#21262d] text-white transition-colors"
+              className="p-2 sm:p-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] text-white transition-colors"
               title="Download image"
             >
               <Download className="w-4 h-4" />
@@ -56,14 +86,14 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
               href={src}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1.5 rounded-lg bg-[#161b22] hover:bg-[#21262d] text-white transition-colors"
+              className="p-2 sm:p-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] text-white transition-colors"
               title="Open full size in new tab"
             >
               <ExternalLink className="w-4 h-4" />
             </a>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg bg-[#161b22] hover:bg-rose-500 hover:text-white transition-colors"
+              className="p-2 sm:p-1.5 rounded-xl bg-[#161b22] hover:bg-rose-500 hover:text-white text-white transition-colors"
               title="Close (Esc)"
             >
               <X className="w-4 h-4" />
@@ -71,15 +101,16 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
           </div>
         </div>
 
-        {/* Real Image */}
-        <div className="relative rounded-2xl overflow-hidden border border-[#21262d] max-h-[80vh] flex items-center justify-center bg-[#0b0d10]">
+        {/* Real Image Container */}
+        <div className="relative w-full rounded-2xl overflow-hidden border border-[#21262d] max-h-[82vh] sm:max-h-[85vh] flex items-center justify-center bg-[#0b0d10]">
           <img
             src={src}
             alt={filename || 'Photo'}
-            className="max-h-[80vh] max-w-full object-contain rounded-xl"
+            className="max-h-[82vh] sm:max-h-[85vh] max-w-full object-contain rounded-xl"
           />
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
