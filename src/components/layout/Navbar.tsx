@@ -31,18 +31,20 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const { theme, setTheme, currentThemeConfig } = useTheme();
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+  const [isExploreMenuOpen, setIsExploreMenuOpen] = useState(false);
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
 
   useEffect(() => {
     setIsThemeMenuOpen(false);
+    setIsExploreMenuOpen(false);
     setIsMoreMenuOpen(false);
   }, [activeTab]);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[#21262d] glass-panel px-3 sm:px-6 lg:px-8 py-2.5 transition-colors">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-        {/* Branding & Subtitle */}
-        <div className="flex items-center gap-3">
+    <header className="w-full shrink-0 border-b border-[#21262d] bg-[#0b0d10]/95 backdrop-blur-xl px-3 sm:px-5 lg:px-6 py-2.5 transition-colors z-40">
+      <div className="w-full flex items-center justify-between gap-2 sm:gap-4">
+        {/* Left: Branding & Subtitle */}
+        <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={() => setActiveTab('calendar')}
             className="flex items-center gap-2.5 text-left group"
@@ -54,14 +56,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             />
             <div>
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="font-editorial text-base sm:text-lg tracking-wide text-white font-medium">
+                <span className="font-editorial text-base sm:text-lg tracking-wide text-white font-medium whitespace-nowrap">
                   NILA ARCHIVE
                 </span>
-                <span className="text-[9px] sm:text-[10px] tracking-wider uppercase px-1.5 py-0.5 rounded bg-rose-500/10 border border-rose-500/20 text-rose-300 font-mono">
+                <span className="text-[9px] sm:text-[10px] tracking-wider uppercase px-1.5 py-0.5 rounded bg-rose-500/10 border border-rose-500/20 text-rose-300 font-mono shrink-0">
                   2026
                 </span>
               </div>
-              <p className="text-[11px] text-[#8b949e] font-sans hidden md:block">
+              <p className="text-[11px] text-[#8b949e] font-sans hidden 2xl:block whitespace-nowrap">
                 {metadata
                   ? `${metadata.totalMessages.toLocaleString()} Messages • ${metadata.activeDays} Active Days`
                   : 'Conversation Archive & Analytics'}
@@ -70,49 +72,69 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        {/* Center: Participant Balance Pills (Desktop only) */}
+        {/* Center: Participant Balance Pills (Responsive) */}
         {metadata && (
-          <div className="hidden xl:flex items-center gap-2 bg-[#12161c] border border-[#21262d] rounded-full px-3 py-1 text-xs">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-              <span className="text-rose-200 font-medium">NILA</span>
-              <span className="text-[#8b949e] font-mono">
-                {metadata.participantsDisplay.NILA.toLocaleString()}
-              </span>
-              <span className="text-[10px] text-rose-400/80 font-mono">
-                (
-                {(
-                  (metadata.participantsDisplay.NILA / metadata.totalMessages) *
-                  100
-                ).toFixed(1)}
-                %)
-              </span>
+          <>
+            {/* Full balance pill on ultra-wide screens */}
+            <div className="hidden 2xl:flex items-center gap-2 bg-[#12161c] border border-[#21262d] rounded-full px-3 py-1 text-xs shrink-0">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                <span className="text-rose-200 font-medium">NILA</span>
+                <span className="text-[#8b949e] font-mono">
+                  {metadata.participantsDisplay.NILA.toLocaleString()}
+                </span>
+                <span className="text-[10px] text-rose-400/80 font-mono">
+                  (
+                  {(
+                    (metadata.participantsDisplay.NILA / metadata.totalMessages) *
+                    100
+                  ).toFixed(1)}
+                  %)
+                </span>
+              </div>
+              <span className="text-[#30363d]">•</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-sky-400"></span>
+                <span className="text-sky-200 font-medium">FARHAN</span>
+                <span className="text-[#8b949e] font-mono">
+                  {metadata.participantsDisplay.FARHAN.toLocaleString()}
+                </span>
+                <span className="text-[10px] text-sky-400/80 font-mono">
+                  (
+                  {(
+                    (metadata.participantsDisplay.FARHAN / metadata.totalMessages) *
+                    100
+                  ).toFixed(1)}
+                  %)
+                </span>
+              </div>
             </div>
-            <span className="text-[#30363d]">•</span>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-sky-400"></span>
-              <span className="text-sky-200 font-medium">FARHAN</span>
-              <span className="text-[#8b949e] font-mono">
-                {metadata.participantsDisplay.FARHAN.toLocaleString()}
-              </span>
-              <span className="text-[10px] text-sky-400/80 font-mono">
-                (
-                {(
-                  (metadata.participantsDisplay.FARHAN / metadata.totalMessages) *
-                  100
-                ).toFixed(1)}
-                %)
-              </span>
+
+            {/* Compact balance pill on standard desktop/laptop (xl to 2xl) */}
+            <div className="hidden xl:flex 2xl:hidden items-center gap-2 bg-[#12161c] border border-[#21262d] rounded-full px-2.5 py-1 text-[11px] shrink-0 font-mono">
+              <div className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                <span className="text-rose-300 font-medium">
+                  {((metadata.participantsDisplay.NILA / metadata.totalMessages) * 100).toFixed(1)}%
+                </span>
+              </div>
+              <span className="text-[#30363d]">•</span>
+              <div className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+                <span className="text-sky-300 font-medium">
+                  {((metadata.participantsDisplay.FARHAN / metadata.totalMessages) * 100).toFixed(1)}%
+                </span>
+              </div>
             </div>
-          </div>
+          </>
         )}
 
-        {/* Right Actions: Wrapped, Surprise Me, Theme, Search, Date */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
+        {/* Right Actions: Search, Highlights (Aura & Wrapped), Explore Dropdown, Theme, Date */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Quick Search Button */}
           <button
             onClick={onOpenSearch}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#161b22] border border-[#30363d] hover:border-[#484f58] text-[#8b949e] hover:text-[#f0f6fc] text-xs transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#161b22] border border-[#30363d] hover:border-[#484f58] text-[#8b949e] hover:text-[#f0f6fc] text-xs font-mono transition-colors shadow-sm shrink-0 whitespace-nowrap"
             title="Search Archive (Cmd+K)"
           >
             <Search className="w-3.5 h-3.5 text-slate-400" />
@@ -122,82 +144,166 @@ export const Navbar: React.FC<NavbarProps> = ({
             </kbd>
           </button>
 
-          {/* The Journey Trigger (Tablet & Desktop; on mobile it's in bottom bar) */}
-          <button
-            onClick={() => setActiveTab('journey')}
-            className={`hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs font-mono transition-all active:scale-95 shadow-sm ${
-              activeTab === 'journey'
-                ? 'bg-gradient-to-r from-rose-500/30 to-pink-500/30 border-rose-400 text-white font-semibold'
-                : 'bg-gradient-to-r from-rose-500/10 to-pink-500/10 hover:from-rose-500/20 hover:to-pink-500/20 border-rose-500/30 text-rose-300'
-            }`}
-            title="Explore The Journey of Us"
-          >
-            <Heart className="w-3.5 h-3.5 fill-rose-400 text-rose-400" />
-            <span className="font-semibold">The Journey</span>
-          </button>
+          {/* Relationship Aura Trigger (Feature #7) */}
+          {onOpenAura && (
+            <button
+              onClick={onOpenAura}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-500/20 via-pink-500/15 to-rose-500/20 hover:from-purple-500/30 hover:to-rose-500/30 border border-purple-500/40 hover:border-purple-400/60 text-purple-200 text-xs font-mono transition-all shadow-sm active:scale-95 shrink-0 whitespace-nowrap group"
+              title="Open Relationship Aura & Mood Spectrum"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-400 group-hover:rotate-12 transition-transform" />
+              <span className="font-semibold">Aura</span>
+            </button>
+          )}
 
           {/* Our Wrapped Trigger */}
           <button
             onClick={onOpenWrapped}
-            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-500/15 via-rose-500/15 to-pink-500/15 hover:from-purple-500/25 hover:to-pink-500/25 border border-rose-500/30 text-rose-300 text-xs font-mono transition-all shadow-sm active:scale-95"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-500/20 via-pink-500/15 to-purple-500/20 hover:from-rose-500/30 hover:to-purple-500/30 border border-rose-500/40 hover:border-rose-400/60 text-rose-200 text-xs font-mono transition-all shadow-sm active:scale-95 shrink-0 whitespace-nowrap group"
             title="Open Our Archive Wrapped"
           >
-            <Sparkles className="w-3.5 h-3.5 text-rose-400" />
-            <span className="hidden sm:inline font-semibold">Wrapped</span>
+            <Sparkles className="w-3.5 h-3.5 text-rose-400 group-hover:scale-110 transition-transform" />
+            <span className="font-semibold">Wrapped</span>
           </button>
 
-          {/* Relationship Aura Trigger */}
-          {onOpenAura && (
+          {/* Explore Activities Dropdown (Desktop & Tablet) */}
+          <div className="relative hidden sm:block shrink-0">
             <button
-              onClick={onOpenAura}
-              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500/15 via-purple-500/15 to-rose-500/15 hover:from-indigo-500/25 hover:to-rose-500/25 border border-purple-500/30 text-purple-300 text-xs font-mono transition-all shadow-sm active:scale-95"
-              title="Open Relationship Aura & Mood Spectrum"
+              onClick={() => {
+                setIsExploreMenuOpen(!isExploreMenuOpen);
+                setIsThemeMenuOpen(false);
+              }}
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs font-mono transition-all active:scale-95 shrink-0 whitespace-nowrap shadow-sm ${
+                isExploreMenuOpen
+                  ? 'bg-[#21262d] border-[#484f58] text-amber-200 ring-1 ring-amber-400/20'
+                  : 'bg-[#161b22] hover:bg-[#21262d] border-[#30363d] text-amber-300'
+              }`}
+              title="More Archive Features & Activities"
             >
-              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-              <span className="hidden sm:inline font-semibold">Aura</span>
+              <Dices className="w-3.5 h-3.5 text-amber-400" />
+              <span className="font-semibold">Explore</span>
+              <ChevronDown
+                className={`w-3 h-3 text-[#8b949e] transition-transform duration-200 ${
+                  isExploreMenuOpen ? 'rotate-180' : ''
+                }`}
+              />
             </button>
-          )}
 
-          {/* Surprise Me Trigger (Desktop) */}
-          <button
-            onClick={onOpenSurprise}
-            className="hidden md:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-amber-300 text-xs font-mono transition-all active:scale-95"
-            title="Remember When? (Random Memory)"
-          >
-            <Dices className="w-3.5 h-3.5 text-amber-400" />
-            <span>Surprise</span>
-          </button>
+            {isExploreMenuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setIsExploreMenuOpen(false)}
+                />
+                <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#12161c]/95 backdrop-blur-xl border border-white/10 shadow-2xl p-2 z-50 space-y-1 animate-fade-in divide-y divide-white/5">
+                  <div className="px-3 py-1.5 text-[10px] font-mono text-[#8b949e] uppercase tracking-wider">
+                    Archive Activities & Moments
+                  </div>
+                  <div className="pt-1 space-y-1">
+                    <button
+                      onClick={() => {
+                        onOpenSurprise();
+                        setIsExploreMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 p-2 rounded-xl text-left hover:bg-white/5 transition-colors group"
+                    >
+                      <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 group-hover:scale-105 transition-transform">
+                        <Dices className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-xs text-amber-200 font-mono">
+                          Surprise Memory
+                        </div>
+                        <div className="text-[10px] text-[#8b949e]">
+                          Flashback to a random moment
+                        </div>
+                      </div>
+                    </button>
 
-          {/* Who Said It? Trivia Trigger (Desktop) */}
-          <button
-            onClick={onOpenTrivia}
-            className="hidden md:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-sky-500/30 text-sky-300 text-xs font-mono transition-all active:scale-95 shadow-sm"
-            title="Who Said It? Relationship Trivia Game"
-          >
-            <HelpCircle className="w-3.5 h-3.5 text-sky-400" />
-            <span>Trivia</span>
-          </button>
+                    <button
+                      onClick={() => {
+                        onOpenTrivia();
+                        setIsExploreMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 p-2 rounded-xl text-left hover:bg-white/5 transition-colors group"
+                    >
+                      <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 group-hover:scale-105 transition-transform">
+                        <HelpCircle className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-xs text-sky-200 font-mono">
+                          Who Said It? Trivia
+                        </div>
+                        <div className="text-[10px] text-[#8b949e]">
+                          Relationship dialogue game
+                        </div>
+                      </div>
+                    </button>
 
-          {/* The Story of Us Book Trigger (Desktop) */}
-          <button
-            onClick={onOpenBook}
-            className="hidden lg:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-amber-500/30 text-amber-300 text-xs font-mono transition-all active:scale-95 shadow-sm"
-            title="Printable Keepsake Book & PDF Export"
-          >
-            <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-            <span>Keepsake Book</span>
-          </button>
+                    <button
+                      onClick={() => {
+                        onOpenBook();
+                        setIsExploreMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 p-2 rounded-xl text-left hover:bg-white/5 transition-colors group"
+                    >
+                      <div className="p-2 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 group-hover:scale-105 transition-transform">
+                        <BookOpen className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-xs text-rose-200 font-mono">
+                          Keepsake Book
+                        </div>
+                        <div className="text-[10px] text-[#8b949e]">
+                          Printable story & PDF export
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setActiveTab('journey');
+                        setIsExploreMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 p-2 rounded-xl text-left hover:bg-white/5 transition-colors group"
+                    >
+                      <div className="p-2 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/20 group-hover:scale-105 transition-transform">
+                        <Heart className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-xs text-pink-200 font-mono">
+                          The Journey
+                        </div>
+                        <div className="text-[10px] text-[#8b949e]">
+                          Milestone chapters & story
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
 
           {/* Theme Dropdown Toggle */}
-          <div className="relative">
+          <div className="relative shrink-0">
             <button
-              onClick={() => setIsThemeMenuOpen(!isThemeMenuOpen)}
-              className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-xs font-mono text-slate-300 transition-colors"
-              title="Switch Visual Theme"
+              onClick={() => {
+                setIsThemeMenuOpen(!isThemeMenuOpen);
+                setIsExploreMenuOpen(false);
+              }}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-xs font-mono text-slate-300 transition-colors shrink-0 whitespace-nowrap"
+              title={`Switch Theme (Current: ${currentThemeConfig.name})`}
             >
-              <Palette className="w-3.5 h-3.5 text-rose-400" />
-              <span className="hidden lg:inline">{currentThemeConfig.name}</span>
-              <ChevronDown className="w-3 h-3 text-[#8b949e]" />
+              <Palette className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+              <span className="hidden xl:inline text-xs font-mono whitespace-nowrap">
+                {currentThemeConfig.name}
+              </span>
+              <ChevronDown
+                className={`w-3 h-3 text-[#8b949e] shrink-0 transition-transform duration-200 ${
+                  isThemeMenuOpen ? 'rotate-180' : ''
+                }`}
+              />
             </button>
 
             {isThemeMenuOpen && (
@@ -206,7 +312,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="fixed inset-0 z-40"
                   onClick={() => setIsThemeMenuOpen(false)}
                 />
-                <div className="absolute right-0 mt-2 w-56 rounded-2xl glass-panel border border-white/10 shadow-2xl p-2 z-50 space-y-1 animate-fade-in">
+                <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-[#12161c]/95 backdrop-blur-xl border border-white/10 shadow-2xl p-2 z-50 space-y-1 animate-fade-in">
                   <div className="px-2.5 py-1 text-[10px] font-mono text-[#8b949e] uppercase tracking-wider">
                     Select Theme
                   </div>
@@ -242,11 +348,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* More Actions Menu (Mobile & Tablet) */}
-          <div className="relative md:hidden">
+          {/* More Actions Menu (Mobile Only) */}
+          <div className="relative sm:hidden shrink-0">
             <button
-              onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
-              className="p-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-slate-300 transition-colors"
+              onClick={() => {
+                setIsMoreMenuOpen(!isMoreMenuOpen);
+                setIsThemeMenuOpen(false);
+              }}
+              className="p-1.5 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-slate-300 transition-colors shrink-0"
               title="More Options"
             >
               <MoreHorizontal className="w-4 h-4 text-slate-300" />
@@ -258,19 +367,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="fixed inset-0 z-40"
                   onClick={() => setIsMoreMenuOpen(false)}
                 />
-                <div className="absolute right-0 mt-2 w-52 rounded-2xl glass-panel border border-white/10 shadow-2xl p-2 z-50 space-y-1 animate-fade-in">
-                  {onOpenAura && (
-                    <button
-                      onClick={() => {
-                        onOpenAura();
-                        setIsMoreMenuOpen(false);
-                      }}
-                      className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left text-xs font-mono text-purple-300 hover:bg-white/5 transition-colors"
-                    >
-                      <Sparkles className="w-4 h-4 text-purple-400" />
-                      <span>Relationship Aura</span>
-                    </button>
-                  )}
+                <div className="absolute right-0 mt-2 w-52 rounded-2xl bg-[#12161c]/95 backdrop-blur-xl border border-white/10 shadow-2xl p-2 z-50 space-y-1 animate-fade-in">
+                  <div className="px-2.5 py-1 text-[10px] font-mono text-[#8b949e] uppercase tracking-wider">
+                    Quick Actions
+                  </div>
 
                   <button
                     onClick={() => {
@@ -279,7 +379,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }}
                     className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left text-xs font-mono text-amber-300 hover:bg-white/5 transition-colors"
                   >
-                    <Dices className="w-4 h-4 text-amber-400" />
+                    <Dices className="w-4 h-4 text-amber-400 shrink-0" />
                     <span>Surprise Memory</span>
                   </button>
 
@@ -290,7 +390,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }}
                     className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left text-xs font-mono text-sky-300 hover:bg-white/5 transition-colors"
                   >
-                    <HelpCircle className="w-4 h-4 text-sky-400" />
+                    <HelpCircle className="w-4 h-4 text-sky-400 shrink-0" />
                     <span>Who Said It? Trivia</span>
                   </button>
 
@@ -299,27 +399,39 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onOpenBook();
                       setIsMoreMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left text-xs font-mono text-amber-300 hover:bg-white/5 transition-colors"
+                    className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left text-xs font-mono text-rose-300 hover:bg-white/5 transition-colors"
                   >
-                    <BookOpen className="w-4 h-4 text-amber-400" />
+                    <BookOpen className="w-4 h-4 text-rose-400 shrink-0" />
                     <span>Keepsake Book</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setActiveTab('journey');
+                      setIsMoreMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left text-xs font-mono text-pink-300 hover:bg-white/5 transition-colors"
+                  >
+                    <Heart className="w-4 h-4 text-pink-400 shrink-0" />
+                    <span>The Journey</span>
                   </button>
                 </div>
               </>
             )}
           </div>
 
-          {/* Current Date Badge (Desktop) */}
+          {/* Current Date Badge (Desktop & Tablet) */}
           {selectedDate && (
             <button
               onClick={() => setActiveTab('conversation')}
-              className={`hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-mono transition-all ${
+              className={`hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-mono transition-all shrink-0 whitespace-nowrap ${
                 activeTab === 'conversation'
                   ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-sm'
                   : 'bg-[#12161c] text-[#8b949e] hover:text-white border border-[#21262d]'
               }`}
+              title={`Jump to conversation for ${selectedDate}`}
             >
-              <Calendar className="w-3.5 h-3.5 text-rose-400" />
+              <Calendar className="w-3.5 h-3.5 text-rose-400 shrink-0" />
               <span>{selectedDate.slice(5)}</span>
             </button>
           )}
