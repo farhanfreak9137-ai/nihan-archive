@@ -22,7 +22,7 @@ export function useArchive() {
 
   // Active view state
   const [activeTab, setActiveTab] = useState<ActiveTab>('calendar');
-  const [selectedDate, setSelectedDate] = useState<string>('2026-09-04'); // Default to most active climax day
+  const [selectedDate, setSelectedDate] = useState<string>('2026-09-05'); // Default to most active climax day
   const [highlightMessageId, setHighlightMessageId] = useState<string | null>(null);
 
   // Day conversation state
