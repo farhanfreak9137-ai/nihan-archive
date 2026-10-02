@@ -33,7 +33,19 @@ export function useArchive() {
   const [moments, setMoments] = useState<Moment[]>(() => {
     try {
       const saved = localStorage.getItem('nila_archive_moments');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed: Moment[] = JSON.parse(saved);
+        const customMoments = parsed.filter((m) => m.isCustom);
+        const favoriteIds = new Set(parsed.filter((m) => m.isFavorite).map((m) => m.id));
+
+        // Merge enriched default moments with stored favorite flags
+        const mergedDefaults = DEFAULT_MOMENTS.map((dm) => ({
+          ...dm,
+          isFavorite: favoriteIds.has(dm.id) || dm.isFavorite,
+        }));
+
+        return [...customMoments, ...mergedDefaults];
+      }
     } catch {}
     return DEFAULT_MOMENTS;
   });

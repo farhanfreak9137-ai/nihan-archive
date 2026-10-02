@@ -188,6 +188,15 @@ export interface NicknameEntry {
   sampleMessageIds: string[];
 }
 
+export type MomentCategory =
+  | 'milestone'
+  | 'late-night'
+  | 'audio'
+  | 'banter'
+  | 'comfort'
+  | 'love'
+  | 'custom';
+
 export interface Moment {
   id: string;
   date: string;
@@ -197,4 +206,17 @@ export interface Moment {
   icon?: string;
   tags?: string[];
   isCustom?: boolean;
+  category?: MomentCategory;
+  quote?: {
+    text: string;
+    sender: 'NILU' | 'farhannn';
+    time?: string;
+  };
+  statsSnippet?: {
+    totalMessages?: number;
+    audioNotes?: number;
+    calls?: number;
+    reels?: number;
+  };
+  isFavorite?: boolean;
 }
