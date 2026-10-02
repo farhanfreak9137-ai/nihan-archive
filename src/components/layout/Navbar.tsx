@@ -47,19 +47,22 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={() => setActiveTab('calendar')}
-            className="flex items-center gap-2.5 text-left group"
+            className="flex items-center gap-3 text-left group"
           >
-            <img
-              src="/logo.png"
-              alt="Nila Archive Logo"
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-cover shadow-sm ring-1 ring-white/10 group-hover:scale-105 group-hover:ring-rose-500/40 transition-all shrink-0"
-            />
+            {/* Glowing Logo Frame */}
+            <div className="relative p-[2px] rounded-2xl bg-gradient-to-tr from-rose-500 via-purple-500 to-amber-400 shadow-md shadow-rose-500/25 group-hover:shadow-rose-500/50 group-hover:scale-105 transition-all shrink-0">
+              <img
+                src="/logo.png"
+                alt="Nila Archive Logo"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-[14px] object-cover bg-[#0b0d10]"
+              />
+            </div>
             <div>
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="font-editorial text-base sm:text-lg tracking-wide text-white font-medium whitespace-nowrap">
+              <div className="flex items-center gap-2">
+                <span className="font-editorial text-base sm:text-lg tracking-wider font-bold bg-gradient-to-r from-white via-rose-100 to-purple-200 bg-clip-text text-transparent whitespace-nowrap">
                   NILA ARCHIVE
                 </span>
-                <span className="text-[9px] sm:text-[10px] tracking-wider uppercase px-1.5 py-0.5 rounded bg-rose-500/10 border border-rose-500/20 text-rose-300 font-mono shrink-0">
+                <span className="text-[9px] sm:text-[10px] tracking-widest uppercase px-2 py-0.5 rounded-full bg-gradient-to-r from-rose-500/25 to-purple-500/25 border border-rose-500/40 text-rose-200 font-mono font-bold shadow-[0_0_12px_rgba(244,63,94,0.3)] shrink-0">
                   2026
                 </span>
               </div>
