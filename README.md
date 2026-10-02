@@ -11,11 +11,11 @@ A private, beautifully designed, and high-performance digital archive built for 
 The **NILA ARCHIVE** transforms raw exported messaging data into an editorial, interactive experience. Rather than browsing static JSON logs, the archive lets you explore conversations through time, search past messages instantly, play voice notes with animated scrubbers, view full-resolution photos, and discover conversational rhythms.
 
 ### Key Metrics
-* **Total Messages:** 75,853 (`39,069` by NILA • `36,784` by FARHAN)
-* **Active Days:** 81 days (July 6, 2026 – September 25, 2026)
-* **Shares & Links:** 1,949 (1,539 Reels, 296 Posts, 52 Stories, 62 Other)
-* **Voice Notes:** 2,078 voice messages
-* **Reactions:** 2,393 message reactions
+* **Total Messages:** 80,988 (`41,741` by NILA • `39,247` by FARHAN)
+* **Active Days:** 87 days (July 6, 2026 – October 1, 2026)
+* **Shares & Links:** 2,109 (1,633 Reels, 350 Posts, 61 Stories, 65 Other)
+* **Voice Notes:** 2,147 voice messages
+* **Reactions:** 2,597 message reactions
 
 ---
 
@@ -28,7 +28,7 @@ The **NILA ARCHIVE** transforms raw exported messaging data into an editorial, i
   Powered by `@tanstack/react-virtual` to render thousands of messages smoothly at 60 FPS. Features a 24-hour timeline scrubber, sender alignment, photo lightbox, video playback, custom audio player, and floating reactions.
 
 * **🔍 Full-Text Global Search**:
-  Instant search across all 75,853 messages with exact keyword highlighting, sender filters, date boundaries, and one-click jump to context in the chat.
+  Instant search across all 80,988 messages with exact keyword highlighting, sender filters, date boundaries, and one-click jump to context in the chat.
 
 * **📊 Deep Relationship Analytics**:
   * 51.5% vs 48.5% communication balance
