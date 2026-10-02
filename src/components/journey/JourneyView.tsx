@@ -220,19 +220,19 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
       {
         id: 'milestone-9',
         chapter: 9,
-        date: '2026-09-04',
+        date: '2026-09-05',
         time: 'All Day',
-        title: 'The Great Marathon: 3,283 Messages in 24 Hours',
+        title: 'The Great Marathon: 2,096 Messages in 24 Hours',
         subtitle: 'The all-time peak climax of the entire archive',
         category: 'climax',
         badge: 'All-Time Record Peak',
         icon: Flame,
         accentColor: 'from-rose-500/20 to-amber-500/20 border-rose-500/40 text-rose-200',
-        summary: 'A non-stop texting marathon generating 3,283 messages, 237 voice notes, and 24 hours of unbroken connection.',
+        summary: 'A non-stop texting marathon generating 2,096 messages, 55 voice notes, 78 shares, and 24 hours of unbroken connection.',
         narrative:
-          'September 4th was a tour de force of intimacy and conversational stamina. From early morning to late into the dawn, neither let go of their phones. It stands as the single most active day in their history.',
+          'September 5th was the pinnacle of conversational intensity. Generating 2,096 messages across day and night, it stands as the single most active day in their history.',
         quotes: [
-          { sender: 'NILA', text: 'Tore chara amr bhalo lage na', note: 'Exchanged during the record marathon' },
+          { sender: 'NILA', text: 'Tore chara amr bhalo lage na', note: 'Exchanged during the peak record marathon' },
           { sender: 'FARHAN', text: 'Ami shob somoy tomar sathei asi', note: 'Constant presence throughout the day' },
         ],
       },
@@ -244,7 +244,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
         title: '"I\'m Right Here": Weathering Every Storm Together',
         subtitle: 'Maturity, reassurance, and an unbreakable bond that stands firm',
         category: 'devotion',
-        badge: 'Latest Closeness • Today',
+        badge: 'Resilience & Steadfastness',
         icon: ShieldCheck,
         accentColor: 'from-emerald-500/20 to-teal-500/20 border-emerald-500/30 text-emerald-300',
         summary: 'Farhan reassuring Nila during tough moments: "accha somossa nai ami eikhanei asi" & "I\'m sorry".',
@@ -254,6 +254,26 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
           { sender: 'FARHAN', text: 'accha somossa nai ami eikhanei asi', time: '8:24 PM' },
           { sender: 'FARHAN', text: 'I\'m sorry', time: '8:24 PM' },
           { sender: 'NILA', text: 'Ammu dui din por emnei normal hoye jabe... Kisukkokhon er jonnoi', time: '8:21 PM' },
+        ],
+      },
+      {
+        id: 'milestone-11',
+        chapter: 11,
+        date: '2026-09-29',
+        time: '5:36 PM',
+        title: '"Mera Sukoon Aur Mera Aane Wala Kal"',
+        subtitle: 'Stepping into Autumn with deep, unwavering conviction',
+        category: 'devotion',
+        badge: 'Latest Closeness • The Present',
+        icon: Sparkles,
+        accentColor: 'from-purple-500/20 to-rose-500/20 border-purple-500/30 text-purple-300',
+        summary: 'Farhan\'s heartfelt confession: "meri khushi, mera sukoon aur mera aane wala kal... sab sirf tumse hai" • Nila: "I love you too jantush".',
+        narrative:
+          'Heading into October, the archive reaches a profound, mature beauty. On September 29th, in an exchange that echoed throughout the day, Farhan put into words the peaceful certainty they both feel: that their peace, happiness, and future belong completely together.',
+        quotes: [
+          { sender: 'FARHAN', text: 'Aise likhoge toh tum par aur zyada pyaar aayega. Main bas itna jaanta hu ki meri khushi, mera sukoon aur mera aane wala kal... sab sirf tumse hai.', time: '5:36 PM' },
+          { sender: 'FARHAN', text: 'i love you baby', time: '5:59 PM' },
+          { sender: 'NILA', text: 'I love you too jantush', time: '5:59 PM' },
         ],
       },
     ],
@@ -266,11 +286,11 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
   }, [milestones, activeCategory]);
 
   const journeyStats = useMemo(() => {
-    const totalMsgs = dailyStats.reduce((acc, d) => acc + (d.totalMessages || 0), 0) || 75853;
-    const totalVoice = dailyStats.reduce((acc, d) => acc + (d.audioNotes || 0), 0) || 2078;
-    const totalReels = dailyStats.reduce((acc, d) => acc + (d.reels || 0), 0) || 1618;
+    const totalMsgs = dailyStats.reduce((acc, d) => acc + (d.totalMessages || 0), 0) || 80988;
+    const totalVoice = dailyStats.reduce((acc, d) => acc + (d.audioNotes || 0), 0) || 2147;
+    const totalReels = dailyStats.reduce((acc, d) => acc + (d.reels || 0), 0) || 1633;
     return {
-      days: dailyStats.length || 81,
+      days: dailyStats.length || 87,
       totalMessages: totalMsgs,
       voiceNotes: totalVoice,
       reels: totalReels,
