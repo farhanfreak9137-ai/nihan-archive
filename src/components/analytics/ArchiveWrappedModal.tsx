@@ -230,11 +230,10 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
         badge: 'CHAPTER 6 • AUDIO DIARY',
         badgeColor: 'text-emerald-400 bg-emerald-500/20 border-emerald-500/30',
         title: 'The Sound of Your Voices',
-        metric: (metadata.media?.audio || 1715).toLocaleString(),
+        metric: (metadata.media?.audio || 2147).toLocaleString(),
         unit: 'Voice Notes Recorded',
         subtitle: 'Hours of laughter, voice notes & calls',
-        narrative:
-          'Words were not just typed; they were spoken. 1,715 voice notes captured in real time, full of spontaneous laughter, sleepy murmurs, and inside stories.',
+        narrative: `Words were not just typed; they were spoken. ${(metadata.media?.audio || 2147).toLocaleString()} voice notes captured in real time, full of spontaneous laughter, sleepy murmurs, and inside stories.`,
         icon: Mic,
         accent: 'text-emerald-400',
       },
@@ -265,7 +264,7 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
         metric: `${metadata.shares.reels.toLocaleString()} Reels`,
         unit: `Across ${metadata.shares.total.toLocaleString()} Total Shares`,
         subtitle: `Top Emoji: ${topReaction.emoji} reacted ${topReaction.total.toLocaleString()} times`,
-        narrative: `You traded over 1,200 Instagram reels, reacting more than 1,700 times with hearts and laughter. A private universe filled with shared humor and reels.`,
+        narrative: `You traded over ${metadata.shares.reels.toLocaleString()} Instagram reels, reacting more than ${metadata.reactions.total.toLocaleString()} times with hearts and laughter. A private universe filled with shared humor and reels.`,
         icon: Film,
         accent: 'text-pink-400',
       },
@@ -289,7 +288,7 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
               ⚖️ 51/49 Equal Balance
             </span>
             <span className="px-2.5 py-1 rounded-full text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              🎙️ 1.7K+ Audio Memories
+              🎙️ {((metadata.media?.audio || 2147) / 1000).toFixed(1)}K+ Audio Memories
             </span>
           </div>
         ),

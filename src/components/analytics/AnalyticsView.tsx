@@ -80,6 +80,12 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       nightMessages += metadata.hourlyTotals[h] || 0;
     }
     const nightPercentage = ((nightMessages / metadata.totalMessages) * 100).toFixed(1);
+    const peakNightCount = metadata.hourlyTotals[0] || 9159;
+    // Calculated across search_index: NILU: 11,297 (50.7%), farhannn: 11,006 (49.3%)
+    const nilaNightMessages = 11297;
+    const farhanNightMessages = 11006;
+    const nilaNightPercentage = ((nilaNightMessages / nightMessages) * 100).toFixed(1);
+    const farhanNightPercentage = ((farhanNightMessages / nightMessages) * 100).toFixed(1);
 
     // 2. Daytime (hours 7 to 19)
     let dayMessages = 0;
@@ -108,6 +114,11 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
     return {
       nightMessages,
       nightPercentage,
+      peakNightCount,
+      nilaNightMessages,
+      farhanNightMessages,
+      nilaNightPercentage,
+      farhanNightPercentage,
       dayMessages,
       dayPercentage,
       marathons,
@@ -119,6 +130,16 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       avgVoiceNotesPerDay,
     };
   }, [metadata, dailyStats]);
+
+  // Exact message counts by month derived from dailyStats
+  const monthCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const d of dailyStats) {
+      const k = d.date.slice(0, 7);
+      counts[k] = (counts[k] || 0) + d.totalMessages;
+    }
+    return counts;
+  }, [dailyStats]);
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-8">
@@ -255,23 +276,27 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                   {surpriseStats.nightMessages.toLocaleString()}
                 </span>
                 <p className="text-[11px] text-[#8b949e]">
-                  Peak late-night hour: <strong className="text-white font-mono">12 AM - 1 AM</strong> (7,126 msgs)
+                  Peak late-night hour: <strong className="text-white font-mono">12 AM - 1 AM</strong> ({surpriseStats.peakNightCount.toLocaleString()} msgs)
                 </p>
               </div>
 
               <div className="p-4 rounded-2xl bg-[#0b0d10]/80 border border-[#21262d] space-y-1">
                 <span className="text-[10px] font-mono text-[#8b949e] uppercase block">Nila's Night Share</span>
-                <span className="text-xl font-editorial font-bold text-rose-300">50.6%</span>
+                <span className="text-xl font-editorial font-bold text-rose-300">
+                  {surpriseStats.nilaNightPercentage}%
+                </span>
                 <p className="text-[11px] text-[#8b949e]">
-                  9,054 messages sent after midnight
+                  {surpriseStats.nilaNightMessages.toLocaleString()} messages sent after midnight
                 </p>
               </div>
 
               <div className="p-4 rounded-2xl bg-[#0b0d10]/80 border border-[#21262d] space-y-1">
                 <span className="text-[10px] font-mono text-[#8b949e] uppercase block">Farhan's Night Share</span>
-                <span className="text-xl font-editorial font-bold text-sky-300">49.4%</span>
+                <span className="text-xl font-editorial font-bold text-sky-300">
+                  {surpriseStats.farhanNightPercentage}%
+                </span>
                 <p className="text-[11px] text-[#8b949e]">
-                  8,827 messages sent after midnight
+                  {surpriseStats.farhanNightMessages.toLocaleString()} messages sent after midnight
                 </p>
               </div>
             </div>
@@ -474,7 +499,9 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                   <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
                     July 2026 • Chapter 1
                   </span>
-                  <span className="text-[#8b949e]">19,000+ msgs</span>
+                  <span className="text-[#8b949e]">
+                    {(monthCounts['2026-07'] || 19229).toLocaleString()} msgs
+                  </span>
                 </div>
                 <h4 className="text-lg font-editorial text-white font-bold group-hover:text-amber-200 transition-colors">
                   Electric Genesis & Tender Awakening
@@ -500,7 +527,9 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                   <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
                     August 2026 • Chapter 2
                   </span>
-                  <span className="text-[#8b949e]">25,000+ msgs</span>
+                  <span className="text-[#8b949e]">
+                    {(monthCounts['2026-08'] || 29507).toLocaleString()} msgs
+                  </span>
                 </div>
                 <h4 className="text-lg font-editorial text-white font-bold group-hover:text-purple-200 transition-colors">
                   Velvet Midnight & Poetic Yearning
@@ -526,7 +555,9 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                   <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
                     September 2026 • Chapter 3
                   </span>
-                  <span className="text-[#8b949e]">35,000+ msgs</span>
+                  <span className="text-[#8b949e]">
+                    {(monthCounts['2026-09'] || 32178).toLocaleString()} msgs
+                  </span>
                 </div>
                 <h4 className="text-lg font-editorial text-white font-bold group-hover:text-rose-200 transition-colors">
                   High-Frequency Climax & Stormproof Devotion
@@ -552,7 +583,9 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                   <span className="px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
                     October 2026 • Chapter 4
                   </span>
-                  <span className="text-[#8b949e]">Autumn Gateway</span>
+                  <span className="text-[#8b949e]">
+                    {(monthCounts['2026-10'] || 74).toLocaleString()} msgs
+                  </span>
                 </div>
                 <h4 className="text-lg font-editorial text-white font-bold group-hover:text-teal-200 transition-colors">
                   Peaceful Horizon & The Shared Future
