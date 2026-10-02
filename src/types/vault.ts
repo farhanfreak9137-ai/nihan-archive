@@ -45,6 +45,7 @@ export interface VaultMetadata {
     2: number;
     3: number;
   };
+  lastGenerated?: string;
 }
 
 export interface VaultData {
