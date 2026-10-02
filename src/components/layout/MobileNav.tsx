@@ -7,6 +7,7 @@ import {
   Film,
   Sparkles,
   Heart,
+  Flame,
 } from 'lucide-react';
 import { ActiveTab } from '../../hooks/useArchive';
 
@@ -22,6 +23,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
   const tabs = [
     { id: 'calendar' as ActiveTab, label: 'Calendar', icon: CalendarIcon },
     { id: 'conversation' as ActiveTab, label: 'Chat', icon: MessageSquare },
+    { id: 'vault' as ActiveTab, label: 'Vault', icon: Flame },
     { id: 'journey' as ActiveTab, label: 'Journey', icon: Heart },
     { id: 'media' as ActiveTab, label: 'Media', icon: Film },
     { id: 'analytics' as ActiveTab, label: 'Stats', icon: BarChart2 },

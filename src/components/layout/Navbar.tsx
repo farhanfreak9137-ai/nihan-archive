@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Search, Sparkles, Dices, Palette, ChevronDown, HelpCircle, BookOpen, Heart, MoreHorizontal } from 'lucide-react';
+import { Calendar, Search, Sparkles, Dices, Palette, ChevronDown, HelpCircle, BookOpen, Heart, Flame, MoreHorizontal } from 'lucide-react';
 import { ArchiveMetadata } from '../../types/archive';
 import { ActiveTab } from '../../hooks/useArchive';
 import { useTheme, THEMES } from '../../context/ThemeContext';
@@ -276,6 +276,31 @@ export const Navbar: React.FC<NavbarProps> = ({
                         </div>
                         <div className="text-[10px] text-[#8b949e]">
                           Milestone chapters & story
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setActiveTab('vault');
+                        setIsExploreMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 p-2 rounded-xl text-left hover:bg-white/5 transition-colors group"
+                    >
+                      <div className="p-2 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 group-hover:scale-105 transition-transform">
+                        <Flame className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-semibold text-xs text-rose-200 font-mono">
+                            The Intimate Vault
+                          </span>
+                          <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                            18+
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-[#8b949e]">
+                          Adult dialogues & uncensored moments
                         </div>
                       </div>
                     </button>

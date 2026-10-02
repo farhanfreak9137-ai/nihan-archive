@@ -8,6 +8,7 @@ import {
   NicknameEntry,
   Moment,
 } from '../types/archive';
+import { VaultData } from '../types/vault';
 
 const dayCache = new Map<string, Message[]>();
 let metadataCache: ArchiveMetadata | null = null;
@@ -16,6 +17,7 @@ let searchIndexCache: SearchItem[] | null = null;
 let mediaIndexCache: MediaRecord[] | null = null;
 let expressionsCache: ExpressionEntry[] | null = null;
 let nicknamesCache: NicknameEntry[] | null = null;
+let vaultCache: VaultData | null = null;
 
 export function resolveDataUrl(path: string): string {
   if (!path) return '';
@@ -89,6 +91,14 @@ export async function fetchNicknames(): Promise<NicknameEntry[]> {
   if (!res.ok) throw new Error('Failed to load nicknames');
   nicknamesCache = await res.json();
   return nicknamesCache!;
+}
+
+export async function fetchIntimateVaultData(): Promise<VaultData> {
+  if (vaultCache) return vaultCache;
+  const res = await fetch(resolveDataUrl('data/intimate_vault.json'));
+  if (!res.ok) throw new Error('Failed to load intimate vault data');
+  vaultCache = await res.json();
+  return vaultCache!;
 }
 
 // Initial Curated Moments

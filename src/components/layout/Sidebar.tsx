@@ -7,6 +7,7 @@ import {
   Film,
   Sparkles,
   Heart,
+  Flame,
 } from 'lucide-react';
 import { ActiveTab } from '../../hooks/useArchive';
 
@@ -53,6 +54,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Media Vault',
       sublabel: 'Reels, photos & audio',
       icon: Film,
+    },
+    {
+      id: 'vault' as ActiveTab,
+      label: 'The Intimate Vault',
+      sublabel: '18+ dialogues & uncensored',
+      icon: Flame,
+      badge: '18+',
     },
     {
       id: 'journey' as ActiveTab,
@@ -103,7 +111,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <Icon className="w-4 h-4" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-sm truncate leading-tight">{item.label}</div>
+                <div className="flex items-center gap-1.5 leading-tight">
+                  <span className="text-sm truncate">{item.label}</span>
+                  {item.badge && (
+                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                      {item.badge}
+                    </span>
+                  )}
+                </div>
                 <div className="text-[11px] text-[#8b949e] truncate font-sans">
                   {item.sublabel}
                 </div>

@@ -12,7 +12,7 @@ import {
   DEFAULT_MOMENTS,
 } from '../lib/data';
 
-export type ActiveTab = 'calendar' | 'conversation' | 'search' | 'analytics' | 'media' | 'moments' | 'journey';
+export type ActiveTab = 'calendar' | 'conversation' | 'search' | 'analytics' | 'media' | 'moments' | 'journey' | 'vault';
 
 export function useArchive() {
   const [metadata, setMetadata] = useState<ArchiveMetadata | null>(null);

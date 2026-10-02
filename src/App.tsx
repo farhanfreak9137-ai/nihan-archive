@@ -16,6 +16,7 @@ import { RelationshipAuraModal } from './components/analytics/RelationshipAuraMo
 import { SurpriseMemoryModal } from './components/moments/SurpriseMemoryModal';
 import { TriviaQuizModal } from './components/trivia/TriviaQuizModal';
 import { KeepsakeBookModal } from './components/export/KeepsakeBookModal';
+import { IntimateVaultView } from './components/vault/IntimateVaultView';
 import { StickyAudioDock } from './components/ui/StickyAudioDock';
 import { ThemeProvider } from './context/ThemeContext';
 import { AudioPlayerProvider, useAudioPlayer } from './context/AudioPlayerContext';
@@ -220,6 +221,12 @@ function ArchiveAppInner() {
                 onSaveMoment={saveMoment}
                 onDeleteMoment={deleteMoment}
               />
+            </div>
+          )}
+
+          {activeTab === 'vault' && (
+            <div className="p-3 sm:p-6 lg:p-8 animate-fade-in">
+              <IntimateVaultView onSelectContext={handleSearchJump} />
             </div>
           )}
         </main>
