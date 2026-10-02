@@ -30,7 +30,7 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
   const [isCreating, setIsCreating] = useState(false);
   const [isSurpriseOpen, setIsSurpriseOpen] = useState(false);
   const [newTitle, setNewTitle] = useState('');
-  const [newDate, setNewDate] = useState('2026-08-02');
+  const [newDate, setNewDate] = useState('2026-10-01');
   const [newDesc, setNewDesc] = useState('');
   const [newTags, setNewTags] = useState('milestone');
 
@@ -136,7 +136,7 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
                 type="date"
                 value={newDate}
                 min="2026-07-06"
-                max="2026-09-10"
+                max="2026-10-02"
                 onChange={(e) => setNewDate(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl bg-[#0b0d10] border border-[#21262d] text-xs text-white focus:outline-none focus:border-rose-500 font-mono"
                 required

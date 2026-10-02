@@ -24,7 +24,7 @@ export const ScrapbookCollageModal: React.FC<ScrapbookCollageModalProps> = ({
   photos,
   onSelectPhoto,
 }) => {
-  const [selectedMonth, setSelectedMonth] = useState<'ALL' | '2026-07' | '2026-08' | '2026-09'>('ALL');
+  const [selectedMonth, setSelectedMonth] = useState<'ALL' | '2026-07' | '2026-08' | '2026-09' | '2026-10'>('ALL');
   const [layoutSeed, setLayoutSeed] = useState(1);
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState(false);
@@ -228,6 +228,7 @@ export const ScrapbookCollageModal: React.FC<ScrapbookCollageModalProps> = ({
               { id: '2026-07', label: 'July' },
               { id: '2026-08', label: 'August' },
               { id: '2026-09', label: 'September' },
+              { id: '2026-10', label: 'October' },
             ].map((m) => (
               <button
                 key={m.id}

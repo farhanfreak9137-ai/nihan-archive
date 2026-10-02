@@ -24,13 +24,25 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   // Derive all active months from dailyStats dynamically
   const availableMonths = useMemo(() => {
     const months = Array.from(new Set(dailyStats.map((d) => d.date.slice(0, 7)))).sort();
-    return months.length > 0 ? months : ['2026-07', '2026-08', '2026-09'];
+    return months.length > 0 ? months : ['2026-07', '2026-08', '2026-09', '2026-10'];
   }, [dailyStats]);
 
-  // Default to latest active month
+  // Default to selectedDate month or latest active month
   const [currentYearMonth, setCurrentYearMonth] = useState<string>(() => {
-    return availableMonths[availableMonths.length - 1] || '2026-09';
+    if (selectedDate) return selectedDate.slice(0, 7);
+    return availableMonths[availableMonths.length - 1] || '2026-10';
   });
+
+  // Sync currentYearMonth when selectedDate changes or when availableMonths load
+  React.useEffect(() => {
+    if (selectedDate) {
+      const ym = selectedDate.slice(0, 7);
+      if (availableMonths.includes(ym)) {
+        setCurrentYearMonth(ym);
+      }
+    }
+  }, [selectedDate, availableMonths]);
+
   const [hoveredDate, setHoveredDate] = useState<string | null>(null);
   const [mobileInspectDate, setMobileInspectDate] = useState<string | null>(null);
 

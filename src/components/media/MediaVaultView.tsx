@@ -39,7 +39,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
     'all' | 'reel' | 'post' | 'story' | 'photo' | 'video' | 'audio' | 'file'
   >('reel');
   const [senderFilter, setSenderFilter] = useState<'all' | 'NILU' | 'farhannn'>('all');
-  const [selectedMonth, setSelectedMonth] = useState<'all' | '2026-07' | '2026-08' | '2026-09'>('all');
+  const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<string>('all');
   const [photoCategory, setPhotoCategory] = useState<'all' | 'screenshot' | 'portrait' | 'aesthetic' | 'memory'>('all');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
@@ -339,6 +339,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
               { id: '2026-07', label: 'July 2026' },
               { id: '2026-08', label: 'August 2026' },
               { id: '2026-09', label: 'September 2026' },
+              { id: '2026-10', label: 'October 2026' },
             ].map((m) => (
               <button
                 key={m.id}
