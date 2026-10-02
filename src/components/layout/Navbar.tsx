@@ -14,6 +14,7 @@ interface NavbarProps {
   onOpenSurprise: () => void;
   onOpenTrivia: () => void;
   onOpenBook: () => void;
+  onOpenAura?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -26,6 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSurprise,
   onOpenTrivia,
   onOpenBook,
+  onOpenAura,
 }) => {
   const { theme, setTheme, currentThemeConfig } = useTheme();
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
@@ -144,6 +146,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="hidden sm:inline font-semibold">Wrapped</span>
           </button>
 
+          {/* Relationship Aura Trigger */}
+          {onOpenAura && (
+            <button
+              onClick={onOpenAura}
+              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500/15 via-purple-500/15 to-rose-500/15 hover:from-indigo-500/25 hover:to-rose-500/25 border border-purple-500/30 text-purple-300 text-xs font-mono transition-all shadow-sm active:scale-95"
+              title="Open Relationship Aura & Mood Spectrum"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+              <span className="hidden sm:inline font-semibold">Aura</span>
+            </button>
+          )}
+
           {/* Surprise Me Trigger (Desktop) */}
           <button
             onClick={onOpenSurprise}
@@ -245,6 +259,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => setIsMoreMenuOpen(false)}
                 />
                 <div className="absolute right-0 mt-2 w-52 rounded-2xl glass-panel border border-white/10 shadow-2xl p-2 z-50 space-y-1 animate-fade-in">
+                  {onOpenAura && (
+                    <button
+                      onClick={() => {
+                        onOpenAura();
+                        setIsMoreMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2.5 p-2 rounded-xl text-left text-xs font-mono text-purple-300 hover:bg-white/5 transition-colors"
+                    >
+                      <Sparkles className="w-4 h-4 text-purple-400" />
+                      <span>Relationship Aura</span>
+                    </button>
+                  )}
+
                   <button
                     onClick={() => {
                       onOpenSurprise();

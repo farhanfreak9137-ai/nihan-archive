@@ -12,6 +12,7 @@ import { MomentsView } from './components/moments/MomentsView';
 import { JourneyView } from './components/journey/JourneyView';
 import { AiDaySummaryModal } from './components/ai/AiDaySummaryModal';
 import { ArchiveWrappedModal } from './components/analytics/ArchiveWrappedModal';
+import { RelationshipAuraModal } from './components/analytics/RelationshipAuraModal';
 import { SurpriseMemoryModal } from './components/moments/SurpriseMemoryModal';
 import { TriviaQuizModal } from './components/trivia/TriviaQuizModal';
 import { KeepsakeBookModal } from './components/export/KeepsakeBookModal';
@@ -41,6 +42,7 @@ function ArchiveAppInner() {
 
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isWrappedOpen, setIsWrappedOpen] = useState(false);
+  const [isAuraOpen, setIsAuraOpen] = useState(false);
   const [isSurpriseOpen, setIsSurpriseOpen] = useState(false);
   const [isTriviaOpen, setIsTriviaOpen] = useState(false);
   const [isBookOpen, setIsBookOpen] = useState(false);
@@ -130,6 +132,7 @@ function ArchiveAppInner() {
         onOpenSurprise={() => setIsSurpriseOpen(true)}
         onOpenTrivia={() => setIsTriviaOpen(true)}
         onOpenBook={() => setIsBookOpen(true)}
+        onOpenAura={() => setIsAuraOpen(true)}
       />
 
       {/* Main Layout Body */}
@@ -267,6 +270,17 @@ function ArchiveAppInner() {
         onClose={() => setIsBookOpen(false)}
         dailyStats={dailyStats}
       />
+
+      {/* Relationship Aura & Mood Spectrum Modal */}
+      {metadata && (
+        <RelationshipAuraModal
+          isOpen={isAuraOpen}
+          onClose={() => setIsAuraOpen(false)}
+          metadata={metadata}
+          dailyStats={dailyStats}
+          onSelectDate={handleSearchJump}
+        />
+      )}
     </div>
   );
 }

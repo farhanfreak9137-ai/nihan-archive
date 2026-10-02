@@ -246,9 +246,9 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
         badge: 'CHAPTER 7 • THE CLIMAX',
         badgeColor: 'text-amber-400 bg-amber-500/20 border-amber-500/30',
         title: 'The All-Time Record Day',
-        metric: `${peakDay ? peakDay.totalMessages.toLocaleString() : '1,885'} msgs`,
-        unit: peakDay ? formatDateString(peakDay.date) : 'Friday, Sep 4, 2026',
-        subtitle: peakDay ? `Peak hour had ${peakDay.peakHourCount} messages at ${peakDay.peakHour}:00` : '17.5 hours of continuous chat',
+        metric: `${peakDay ? peakDay.totalMessages.toLocaleString() : '2,096'} msgs`,
+        unit: peakDay ? formatDateString(peakDay.date) : 'Saturday, Sep 5, 2026',
+        subtitle: peakDay ? `Peak hour had ${peakDay.peakHourCount} messages at ${peakDay.peakHour}:00` : 'Peak marathon of continuous chat',
         narrative:
           'Your most talkative, lively day ever recorded in the archive. An intense, joyful marathon of communication that didn’t stop from morning until late at night.',
         icon: Flame,
@@ -379,12 +379,12 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
 💌 Total Messages: ${metadata.totalMessages.toLocaleString()}
 📅 Unbroken Streak: ${metadata.activeDays} Days (${metadata.startDate} to ${metadata.endDate})
 ⚖️ Communication Balance: Nila ${nilaPct}% • Farhan ${farhanPct}%
-🎙️ Voice Notes: ${(metadata.media?.audio || 1715).toLocaleString()}
+🎙️ Voice Notes: ${(metadata.media?.audio || 2147).toLocaleString()}
 🌙 Midnight Messages: ${midnightMessages.toLocaleString()} (12 AM – 5 AM)
 💖 Top Nickname: "${topNicknames[0]?.nickname || 'pagli'}" (${topNicknames[0]?.totalCount || 184} times)
 ❤️ "I Love You": ${loveExpr?.totalOccurrences.total || 350} times
 🎬 Reels Shared: ${metadata.shares.reels.toLocaleString()}
-🔥 Peak Record Day: ${peakDay ? formatDateString(peakDay.date) : 'Sep 4, 2026'} (${peakDay ? peakDay.totalMessages.toLocaleString() : '1,885'} msgs)
+🔥 Peak Record Day: ${peakDay ? formatDateString(peakDay.date) : 'Sep 5, 2026'} (${peakDay ? peakDay.totalMessages.toLocaleString() : '2,096'} msgs)
 ✨ Relationship Persona: The Midnight Soulmates
 ━━━━━━━━━━━━━━━━━━━━━━
 🔒 Preserved forever in Our Archive.`;

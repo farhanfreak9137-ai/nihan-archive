@@ -27,7 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       id: 'calendar' as ActiveTab,
       label: 'Calendar',
-      sublabel: `${totalDays || 60} active days`,
+      sublabel: `${totalDays || 87} active days`,
       icon: CalendarIcon,
     },
     {

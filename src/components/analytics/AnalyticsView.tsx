@@ -19,6 +19,7 @@ import {
 } from '../../types/archive';
 import { fetchExpressions, fetchNicknames } from '../../lib/data';
 import { ArchiveWrappedModal } from './ArchiveWrappedModal';
+import { RelationshipAuraModal } from './RelationshipAuraModal';
 
 interface AnalyticsViewProps {
   metadata: ArchiveMetadata | null;
@@ -35,8 +36,9 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
 }) => {
   const [expressions, setExpressions] = useState<ExpressionEntry[]>([]);
   const [nicknames, setNicknames] = useState<NicknameEntry[]>([]);
-  const [activeTab, setActiveTab] = useState<'balance' | 'surprises' | 'time' | 'expressions' | 'nicknames' | 'reactions'>('surprises');
+  const [activeTab, setActiveTab] = useState<'surprises' | 'aura' | 'balance' | 'time' | 'expressions' | 'nicknames' | 'reactions'>('surprises');
   const [isWrappedOpen, setIsWrappedOpen] = useState(false);
+  const [isAuraOpen, setIsAuraOpen] = useState(false);
 
   useEffect(() => {
     let isCancelled = false;
@@ -135,13 +137,23 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
           </p>
         </div>
 
-        <button
-          onClick={() => setIsWrappedOpen(true)}
-          className="px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-white font-semibold text-xs sm:text-sm font-mono flex items-center gap-2.5 shadow-lg shadow-rose-500/30 active:scale-95 transition-all shrink-0"
-        >
-          <Play className="w-4 h-4 fill-white" />
-          <span>Launch Story Mode</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <button
+            onClick={() => setIsAuraOpen(true)}
+            className="px-4 py-3 rounded-2xl bg-gradient-to-r from-purple-600/30 to-rose-600/30 hover:from-purple-600/40 hover:to-rose-600/40 border border-purple-500/40 text-purple-200 font-semibold text-xs sm:text-sm font-mono flex items-center gap-2 shadow-lg active:scale-95 transition-all"
+            title="Open Relationship Aura & Mood Spectrum"
+          >
+            <Sparkles className="w-4 h-4 text-purple-300" />
+            <span>Relationship Aura</span>
+          </button>
+          <button
+            onClick={() => setIsWrappedOpen(true)}
+            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 hover:from-rose-600 hover:to-purple-700 text-white font-semibold text-xs sm:text-sm font-mono flex items-center gap-2.5 shadow-lg shadow-rose-500/30 active:scale-95 transition-all"
+          >
+            <Play className="w-4 h-4 fill-white" />
+            <span>Launch Story Mode</span>
+          </button>
+        </div>
       </div>
 
       {/* Header */}
@@ -158,6 +170,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       <div className="flex items-center gap-1.5 sm:gap-2 border-b border-[#21262d] pb-2 overflow-x-auto text-xs font-mono no-scrollbar">
         {[
           { id: 'surprises', label: '✨ Deep Connection & Surprises' },
+          { id: 'aura', label: '🔮 Relationship Aura & Spectrum' },
           { id: 'balance', label: 'Communication Balance' },
           { id: 'time', label: '24h & Weekly Rhythm' },
           { id: 'expressions', label: 'Lexical Expressions' },
@@ -405,6 +418,153 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
 
                 <div className="p-3 rounded-xl bg-[#0b0d10] border border-[#21262d] text-xs font-mono text-[#8b949e]">
                   Active Streak: <strong className="text-white">{metadata.activeDays} consecutive active days</strong> from {metadata.startDate} to {metadata.endDate}.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB: RELATIONSHIP AURA & SPECTRUM */}
+      {activeTab === 'aura' && (
+        <div className="space-y-6 animate-fade-in">
+          {/* Hero Studio Banner */}
+          <div className="relative overflow-hidden rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-indigo-950/80 via-purple-950/70 to-[#0b0d10] border border-purple-500/30 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-xl">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                <span>EMOTIONAL ENERGY SYNTHESIS</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-editorial text-white font-bold tracking-tight">
+                The Relationship Aura Spectrum
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+                A dynamic chromatic translation of your emotional rhythms. Derived from 80,988 messages, 2,147 voice notes, reaction ratios, and late-night nocturnal frequencies.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setIsAuraOpen(true)}
+              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-500 via-rose-500 to-amber-500 hover:from-purple-600 hover:to-amber-600 text-white font-semibold text-xs sm:text-sm font-mono flex items-center gap-2.5 shadow-lg shadow-purple-500/30 active:scale-95 transition-all shrink-0"
+            >
+              <Sparkles className="w-4 h-4 fill-white" />
+              <span>Launch Interactive Aura Studio 🔮</span>
+            </button>
+          </div>
+
+          {/* 4 Monthly Mood Aura Cards */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-editorial text-white font-medium">
+                Monthly Mood & Aura Spectra
+              </h3>
+              <span className="text-xs font-mono text-[#8b949e]">
+                Click any chapter to inspect
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* July */}
+              <div
+                onClick={() => setIsAuraOpen(true)}
+                className="cursor-pointer p-5 rounded-3xl bg-gradient-to-br from-[#16131c] via-[#12161c] to-[#0b0d10] border border-amber-500/30 hover:border-amber-400/60 shadow-lg transition-all group relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl group-hover:scale-125 transition-transform pointer-events-none" />
+                <div className="flex items-center justify-between text-xs font-mono mb-2">
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    July 2026 • Chapter 1
+                  </span>
+                  <span className="text-[#8b949e]">19,000+ msgs</span>
+                </div>
+                <h4 className="text-lg font-editorial text-white font-bold group-hover:text-amber-200 transition-colors">
+                  Electric Genesis & Tender Awakening
+                </h4>
+                <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
+                  The initial spark of playful sarcasm, Nila's iconic 10 rules, and the first midnight "I love you".
+                </p>
+                <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5 text-[11px] font-mono text-amber-300">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
+                  <span className="ml-1 text-[#8b949e]">Gold • Crimson • Cyan</span>
+                </div>
+              </div>
+
+              {/* August */}
+              <div
+                onClick={() => setIsAuraOpen(true)}
+                className="cursor-pointer p-5 rounded-3xl bg-gradient-to-br from-[#16121c] via-[#12161c] to-[#0b0d10] border border-purple-500/30 hover:border-purple-400/60 shadow-lg transition-all group relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl group-hover:scale-125 transition-transform pointer-events-none" />
+                <div className="flex items-center justify-between text-xs font-mono mb-2">
+                  <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    August 2026 • Chapter 2
+                  </span>
+                  <span className="text-[#8b949e]">25,000+ msgs</span>
+                </div>
+                <h4 className="text-lg font-editorial text-white font-bold group-hover:text-purple-200 transition-colors">
+                  Velvet Midnight & Poetic Yearning
+                </h4>
+                <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
+                  The 3 AM conversations, the longing for physical hugs, and the dream of holding each other so scents fuse.
+                </p>
+                <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5 text-[11px] font-mono text-purple-300">
+                  <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-fuchsia-500" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                  <span className="ml-1 text-[#8b949e]">Indigo • Fuchsia • Rose</span>
+                </div>
+              </div>
+
+              {/* September */}
+              <div
+                onClick={() => setIsAuraOpen(true)}
+                className="cursor-pointer p-5 rounded-3xl bg-gradient-to-br from-[#1c1214] via-[#12161c] to-[#0b0d10] border border-rose-500/30 hover:border-rose-400/60 shadow-lg transition-all group relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl group-hover:scale-125 transition-transform pointer-events-none" />
+                <div className="flex items-center justify-between text-xs font-mono mb-2">
+                  <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                    September 2026 • Chapter 3
+                  </span>
+                  <span className="text-[#8b949e]">35,000+ msgs</span>
+                </div>
+                <h4 className="text-lg font-editorial text-white font-bold group-hover:text-rose-200 transition-colors">
+                  High-Frequency Climax & Stormproof Devotion
+                </h4>
+                <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
+                  The all-time 2,096-message marathon, explosive voice note velocity, and steady reassurance when things got heavy.
+                </p>
+                <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5 text-[11px] font-mono text-rose-300">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                  <span className="ml-1 text-[#8b949e]">Crimson • Amber • Emerald</span>
+                </div>
+              </div>
+
+              {/* October */}
+              <div
+                onClick={() => setIsAuraOpen(true)}
+                className="cursor-pointer p-5 rounded-3xl bg-gradient-to-br from-[#12181b] via-[#12161c] to-[#0b0d10] border border-teal-500/30 hover:border-teal-400/60 shadow-lg transition-all group relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl group-hover:scale-125 transition-transform pointer-events-none" />
+                <div className="flex items-center justify-between text-xs font-mono mb-2">
+                  <span className="px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                    October 2026 • Chapter 4
+                  </span>
+                  <span className="text-[#8b949e]">Autumn Gateway</span>
+                </div>
+                <h4 className="text-lg font-editorial text-white font-bold group-hover:text-teal-200 transition-colors">
+                  Peaceful Horizon & The Shared Future
+                </h4>
+                <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
+                  "Meri khushi, mera sukoon aur mera aane wala kal... sab sirf tumse hai." Complete serenity and certainty.
+                </p>
+                <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5 text-[11px] font-mono text-teal-300">
+                  <span className="w-2.5 h-2.5 rounded-full bg-purple-400" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-pink-400" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-teal-400" />
+                  <span className="ml-1 text-[#8b949e]">Lavender • Peach • Teal</span>
                 </div>
               </div>
             </div>
@@ -762,6 +922,17 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
         onClose={() => setIsWrappedOpen(false)}
         metadata={metadata}
         dailyStats={dailyStats}
+      />
+
+      {/* Relationship Aura & Mood Spectrum Modal */}
+      <RelationshipAuraModal
+        isOpen={isAuraOpen}
+        onClose={() => setIsAuraOpen(false)}
+        metadata={metadata}
+        dailyStats={dailyStats}
+        expressions={expressions}
+        nicknames={nicknames}
+        onSelectDate={onSelectDate}
       />
     </div>
   );
