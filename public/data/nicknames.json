@@ -1,10 +1,10 @@
 [
   {
     "nickname": "pagli",
-    "totalCount": 229,
+    "totalCount": 241,
     "bySender": {
       "NILU": 20,
-      "farhannn": 209
+      "farhannn": 221
     },
     "sampleMessageIds": [
       "m_1783594787570_farhannn",
@@ -16,10 +16,10 @@
   },
   {
     "nickname": "baby",
-    "totalCount": 293,
+    "totalCount": 312,
     "bySender": {
-      "NILU": 187,
-      "farhannn": 106
+      "NILU": 198,
+      "farhannn": 114
     },
     "sampleMessageIds": [
       "m_1783594182276_NILU",
@@ -31,10 +31,10 @@
   },
   {
     "nickname": "jaan",
-    "totalCount": 165,
+    "totalCount": 173,
     "bySender": {
-      "NILU": 81,
-      "farhannn": 84
+      "NILU": 88,
+      "farhannn": 85
     },
     "sampleMessageIds": [
       "m_1783880073515_NILU",
@@ -46,10 +46,10 @@
   },
   {
     "nickname": "jano",
-    "totalCount": 77,
+    "totalCount": 81,
     "bySender": {
-      "NILU": 11,
-      "farhannn": 66
+      "NILU": 12,
+      "farhannn": 69
     },
     "sampleMessageIds": [
       "m_1783973545547_farhannn",
@@ -61,10 +61,10 @@
   },
   {
     "nickname": "pakhi",
-    "totalCount": 119,
+    "totalCount": 125,
     "bySender": {
-      "NILU": 13,
-      "farhannn": 106
+      "NILU": 14,
+      "farhannn": 111
     },
     "sampleMessageIds": [
       "m_1785610601248_farhannn",
@@ -76,10 +76,10 @@
   },
   {
     "nickname": "shona",
-    "totalCount": 127,
+    "totalCount": 136,
     "bySender": {
-      "NILU": 30,
-      "farhannn": 97
+      "NILU": 33,
+      "farhannn": 103
     },
     "sampleMessageIds": [
       "m_1784052690964_NILU",
@@ -91,10 +91,10 @@
   },
   {
     "nickname": "bou",
-    "totalCount": 156,
+    "totalCount": 161,
     "bySender": {
-      "NILU": 45,
-      "farhannn": 111
+      "NILU": 47,
+      "farhannn": 114
     },
     "sampleMessageIds": [
       "m_1783508559874_farhannn",
@@ -166,10 +166,10 @@
   },
   {
     "nickname": "dushtu",
-    "totalCount": 123,
+    "totalCount": 130,
     "bySender": {
-      "NILU": 46,
-      "farhannn": 77
+      "NILU": 50,
+      "farhannn": 80
     },
     "sampleMessageIds": [
       "m_1783512618645_NILU",
@@ -181,10 +181,10 @@
   },
   {
     "nickname": "goru",
-    "totalCount": 13,
+    "totalCount": 14,
     "bySender": {
       "NILU": 10,
-      "farhannn": 3
+      "farhannn": 4
     },
     "sampleMessageIds": [
       "m_1783604851717_NILU",
@@ -269,9 +269,9 @@
   },
   {
     "nickname": "best friend",
-    "totalCount": 40,
+    "totalCount": 43,
     "bySender": {
-      "NILU": 14,
+      "NILU": 17,
       "farhannn": 26
     },
     "sampleMessageIds": [
