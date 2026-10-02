@@ -20,6 +20,7 @@ import { IntimateVaultView } from './components/vault/IntimateVaultView';
 import { StickyAudioDock } from './components/ui/StickyAudioDock';
 import { ThemeProvider } from './context/ThemeContext';
 import { AudioPlayerProvider, useAudioPlayer } from './context/AudioPlayerContext';
+import { AvatarProvider } from './context/AvatarContext';
 import { Loader2 } from 'lucide-react';
 
 function ArchiveAppInner() {
@@ -296,7 +297,9 @@ export function App() {
   return (
     <ThemeProvider>
       <AudioPlayerProvider>
-        <ArchiveAppInner />
+        <AvatarProvider>
+          <ArchiveAppInner />
+        </AvatarProvider>
       </AudioPlayerProvider>
     </ThemeProvider>
   );

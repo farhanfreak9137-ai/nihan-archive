@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Calendar as CalendarIcon,
   MessageSquare,
@@ -10,8 +10,11 @@ import {
   Flame,
   ShieldCheck,
   Zap,
+  Camera,
 } from 'lucide-react';
 import { ActiveTab } from '../../hooks/useArchive';
+import { useAvatars } from '../../context/AvatarContext';
+import { AvatarCustomizerModal } from '../profile/AvatarCustomizerModal';
 
 interface SidebarProps {
   activeTab: ActiveTab;
@@ -26,6 +29,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
   selectedDate,
   totalDays,
 }) => {
+  const { nilaAvatar, farhanAvatar } = useAvatars();
+  const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
+  const [nilaImgError, setNilaImgError] = useState(false);
+  const [farhanImgError, setFarhanImgError] = useState(false);
+
+  useEffect(() => {
+    setNilaImgError(false);
+  }, [nilaAvatar]);
+
+  useEffect(() => {
+    setFarhanImgError(false);
+  }, [farhanAvatar]);
   const navItems = [
     {
       id: 'calendar' as ActiveTab,
@@ -217,15 +232,69 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Subtle Ambient Radial Highlight */}
           <div className="absolute top-0 right-0 w-28 h-28 bg-gradient-to-bl from-rose-500/15 via-purple-500/10 to-transparent rounded-full blur-xl pointer-events-none" />
 
-          {/* Intertwined Couple Initials */}
+          {/* Intertwined Couple Avatars */}
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center -space-x-1.5">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white text-[10px] font-mono font-bold shadow-md shadow-rose-500/30 ring-2 ring-[#0c0e12]">
-                N
+            <div className="flex items-center gap-2">
+              <div className="flex items-center -space-x-2">
+                {/* Nila Avatar with camera overlay */}
+                <button
+                  type="button"
+                  onClick={() => setIsCustomizerOpen(true)}
+                  title="Click to change Nila's & Farhan's photos"
+                  className="w-7 h-7 rounded-full p-[1.5px] bg-gradient-to-tr from-rose-500 to-pink-500 shadow-md shadow-rose-500/30 ring-2 ring-[#0c0e12] hover:scale-110 hover:z-20 transition-all cursor-pointer relative group/nila overflow-hidden"
+                >
+                  {!nilaImgError ? (
+                    <img
+                      src={nilaAvatar}
+                      alt="Nila"
+                      onError={() => setNilaImgError(true)}
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white text-[10px] font-mono font-bold">
+                      N
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/nila:opacity-100 flex items-center justify-center transition-opacity">
+                    <Camera className="w-2.5 h-2.5 text-white" />
+                  </div>
+                </button>
+
+                {/* Farhan Avatar with camera overlay */}
+                <button
+                  type="button"
+                  onClick={() => setIsCustomizerOpen(true)}
+                  title="Click to change Nila's & Farhan's photos"
+                  className="w-7 h-7 rounded-full p-[1.5px] bg-gradient-to-tr from-sky-400 to-blue-600 shadow-md shadow-sky-500/30 ring-2 ring-[#0c0e12] hover:scale-110 hover:z-20 transition-all cursor-pointer relative group/farhan overflow-hidden"
+                >
+                  {!farhanImgError ? (
+                    <img
+                      src={farhanAvatar}
+                      alt="Farhan"
+                      onError={() => setFarhanImgError(true)}
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white text-[10px] font-mono font-bold">
+                      F
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/farhan:opacity-100 flex items-center justify-center transition-opacity">
+                    <Camera className="w-2.5 h-2.5 text-white" />
+                  </div>
+                </button>
               </div>
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white text-[10px] font-mono font-bold shadow-md shadow-sky-500/30 ring-2 ring-[#0c0e12]">
-                F
-              </div>
+
+              {/* Edit Photos Button */}
+              <button
+                type="button"
+                onClick={() => setIsCustomizerOpen(true)}
+                className="opacity-60 hover:opacity-100 transition-opacity text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-white/5 hover:bg-rose-500/20 text-rose-300 border border-white/10 flex items-center gap-1 cursor-pointer"
+                title="Customize profile photos"
+              >
+                <Camera className="w-2.5 h-2.5 text-rose-400" />
+                <span>Photos</span>
+              </button>
             </div>
 
             <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-[10px] font-mono text-emerald-300 font-semibold">
@@ -253,6 +322,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Avatar Customizer Modal */}
+      <AvatarCustomizerModal
+        isOpen={isCustomizerOpen}
+        onClose={() => setIsCustomizerOpen(false)}
+      />
     </aside>
   );
 };
