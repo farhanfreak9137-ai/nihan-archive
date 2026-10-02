@@ -10,6 +10,7 @@ import { Message } from '../../types/archive';
 import { VoiceNotePlayer } from '../ui/VoiceNotePlayer';
 import { PhotoLightbox } from '../ui/PhotoLightbox';
 import { resolveDataUrl } from '../../lib/data';
+import { useAvatars } from '../../context/AvatarContext';
 
 const InstagramIcon: React.FC = () => (
   <svg className="w-3.5 h-3.5 text-rose-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -34,6 +35,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 }) => {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const isNila = message.sender === 'NILU';
+  const { nilaAvatar, farhanAvatar } = useAvatars();
 
   // Detect standalone emoji messages (e.g. 🐵, 🥺😍, ❤️, etc.)
   const isEmojiOnly = React.useMemo(() => {
@@ -73,6 +75,19 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
             isNila ? 'flex-row' : 'flex-row-reverse'
           }`}
         >
+          <div
+            className={`w-4 h-4 rounded-full overflow-hidden shrink-0 border ${
+              isNila
+                ? 'border-rose-500/50 shadow-[0_0_6px_rgba(244,63,94,0.3)]'
+                : 'border-sky-500/50 shadow-[0_0_6px_rgba(56,189,248,0.3)]'
+            }`}
+          >
+            <img
+              src={isNila ? nilaAvatar : farhanAvatar}
+              alt=""
+              className="w-full h-full object-cover object-[center_20%]"
+            />
+          </div>
           <span
             className={`font-semibold tracking-wide ${
               isNila ? 'text-rose-400' : 'text-sky-400'

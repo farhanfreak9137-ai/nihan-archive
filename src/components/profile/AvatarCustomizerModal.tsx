@@ -147,7 +147,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                       src={nilaAvatar}
                       alt="Nila"
                       onError={() => setNilaError(true)}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-[center_20%]"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white text-3xl font-mono font-bold">
@@ -212,7 +212,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                       src={farhanAvatar}
                       alt="Farhan"
                       onError={() => setFarhanError(true)}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-[center_20%]"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white text-3xl font-mono font-bold">

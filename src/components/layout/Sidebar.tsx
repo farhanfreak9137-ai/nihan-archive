@@ -240,23 +240,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsCustomizerOpen(true)}
-                  title="Click to change Nila's & Farhan's photos"
-                  className="w-7 h-7 rounded-full p-[1.5px] bg-gradient-to-tr from-rose-500 to-pink-500 shadow-md shadow-rose-500/30 ring-2 ring-[#0c0e12] hover:scale-110 hover:z-20 transition-all cursor-pointer relative group/nila overflow-hidden"
+                  title="Nila - Click to change photo"
+                  className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-tr from-rose-500 to-pink-500 shadow-md shadow-rose-500/30 ring-2 ring-[#0c0e12] hover:scale-110 hover:z-20 transition-all cursor-pointer relative group/nila overflow-hidden"
                 >
                   {!nilaImgError ? (
                     <img
                       src={nilaAvatar}
                       alt="Nila"
                       onError={() => setNilaImgError(true)}
-                      className="w-full h-full rounded-full object-cover"
+                      className="w-full h-full rounded-full object-cover object-[center_20%]"
                     />
                   ) : (
-                    <div className="w-full h-full rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white text-[10px] font-mono font-bold">
+                    <div className="w-full h-full rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white text-[11px] font-mono font-bold">
                       N
                     </div>
                   )}
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/nila:opacity-100 flex items-center justify-center transition-opacity">
-                    <Camera className="w-2.5 h-2.5 text-white" />
+                    <Camera className="w-3 h-3 text-white" />
                   </div>
                 </button>
 
@@ -264,23 +264,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsCustomizerOpen(true)}
-                  title="Click to change Nila's & Farhan's photos"
-                  className="w-7 h-7 rounded-full p-[1.5px] bg-gradient-to-tr from-sky-400 to-blue-600 shadow-md shadow-sky-500/30 ring-2 ring-[#0c0e12] hover:scale-110 hover:z-20 transition-all cursor-pointer relative group/farhan overflow-hidden"
+                  title="Farhan - Click to change photo"
+                  className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-tr from-sky-400 to-blue-600 shadow-md shadow-sky-500/30 ring-2 ring-[#0c0e12] hover:scale-110 hover:z-20 transition-all cursor-pointer relative group/farhan overflow-hidden"
                 >
                   {!farhanImgError ? (
                     <img
                       src={farhanAvatar}
                       alt="Farhan"
                       onError={() => setFarhanImgError(true)}
-                      className="w-full h-full rounded-full object-cover"
+                      className="w-full h-full rounded-full object-cover object-[center_20%]"
                     />
                   ) : (
-                    <div className="w-full h-full rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white text-[10px] font-mono font-bold">
+                    <div className="w-full h-full rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white text-[11px] font-mono font-bold">
                       F
                     </div>
                   )}
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/farhan:opacity-100 flex items-center justify-center transition-opacity">
-                    <Camera className="w-2.5 h-2.5 text-white" />
+                    <Camera className="w-3 h-3 text-white" />
                   </div>
                 </button>
               </div>

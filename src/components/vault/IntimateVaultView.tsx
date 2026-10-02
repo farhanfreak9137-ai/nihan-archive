@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { fetchIntimateVaultData, resolveDataUrl } from '../../lib/data';
 import { IntimateSession, VaultCategory, VaultData } from '../../types/vault';
+import { useAvatars } from '../../context/AvatarContext';
 
 interface IntimateVaultViewProps {
   onSelectContext: (date: string, messageId?: string) => void;
@@ -27,6 +28,7 @@ export const IntimateVaultView: React.FC<IntimateVaultViewProps> = ({ onSelectCo
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const { nilaAvatar, farhanAvatar } = useAvatars();
 
   // Audio player state
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
@@ -580,6 +582,19 @@ export const IntimateVaultView: React.FC<IntimateVaultViewProps> = ({ onSelectCo
                       className={`flex flex-col ${isNila ? 'items-start' : 'items-end'}`}
                     >
                       <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#8b949e] mb-1 px-1">
+                        <div
+                          className={`w-4 h-4 rounded-full overflow-hidden shrink-0 border ${
+                            isNila
+                              ? 'border-rose-500/60 shadow-[0_0_6px_rgba(244,63,94,0.4)]'
+                              : 'border-sky-500/60 shadow-[0_0_6px_rgba(56,189,248,0.4)]'
+                          }`}
+                        >
+                          <img
+                            src={isNila ? nilaAvatar : farhanAvatar}
+                            alt=""
+                            className="w-full h-full object-cover object-[center_20%]"
+                          />
+                        </div>
                         <span
                           className={`font-semibold ${
                             isNila ? 'text-rose-400' : 'text-sky-400'
