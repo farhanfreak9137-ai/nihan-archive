@@ -1,66 +1,66 @@
 {
-  "totalMessages": 80988,
+  "totalMessages": 92573,
   "participants": {
-    "NILU": 41741,
-    "farhannn": 39247
+    "NILU": 47789,
+    "farhannn": 44784
   },
   "participantsDisplay": {
-    "NILA": 41741,
-    "FARHAN": 39247
+    "NILA": 47789,
+    "FARHAN": 44784
   },
   "startDate": "2026-07-06",
-  "endDate": "2026-10-01",
+  "endDate": "2026-10-11",
   "startTimestamp": 1783341453041,
-  "endTimestamp": 1790851560715,
-  "activeDays": 87,
+  "endTimestamp": 1791755940621,
+  "activeDays": 97,
   "shares": {
-    "total": 2109,
-    "reels": 1633,
-    "posts": 350,
-    "stories": 61,
-    "other": 65
+    "total": 2313,
+    "reels": 1761,
+    "posts": 412,
+    "stories": 66,
+    "other": 74
   },
   "sharesBySender": {
     "NILU": {
-      "total": 1074,
-      "reels": 810,
-      "posts": 201,
-      "stories": 27,
-      "other": 36
+      "total": 1204,
+      "reels": 883,
+      "posts": 253,
+      "stories": 28,
+      "other": 40
     },
     "farhannn": {
-      "total": 1035,
-      "reels": 823,
-      "posts": 149,
-      "stories": 34,
-      "other": 29
+      "total": 1109,
+      "reels": 878,
+      "posts": 159,
+      "stories": 38,
+      "other": 34
     }
   },
   "reactions": {
-    "total": 2597,
+    "total": 2914,
     "byActor": {
-      "NILU": 1608,
-      "farhannn": 989
+      "NILU": 1736,
+      "farhannn": 1178
     },
     "byEmoji": {
       "😂": {
-        "total": 138,
+        "total": 140,
         "NILU": 104,
-        "farhannn": 34
+        "farhannn": 36
       },
       "❤": {
-        "total": 1859,
-        "NILU": 1221,
-        "farhannn": 638
+        "total": 2147,
+        "NILU": 1330,
+        "farhannn": 817
       },
       "🤍": {
-        "total": 270,
+        "total": 271,
         "NILU": 40,
-        "farhannn": 230
+        "farhannn": 231
       },
       "🙃": {
-        "total": 24,
-        "NILU": 15,
+        "total": 27,
+        "NILU": 18,
         "farhannn": 9
       },
       "🙂": {
@@ -69,9 +69,9 @@
         "farhannn": 15
       },
       "😮": {
-        "total": 6,
+        "total": 7,
         "NILU": 5,
-        "farhannn": 1
+        "farhannn": 2
       },
       "🤣": {
         "total": 35,
@@ -79,9 +79,9 @@
         "farhannn": 35
       },
       "😭": {
-        "total": 21,
-        "NILU": 12,
-        "farhannn": 9
+        "total": 23,
+        "NILU": 13,
+        "farhannn": 10
       },
       "🙌": {
         "total": 1,
@@ -99,8 +99,8 @@
         "farhannn": 0
       },
       "😑": {
-        "total": 36,
-        "NILU": 33,
+        "total": 40,
+        "NILU": 37,
         "farhannn": 3
       },
       "💔": {
@@ -124,8 +124,8 @@
         "farhannn": 0
       },
       "👍": {
-        "total": 36,
-        "NILU": 36,
+        "total": 38,
+        "NILU": 38,
         "farhannn": 0
       },
       "👏": {
@@ -134,8 +134,8 @@
         "farhannn": 0
       },
       "😒": {
-        "total": 19,
-        "NILU": 19,
+        "total": 20,
+        "NILU": 20,
         "farhannn": 0
       },
       "💙": {
@@ -174,18 +174,18 @@
         "farhannn": 0
       },
       "🤭": {
-        "total": 20,
-        "NILU": 20,
+        "total": 22,
+        "NILU": 22,
         "farhannn": 0
       },
       "😳": {
-        "total": 10,
-        "NILU": 9,
+        "total": 12,
+        "NILU": 11,
         "farhannn": 1
       },
       "😶": {
-        "total": 1,
-        "NILU": 1,
+        "total": 2,
+        "NILU": 2,
         "farhannn": 0
       },
       "😁": {
@@ -194,14 +194,14 @@
         "farhannn": 0
       },
       "😩": {
-        "total": 2,
-        "NILU": 2,
+        "total": 3,
+        "NILU": 3,
         "farhannn": 0
       },
       "😫": {
-        "total": 14,
+        "total": 15,
         "NILU": 6,
-        "farhannn": 8
+        "farhannn": 9
       },
       "😯": {
         "total": 1,
@@ -272,49 +272,69 @@
         "total": 2,
         "NILU": 2,
         "farhannn": 0
+      },
+      "💖": {
+        "total": 1,
+        "NILU": 1,
+        "farhannn": 0
+      },
+      "🤢": {
+        "total": 1,
+        "NILU": 1,
+        "farhannn": 0
+      },
+      "🤦🏻‍♂️": {
+        "total": 1,
+        "NILU": 0,
+        "farhannn": 1
+      },
+      "😣": {
+        "total": 3,
+        "NILU": 0,
+        "farhannn": 3
       }
     }
   },
   "media": {
-    "photos": 308,
-    "videos": 66,
-    "audio": 2147,
+    "photos": 354,
+    "videos": 87,
+    "audio": 2335,
     "files": 3,
-    "calls": 342
+    "calls": 356
   },
   "hourlyTotals": [
-    9159,
-    6627,
-    3113,
-    2805,
-    599,
-    543,
-    513,
-    163,
-    189,
-    383,
-    632,
-    1172,
-    1585,
-    1236,
-    1302,
-    2753,
-    4174,
-    4126,
-    5342,
-    6534,
-    4905,
-    7588,
-    6460,
-    9085
+    10179,
+    7333,
+    3376,
+    3013,
+    603,
+    574,
+    555,
+    179,
+    221,
+    551,
+    853,
+    1524,
+    2064,
+    1705,
+    1397,
+    3335,
+    4997,
+    4710,
+    5901,
+    7553,
+    5408,
+    8327,
+    7812,
+    10403
   ],
   "dayOfWeekTotals": [
-    10624,
-    13197,
-    12001,
-    11211,
-    10709,
-    12257,
-    10989
+    13245,
+    14488,
+    12150,
+    12119,
+    11772,
+    14758,
+    14041
   ]
 }

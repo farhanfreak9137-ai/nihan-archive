@@ -428,20 +428,23 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
     const nicknamesBonus = Math.min(4, Math.round(nicknames.length / 3));
 
     // Default: Overall Archive Aura
+    const nilaPct = Number(((metadata.participantsDisplay.NILA / metadata.totalMessages) * 100).toFixed(1));
+    const farhanPct = Number(((metadata.participantsDisplay.FARHAN / metadata.totalMessages) * 100).toFixed(1));
+
     return {
       id: 'aura-overall',
       scope: 'overall',
       label: 'The Whole Archive',
       title: 'Cosmic Symphony & Unshakable Equilibrium',
-      subtitle: '80,988 messages • 87 unbroken days • 51.5% to 48.5% harmonic balance',
+      subtitle: `${metadata.totalMessages.toLocaleString()} messages • ${metadata.activeDays} unbroken days • ${nilaPct}% to ${farhanPct}% harmonic balance`,
       archetype: 'The Inseparable Midnight Soulmates',
       dominantMood: 'Harmonic Equilibrium & Total Intimacy',
       glowGradient: 'from-rose-500/35 via-purple-600/30 to-amber-500/25',
       coreColors: ['#f43f5e', '#8b5cf6', '#f59e0b'],
       palette: [
-        { name: 'Eternal Rose', hex: '#f43f5e', desc: '1,859 heart reactions & hundreds of "I love you"s' },
+        { name: 'Eternal Rose', hex: '#f43f5e', desc: `${metadata.reactions.total.toLocaleString()} reactions & hundreds of "I love you"s` },
         { name: 'Cosmic Nocturne', hex: '#8b5cf6', desc: 'Over 22,000 messages exchanged past midnight' },
-        { name: 'Vocal Amber', hex: '#f59e0b', desc: '2,147 voice notes creating an audible tapestry of love' },
+        { name: 'Vocal Amber', hex: '#f59e0b', desc: `${metadata.media.audio.toLocaleString()} voice notes creating an audible tapestry of love` },
       ],
       energies: {
         nocturnal: 92,
@@ -455,8 +458,8 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
         voiceNotes: metadata.media.audio,
         shares: metadata.shares.total,
         reactions: metadata.reactions.total,
-        nilaPct: 51.5,
-        farhanPct: 48.5,
+        nilaPct,
+        farhanPct,
       },
       signatureQuote: {
         sender: 'FARHAN',
@@ -465,7 +468,7 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
         date: '2026-09-29',
       },
       poeticSynthesis:
-        'Across 87 unbroken days and 80,988 messages, your relationship has manifested as an exceptionally rare, 50/50 reciprocal partnership. Filled with 2,147 voice notes, 3 AM late-night talks, playful teasing, and unbreakable emotional safety, this archive represents a true emotional masterpiece.',
+        `Across ${metadata.activeDays} unbroken days and ${metadata.totalMessages.toLocaleString()} messages, your relationship has manifested as an exceptionally rare, 50/50 reciprocal partnership. Filled with ${metadata.media.audio.toLocaleString()} voice notes, 3 AM late-night talks, playful teasing, and unbreakable emotional safety, this archive represents a true emotional masterpiece.`,
     };
   }, [selectedScope, customDate, dailyStats, metadata, dayMessages, expressions, nicknames]);
 
@@ -670,7 +673,7 @@ Preserved forever in Our Archive.`;
                 </span>
               </div>
               <p className="text-xs text-[#8b949e] font-sans">
-                Emotional frequency analysis derived from 80,988 messages, voice notes & timestamps.
+                Emotional frequency analysis derived from {metadata.totalMessages.toLocaleString()} messages, voice notes & timestamps.
               </p>
             </div>
           </div>

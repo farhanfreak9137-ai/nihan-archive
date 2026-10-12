@@ -11,11 +11,11 @@ A private, beautifully designed, and high-performance digital archive built for 
 The **NILA ARCHIVE** transforms raw exported messaging data into an editorial, interactive experience. Rather than browsing static JSON logs, the archive lets you explore conversations through time, search past messages instantly, play voice notes with animated scrubbers, view full-resolution photos, and discover conversational rhythms.
 
 ### Key Metrics
-* **Total Messages:** 80,988 (`41,741` by NILA • `39,247` by FARHAN)
-* **Active Days:** 87 days (July 6, 2026 – October 1, 2026)
-* **Shares & Links:** 2,109 (1,633 Reels, 350 Posts, 61 Stories, 65 Other)
-* **Voice Notes:** 2,147 voice messages
-* **Reactions:** 2,597 message reactions
+* **Total Messages:** 92,573 (`47,789` by NILA • `44,784` by FARHAN)
+* **Active Days:** 97 days (July 6, 2026 – October 11, 2026)
+* **Shares & Links:** 2,313 (1,761 Reels, 412 Posts, 66 Stories, 74 Other)
+* **Voice Notes:** 2,335 voice messages
+* **Reactions:** 2,914 message reactions
 
 ---
 
@@ -28,10 +28,10 @@ The **NILA ARCHIVE** transforms raw exported messaging data into an editorial, i
   Powered by `@tanstack/react-virtual` to render thousands of messages smoothly at 60 FPS. Features a 24-hour timeline scrubber, sender alignment, photo lightbox, video playback, custom audio player, and floating reactions.
 
 * **🔍 Full-Text Global Search**:
-  Instant search across all 80,988 messages with exact keyword highlighting, sender filters, date boundaries, and one-click jump to context in the chat.
+  Instant search across all 92,573 messages with exact keyword highlighting, sender filters, date boundaries, and one-click jump to context in the chat.
 
 * **📊 Deep Relationship Analytics**:
-  * 51.5% vs 48.5% communication balance
+  * 51.6% vs 48.4% communication balance
   * 24-hour diurnal activity rhythm chart
   * Day-of-the-week message frequency distribution
   * Lexical tracker (*"I love you"*, apologies, greetings, promises)

@@ -11,12 +11,15 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  optimizeDeps: {
+    entries: ['index.html'],
+  },
   server: {
     host: true,
     port: 3000,
     open: false,
     watch: {
-      ignored: ['**/nilu*/**', '**/Messages/**', '**/public/media/**'],
+      ignored: ['**/nilu*/**', '**/Messages/**', '**/public/media/**', '**/android/**', '**/dist/**'],
     },
   },
 });

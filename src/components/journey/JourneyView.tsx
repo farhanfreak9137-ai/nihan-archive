@@ -286,11 +286,11 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
   }, [milestones, activeCategory]);
 
   const journeyStats = useMemo(() => {
-    const totalMsgs = dailyStats.reduce((acc, d) => acc + (d.totalMessages || 0), 0) || 80988;
-    const totalVoice = dailyStats.reduce((acc, d) => acc + (d.audioNotes || 0), 0) || 2147;
-    const totalReels = dailyStats.reduce((acc, d) => acc + (d.reels || 0), 0) || 1633;
+    const totalMsgs = dailyStats.reduce((acc, d) => acc + (d.totalMessages || 0), 0) || 92573;
+    const totalVoice = dailyStats.reduce((acc, d) => acc + (d.audioNotes || 0), 0) || 2335;
+    const totalReels = dailyStats.reduce((acc, d) => acc + (d.reels || 0), 0) || 1761;
     return {
-      days: dailyStats.length || 87,
+      days: dailyStats.length || 97,
       totalMessages: totalMsgs,
       voiceNotes: totalVoice,
       reels: totalReels,

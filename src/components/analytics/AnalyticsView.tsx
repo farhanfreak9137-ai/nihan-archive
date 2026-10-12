@@ -464,7 +464,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 The Relationship Aura Spectrum
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
-                A dynamic chromatic translation of your emotional rhythms. Derived from 80,988 messages, 2,147 voice notes, reaction ratios, and late-night nocturnal frequencies.
+                A dynamic chromatic translation of your emotional rhythms. Derived from {metadata.totalMessages.toLocaleString()} messages, {metadata.media.audio.toLocaleString()} voice notes, reaction ratios, and late-night nocturnal frequencies.
               </p>
             </div>
 
