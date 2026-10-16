@@ -7,9 +7,8 @@ node_modules/
 dist/
 dist-ssr/
 
-# Raw export dump directories (media is organized under public/media and Messages/)
-nilu_*/
-new update/
+# Raw export dump directories
+Updates/
 
 # Automation & MCP cache
 .playwright-mcp/

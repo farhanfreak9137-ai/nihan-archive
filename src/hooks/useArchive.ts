@@ -22,7 +22,7 @@ export function useArchive() {
 
   // Active view state
   const [activeTab, setActiveTab] = useState<ActiveTab>('calendar');
-  const [selectedDate, setSelectedDate] = useState<string>('2026-09-05'); // Default to most active climax day
+  const [selectedDate, setSelectedDate] = useState<string>('2026-10-11'); // Default to peak day
   const [highlightMessageId, setHighlightMessageId] = useState<string | null>(null);
 
   // Day conversation state
@@ -32,7 +32,7 @@ export function useArchive() {
   // Moments state (persisted in localStorage)
   const [moments, setMoments] = useState<Moment[]>(() => {
     try {
-      const saved = localStorage.getItem('nila_archive_moments');
+      const saved = localStorage.getItem('nihan_archive_moments');
       if (saved) {
         const parsed: Moment[] = JSON.parse(saved);
         const customMoments = parsed.filter((m) => m.isCustom);
@@ -120,7 +120,7 @@ export function useArchive() {
       : [moment, ...moments];
     setMoments(updated);
     try {
-      localStorage.setItem('nila_archive_moments', JSON.stringify(updated));
+      localStorage.setItem('nihan_archive_moments', JSON.stringify(updated));
     } catch {}
   };
 
@@ -128,7 +128,7 @@ export function useArchive() {
     const updated = moments.filter((m) => m.id !== id);
     setMoments(updated);
     try {
-      localStorage.setItem('nila_archive_moments', JSON.stringify(updated));
+      localStorage.setItem('nihan_archive_moments', JSON.stringify(updated));
     } catch {}
   };
 

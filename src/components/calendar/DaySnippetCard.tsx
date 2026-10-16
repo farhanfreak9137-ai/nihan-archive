@@ -24,8 +24,8 @@ export const DaySnippetCard: React.FC<DaySnippetCardProps> = ({
   onClose,
   isMobileDrawer = false,
 }) => {
-  const nilaPct = stats.nilaPercentage;
-  const farhanPct = stats.farhanPercentage;
+  const sumaiyaPct = stats.sumaiyaPercentage ?? 0;
+  const nihanPct = stats.nihanPercentage ?? 0;
 
   // Format date: "Tuesday, August 14, 2026"
   const dateObj = new Date(`${stats.date}T00:00:00`);
@@ -45,7 +45,7 @@ export const DaySnippetCard: React.FC<DaySnippetCardProps> = ({
         color: 'text-purple-300 bg-purple-500/15 border-purple-500/30',
       };
     }
-    if (stats.totalMessages >= 1400) {
+    if (stats.totalMessages >= 400) {
       return {
         label: 'Record Peak Day',
         emoji: '👑',
@@ -141,13 +141,13 @@ export const DaySnippetCard: React.FC<DaySnippetCardProps> = ({
 
         {/* Sender Ratio Bar */}
         <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden flex">
-          <div style={{ width: `${nilaPct}%` }} className="h-full bg-rose-500" />
-          <div style={{ width: `${farhanPct}%` }} className="h-full bg-sky-400" />
+          <div style={{ width: `${sumaiyaPct}%` }} className="h-full bg-rose-500" />
+          <div style={{ width: `${nihanPct}%` }} className="h-full bg-sky-400" />
         </div>
 
         <div className="flex justify-between text-[10px] font-mono text-[#8b949e]">
-          <span className="text-rose-400">NILA: {stats.nilaMessages} ({Math.round(nilaPct)}%)</span>
-          <span className="text-sky-400">FARHAN: {stats.farhanMessages} ({Math.round(farhanPct)}%)</span>
+          <span className="text-rose-400">SUMAIYA: {(stats.sumaiyaMessages ?? 0).toLocaleString()} ({Math.round(sumaiyaPct)}%)</span>
+          <span className="text-sky-400">NIHAN: {(stats.nihanMessages ?? 0).toLocaleString()} ({Math.round(nihanPct)}%)</span>
         </div>
       </div>
 

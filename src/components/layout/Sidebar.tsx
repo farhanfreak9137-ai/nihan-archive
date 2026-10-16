@@ -29,18 +29,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
   selectedDate,
   totalDays,
 }) => {
-  const { nilaAvatar, farhanAvatar } = useAvatars();
+  const { sumaiyaAvatar, nihanAvatar } = useAvatars();
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
-  const [nilaImgError, setNilaImgError] = useState(false);
-  const [farhanImgError, setFarhanImgError] = useState(false);
+  const [sumaiyaImgError, setSumaiyaImgError] = useState(false);
+  const [nihanImgError, setNihanImgError] = useState(false);
 
   useEffect(() => {
-    setNilaImgError(false);
-  }, [nilaAvatar]);
+    setSumaiyaImgError(false);
+  }, [sumaiyaAvatar]);
 
   useEffect(() => {
-    setFarhanImgError(false);
-  }, [farhanAvatar]);
+    setNihanImgError(false);
+  }, [nihanAvatar]);
   const navItems = [
     {
       id: 'calendar' as ActiveTab,
@@ -236,50 +236,50 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <div className="flex items-center -space-x-2">
-                {/* Nila Avatar with camera overlay */}
+                {/* Sumaiya Avatar with camera overlay */}
                 <button
                   type="button"
                   onClick={() => setIsCustomizerOpen(true)}
-                  title="Nila - Click to change photo"
-                  className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-tr from-rose-500 to-pink-500 shadow-md shadow-rose-500/30 ring-2 ring-[#0c0e12] hover:scale-110 hover:z-20 transition-all cursor-pointer relative group/nila overflow-hidden"
+                  title="Sumaiya - Click to change photo"
+                  className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-tr from-rose-500 to-pink-500 shadow-md shadow-rose-500/30 ring-2 ring-[#0c0e12] hover:scale-110 hover:z-20 transition-all cursor-pointer relative group/sumaiya overflow-hidden"
                 >
-                  {!nilaImgError ? (
+                  {!sumaiyaImgError ? (
                     <img
-                      src={nilaAvatar}
-                      alt="Nila"
-                      onError={() => setNilaImgError(true)}
+                      src={sumaiyaAvatar}
+                      alt="Sumaiya"
+                      onError={() => setSumaiyaImgError(true)}
                       className="w-full h-full rounded-full object-cover object-[center_20%]"
                     />
                   ) : (
                     <div className="w-full h-full rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white text-[11px] font-mono font-bold">
-                      N
+                      S
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/nila:opacity-100 flex items-center justify-center transition-opacity">
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/sumaiya:opacity-100 flex items-center justify-center transition-opacity">
                     <Camera className="w-3 h-3 text-white" />
                   </div>
                 </button>
 
-                {/* Farhan Avatar with camera overlay */}
+                {/* Nihan Avatar with camera overlay */}
                 <button
                   type="button"
                   onClick={() => setIsCustomizerOpen(true)}
-                  title="Farhan - Click to change photo"
-                  className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-tr from-sky-400 to-blue-600 shadow-md shadow-sky-500/30 ring-2 ring-[#0c0e12] hover:scale-110 hover:z-20 transition-all cursor-pointer relative group/farhan overflow-hidden"
+                  title="Nihan - Click to change photo"
+                  className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-tr from-sky-400 to-blue-600 shadow-md shadow-sky-500/30 ring-2 ring-[#0c0e12] hover:scale-110 hover:z-20 transition-all cursor-pointer relative group/nihan overflow-hidden"
                 >
-                  {!farhanImgError ? (
+                  {!nihanImgError ? (
                     <img
-                      src={farhanAvatar}
-                      alt="Farhan"
-                      onError={() => setFarhanImgError(true)}
+                      src={nihanAvatar}
+                      alt="Nihan"
+                      onError={() => setNihanImgError(true)}
                       className="w-full h-full rounded-full object-cover object-[center_20%]"
                     />
                   ) : (
                     <div className="w-full h-full rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white text-[11px] font-mono font-bold">
-                      F
+                      N
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/farhan:opacity-100 flex items-center justify-center transition-opacity">
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/nihan:opacity-100 flex items-center justify-center transition-opacity">
                     <Camera className="w-3 h-3 text-white" />
                   </div>
                 </button>
@@ -305,11 +305,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           <div className="space-y-1">
             <div className="flex items-center gap-1.5 text-xs text-white font-medium">
-              <span>Farhan & Nila Archive</span>
+              <span>Nihan & Sumaiya Archive</span>
               <Heart className="w-3 h-3 fill-rose-500 text-rose-500 animate-pulse" />
             </div>
             <p className="text-[11px] leading-relaxed text-[#8b949e] font-sans">
-              87 days of memories, late-night talks & voice notes preserved forever.
+              {totalDays || 102} days of memories, late-night talks & voice notes preserved forever.
             </p>
           </div>
 

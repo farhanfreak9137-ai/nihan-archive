@@ -67,16 +67,16 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
   // Aggregate stats
   const totals = useMemo(() => {
     let totalMessages = 0;
-    let nilaMessages = 0;
-    let farhanMessages = 0;
+    let sumaiyaMessages = 0;
+    let nihanMessages = 0;
     let reels = 0;
     let shares = 0;
-    let peakDay = { date: '2026-07-28', count: 0 };
+    let peakDay = { date: '2026-10-11', count: 0 };
 
     for (const d of stats) {
       totalMessages += d.totalMessages;
-      nilaMessages += d.nilaMessages;
-      farhanMessages += d.farhanMessages;
+      sumaiyaMessages += d.sumaiyaMessages ?? 0;
+      nihanMessages += d.nihanMessages ?? 0;
       reels += d.reels || 0;
       shares += d.shares || 0;
       if (d.totalMessages > peakDay.count) {
@@ -84,20 +84,20 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
       }
     }
 
-    const nilaPct = totalMessages ? Math.round((nilaMessages / totalMessages) * 100) : 50;
-    const farhanPct = totalMessages ? 100 - nilaPct : 50;
+    const sumaiyaPct = totalMessages ? Math.round((sumaiyaMessages / totalMessages) * 100) : 44;
+    const nihanPct = totalMessages ? 100 - sumaiyaPct : 56;
 
     return {
-      totalMessages: totalMessages || 92573,
-      nilaMessages: nilaMessages || 47789,
-      farhanMessages: farhanMessages || 44784,
-      nilaPct,
-      farhanPct,
-      reels: reels || 1761,
-      shares: shares || 2313,
-      daysCount: stats.length || 97,
-      startDate: stats[0]?.date || '2026-07-06',
-      endDate: stats[stats.length - 1]?.date || '2026-10-11',
+      totalMessages: totalMessages || 5436,
+      sumaiyaMessages: sumaiyaMessages || 2377,
+      nihanMessages: nihanMessages || 2716,
+      sumaiyaPct,
+      nihanPct,
+      reels: reels || 361,
+      shares: shares || 515,
+      daysCount: stats.length || 102,
+      startDate: stats[0]?.date || '2026-01-22',
+      endDate: stats[stats.length - 1]?.date || '2026-10-16',
       peakDay,
     };
   }, [stats]);
@@ -106,7 +106,7 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
   const monthlyStats = useMemo(() => {
     const months: Record<
       string,
-      { label: string; days: number; total: number; nila: number; farhan: number }
+      { label: string; days: number; total: number; sumaiya: number; nihan: number }
     > = {};
 
     for (const d of stats) {
@@ -114,12 +114,14 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
       if (!months[monthKey]) {
         const dateObj = new Date(`${d.date}T00:00:00`);
         const label = dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-        months[monthKey] = { label, days: 0, total: 0, nila: 0, farhan: 0 };
+        months[monthKey] = { label, days: 0, total: 0, sumaiya: 0, nihan: 0 };
       }
       months[monthKey].days += 1;
       months[monthKey].total += d.totalMessages;
-      months[monthKey].nila += d.nilaMessages;
-      months[monthKey].farhan += d.farhanMessages;
+      const s = d.sumaiyaMessages ?? 0;
+      const n = d.nihanMessages ?? 0;
+      months[monthKey].sumaiya += s;
+      months[monthKey].nihan += n;
     }
 
     return Object.values(months);
@@ -135,7 +137,7 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
   };
 
   const handleCopySummary = () => {
-    const summary = `📖 The Story of Us — Archive Keepsake\n👫 Nila & Farhan\n📅 ${totals.startDate} to ${totals.endDate} (${totals.daysCount} active days)\n💬 ${totals.totalMessages.toLocaleString()} Total Messages\n✨ Nila: ${totals.nilaMessages.toLocaleString()} (${totals.nilaPct}%) | Farhan: ${totals.farhanMessages.toLocaleString()} (${totals.farhanPct}%)\n🎬 ${totals.shares.toLocaleString()} Shared Reels & Posts\n🔥 Peak Day: ${totals.peakDay.date} with ${totals.peakDay.count.toLocaleString()} messages!`;
+    const summary = `📖 The Story of Us — Archive Keepsake\n👫 Nihan & Sumaiya\n📅 ${totals.startDate} to ${totals.endDate} (${totals.daysCount} active days)\n💬 ${totals.totalMessages.toLocaleString()} Total Messages\n✨ Sumaiya: ${totals.sumaiyaMessages.toLocaleString()} (${totals.sumaiyaPct}%) | Nihan: ${totals.nihanMessages.toLocaleString()} (${totals.nihanPct}%)\n🎬 ${totals.shares.toLocaleString()} Shared Reels & Posts\n🔥 Peak Day: ${totals.peakDay.date} with ${totals.peakDay.count.toLocaleString()} messages!`;
     navigator.clipboard.writeText(summary);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2500);
@@ -263,7 +265,7 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
               </h1>
               <div className="w-16 h-0.5 bg-gradient-to-r from-rose-500 to-amber-500 mx-auto my-4 print:bg-black" />
               <h2 className="text-xl sm:text-2xl font-editorial italic text-rose-200 print:text-gray-800">
-                The Story of Nila & Farhan
+                The Story of Nihan & Sumaiya
               </h2>
 
               <p className="text-xs sm:text-sm text-[#8b949e] italic pt-4 leading-relaxed print:text-gray-600">
@@ -331,27 +333,27 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
               <h4 className="text-sm font-semibold font-mono text-white print:text-black flex items-center justify-between">
                 <span>Conversation Balance</span>
                 <span className="text-xs text-[#8b949e] font-normal print:text-gray-600">
-                  Nila {totals.nilaPct}% vs Farhan {totals.farhanPct}%
+                  Sumaiya {totals.sumaiyaPct}% vs Nihan {totals.nihanPct}%
                 </span>
               </h4>
 
               <div className="h-4 w-full bg-[#21262d] rounded-full overflow-hidden flex print:border print:border-gray-400">
                 <div
-                  style={{ width: `${totals.nilaPct}%` }}
+                  style={{ width: `${totals.sumaiyaPct}%` }}
                   className="bg-gradient-to-r from-rose-500 to-pink-500 print:bg-rose-600"
                 />
                 <div
-                  style={{ width: `${totals.farhanPct}%` }}
+                  style={{ width: `${totals.nihanPct}%` }}
                   className="bg-gradient-to-r from-sky-500 to-blue-500 print:bg-sky-600"
                 />
               </div>
 
               <div className="flex justify-between text-xs font-mono pt-1">
                 <span className="text-rose-400 font-semibold print:text-rose-700">
-                  NILA: {totals.nilaMessages.toLocaleString()} msgs ({totals.nilaPct}%)
+                  SUMAIYA: {totals.sumaiyaMessages.toLocaleString()} msgs ({totals.sumaiyaPct}%)
                 </span>
                 <span className="text-sky-400 font-semibold print:text-sky-700">
-                  FARHAN: {totals.farhanMessages.toLocaleString()} msgs ({totals.farhanPct}%)
+                  NIHAN: {totals.nihanMessages.toLocaleString()} msgs ({totals.nihanPct}%)
                 </span>
               </div>
             </div>
@@ -384,7 +386,7 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
                         "{n.nickname}"
                       </span>
                       <span className="block text-[10px] font-mono text-[#8b949e] print:text-gray-600">
-                        Nila ({n.bySender?.NILU || 0}) • Farhan ({n.bySender?.farhannn || 0})
+                        Sumaiya ({n.bySender?.SUMAIYA || 0}) • Nihan ({n.bySender?.NIHAN || 0})
                       </span>
                     </div>
                     <span className="text-sm font-mono font-bold text-white print:text-black">
@@ -418,8 +420,8 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
                       "{exp.label}"
                     </p>
                     <div className="text-[11px] font-mono pt-1 flex justify-between border-t border-[#21262d] print:border-gray-300">
-                      <span className="text-rose-400 print:text-gray-700">Nila: {exp.totalOccurrences?.NILU || 0}</span>
-                      <span className="text-sky-400 print:text-gray-700">Farhan: {exp.totalOccurrences?.farhannn || 0}</span>
+                      <span className="text-rose-400 print:text-gray-700">Sumaiya: {exp.totalOccurrences?.SUMAIYA || 0}</span>
+                      <span className="text-sky-400 print:text-gray-700">Nihan: {exp.totalOccurrences?.NIHAN || 0}</span>
                     </div>
                   </div>
                 ))}
@@ -461,15 +463,15 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
                       </span>
                     </div>
                     <div>
-                      <span className="text-rose-400 block text-[10px] print:text-rose-700">NILA</span>
+                      <span className="text-rose-400 block text-[10px] print:text-rose-700">SUMAIYA</span>
                       <span className="font-semibold text-rose-300 print:text-black">
-                        {m.nila.toLocaleString()}
+                        {m.sumaiya.toLocaleString()}
                       </span>
                     </div>
                     <div>
-                      <span className="text-sky-400 block text-[10px] print:text-sky-700">FARHAN</span>
+                      <span className="text-sky-400 block text-[10px] print:text-sky-700">NIHAN</span>
                       <span className="font-semibold text-sky-300 print:text-black">
-                        {m.farhan.toLocaleString()}
+                        {m.nihan.toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -508,7 +510,7 @@ export const KeepsakeBookModal: React.FC<KeepsakeBookModalProps> = ({
                         {photo.date}
                       </p>
                       <p className="text-[9px] font-mono text-gray-600">
-                        from {photo.sender === 'NILU' ? 'Nila' : 'Farhan'}
+                        from {photo.sender === 'SUMAIYA' ? 'Sumaiya' : photo.sender === 'NIHAN' ? 'Nihan' : photo.sender}
                       </p>
                     </div>
                   </div>

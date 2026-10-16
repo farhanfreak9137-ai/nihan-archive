@@ -26,7 +26,7 @@ export const AiDaySummaryModal: React.FC<AiDaySummaryModalProps> = ({
   messages,
 }) => {
   const [apiKey, setApiKey] = useState(() => {
-    return localStorage.getItem('nila_gemini_api_key') || '';
+    return localStorage.getItem('nihan_gemini_api_key') || '';
   });
   const [isEditingKey, setIsEditingKey] = useState(!apiKey);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,13 +37,13 @@ export const AiDaySummaryModal: React.FC<AiDaySummaryModalProps> = ({
 
   const handleSaveKey = () => {
     if (apiKey.trim()) {
-      localStorage.setItem('nila_gemini_api_key', apiKey.trim());
+      localStorage.setItem('nihan_gemini_api_key', apiKey.trim());
       setIsEditingKey(false);
     }
   };
 
   const handleClearKey = () => {
-    localStorage.removeItem('nila_gemini_api_key');
+    localStorage.removeItem('nihan_gemini_api_key');
     setApiKey('');
     setIsEditingKey(true);
     setSummaryText(null);
@@ -72,11 +72,16 @@ export const AiDaySummaryModal: React.FC<AiDaySummaryModalProps> = ({
         }
       }
 
+      const sumaiyaMsgs = stats?.sumaiyaMessages ?? 0;
+      const nihanMsgs = stats?.nihanMessages ?? 0;
+      const sumaiyaPct = stats?.sumaiyaPercentage ?? 50;
+      const nihanPct = stats?.nihanPercentage ?? 50;
+
       const prompt = `You are a respectful, neutral conversation analyst examining an archive for date ${date}.
 ARCHIVE FACTS for this day:
 - Total messages: ${stats?.totalMessages || messages.length}
-- NILA: ${stats?.nilaMessages || 0} (${stats?.nilaPercentage || 50}%)
-- FARHAN: ${stats?.farhanMessages || 0} (${stats?.farhanPercentage || 50}%)
+- SUMAIYA: ${sumaiyaMsgs} (${sumaiyaPct}%)
+- NIHAN: ${nihanMsgs} (${nihanPct}%)
 - Shares: ${stats?.shares || 0}
 - Reactions: ${stats?.reactions || 0}
 - Active duration: ${stats ? Math.round(stats.activeDurationMinutes / 60) : 0} hours
@@ -230,7 +235,7 @@ Keep your analysis objective and factual. Do not fabricate emotional conclusions
                   Verified Archive Facts
                 </div>
                 <div className="text-xs text-[#8b949e] font-mono">
-                  {stats?.totalMessages.toLocaleString()} Messages • {stats?.nilaMessages} from NILA • {stats?.farhanMessages} from FARHAN • {stats?.shares} Shares • {stats?.reactions} Reactions
+                  {stats?.totalMessages.toLocaleString()} Messages • {stats?.sumaiyaMessages ?? 0} from SUMAIYA • {stats?.nihanMessages ?? 0} from NIHAN • {stats?.shares ?? 0} Shares • {stats?.reactions ?? 0} Reactions
                 </div>
               </div>
 

@@ -290,9 +290,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               const isSelected = selectedDate === cell.dateStr;
 
               // Top peak day crown badges
-              const isRank1 = cell.dateStr === '2026-08-14';
-              const isRank2 = cell.dateStr === '2026-08-13';
-              const isRank3 = cell.dateStr === '2026-08-15';
+              const isRank1 = cell.dateStr === '2026-10-11';
+              const isRank2 = cell.dateStr === '2026-10-07';
+              const isRank3 = cell.dateStr === '2026-10-14';
 
               // Intensity styles based on activityScore / message count
               let intensityBorder = 'border-[#21262d]';
@@ -300,16 +300,16 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               let glowEffect = '';
 
               if (hasMessages) {
-                if (stat.totalMessages >= 1500) {
+                if (stat.totalMessages >= 500) {
                   // Climax/Mega Active Day
                   intensityBorder = 'border-rose-500/50 hover:border-rose-400';
                   intensityBg = 'bg-rose-950/25 hover:bg-rose-900/35';
                   glowEffect = 'shadow-[0_0_15px_rgba(244,63,94,0.15)]';
-                } else if (stat.totalMessages >= 1000) {
+                } else if (stat.totalMessages >= 300) {
                   // Heavy Active Day
                   intensityBorder = 'border-rose-500/30 hover:border-rose-400/60';
                   intensityBg = 'bg-[#1a1420] hover:bg-[#241a2c]';
-                } else if (stat.totalMessages >= 500) {
+                } else if (stat.totalMessages >= 100) {
                   // Medium Active Day
                   intensityBorder = 'border-[#30363d] hover:border-[#484f58]';
                   intensityBg = 'bg-[#161b22] hover:bg-[#1c222c]';
@@ -389,13 +389,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                       <div className="h-1 w-full rounded-full bg-slate-800/80 overflow-hidden flex">
                         <div
                           style={{
-                            width: `${stat.nilaPercentage}%`,
+                            width: `${stat.sumaiyaPercentage ?? 50}%`,
                           }}
                           className="h-full bg-rose-500"
                         />
                         <div
                           style={{
-                            width: `${stat.farhanPercentage}%`,
+                            width: `${stat.nihanPercentage ?? 50}%`,
                           }}
                           className="h-full bg-sky-400"
                         />
@@ -414,21 +414,21 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             <div className="flex items-center gap-2">
               <span className="font-mono text-[11px]">Intensity:</span>
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded bg-[#12161c] border border-[#21262d]" title="Light (<500 msgs)" />
-                <span className="w-3 h-3 rounded bg-[#161b22] border border-[#30363d]" title="Medium (500-1k msgs)" />
-                <span className="w-3 h-3 rounded bg-[#1a1420] border border-rose-500/30" title="Heavy (1k-1.5k msgs)" />
-                <span className="w-3 h-3 rounded bg-rose-950/40 border border-rose-500" title="Peak (>1.5k msgs)" />
+                <span className="w-3 h-3 rounded bg-[#12161c] border border-[#21262d]" title="Light (<100 msgs)" />
+                <span className="w-3 h-3 rounded bg-[#161b22] border border-[#30363d]" title="Medium (100-300 msgs)" />
+                <span className="w-3 h-3 rounded bg-[#1a1420] border border-rose-500/30" title="Heavy (300-500 msgs)" />
+                <span className="w-3 h-3 rounded bg-rose-950/40 border border-rose-500" title="Peak (>500 msgs)" />
               </div>
             </div>
 
             <div className="flex items-center gap-3 font-mono text-[11px]">
               <span className="flex items-center gap-1 text-rose-400">
                 <span className="w-2 h-2 rounded-full bg-rose-500" />
-                NILA
+                SUMAIYA
               </span>
               <span className="flex items-center gap-1 text-sky-400">
                 <span className="w-2 h-2 rounded-full bg-sky-400" />
-                FARHAN
+                NIHAN
               </span>
             </div>
           </div>

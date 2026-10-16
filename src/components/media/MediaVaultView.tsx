@@ -38,7 +38,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
   const [activeTab, setActiveTab] = useState<
     'all' | 'reel' | 'post' | 'story' | 'photo' | 'video' | 'audio' | 'file'
   >('reel');
-  const [senderFilter, setSenderFilter] = useState<'all' | 'NILU' | 'farhannn'>('all');
+  const [senderFilter, setSenderFilter] = useState<'all' | 'SUMAIYA' | 'NIHAN'>('all');
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<string>('all');
   const [photoCategory, setPhotoCategory] = useState<'all' | 'screenshot' | 'portrait' | 'aesthetic' | 'memory'>('all');
@@ -168,7 +168,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
       .filter((m) => m.type === 'audio' && m.uri)
       .map((m) => ({
         uri: resolveDataUrl(m.uri!),
-        senderDisplay: m.sender === 'NILU' ? ('NILA' as const) : ('FARHAN' as const),
+        senderDisplay: m.sender === 'SUMAIYA' ? ('SUMAIYA' as const) : ('NIHAN' as const),
         filename: m.filename,
         date: m.date,
         time: m.time,
@@ -379,7 +379,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
             </select>
 
             <div className="flex items-center gap-1 bg-[#0b0d10] p-0.5 rounded-lg border border-[#21262d]">
-              {(['all', 'NILU', 'farhannn'] as const).map((s) => (
+              {(['all', 'SUMAIYA', 'NIHAN'] as const).map((s) => (
                 <button
                   key={s}
                   onClick={() => {
@@ -392,7 +392,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                       : 'text-[#8b949e] hover:text-white'
                   }`}
                 >
-                  {s === 'all' ? 'All' : s === 'NILU' ? 'NILA' : 'FARHAN'}
+                  {s === 'all' ? 'All' : s}
                 </button>
               ))}
             </div>
@@ -489,7 +489,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6 pt-3">
           {displayedList.map((item, idx) => {
             const rot = polaroidRotations[idx % polaroidRotations.length];
-            const isNila = item.sender === 'NILU';
+            const isSumaiya = item.sender === 'SUMAIYA';
             const badge = getCategoryBadge(item.category);
 
             return (
@@ -525,10 +525,10 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                   </span>
                   <span
                     className={`text-[10px] font-mono ${
-                      isNila ? 'text-rose-600' : 'text-sky-700'
+                      isSumaiya ? 'text-rose-600' : 'text-sky-700'
                     }`}
                   >
-                    by {isNila ? 'NILA' : 'FARHAN'}
+                    by {isSumaiya ? 'SUMAIYA' : 'NIHAN'}
                   </span>
                 </div>
               </div>
@@ -539,7 +539,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
         /* STANDARD MEDIA GRID */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {displayedList.map((item) => {
-            const isNila = item.sender === 'NILU';
+            const isSumaiya = item.sender === 'SUMAIYA';
             const badge = item.type === 'photo' ? getCategoryBadge(item.category) : null;
 
             return (
@@ -553,10 +553,10 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                     <div className="flex items-center gap-2">
                       <span
                         className={`font-semibold font-mono ${
-                          isNila ? 'text-rose-400' : 'text-sky-400'
+                          isSumaiya ? 'text-rose-400' : 'text-sky-400'
                         }`}
                       >
-                        {isNila ? 'NILA' : 'FARHAN'}
+                        {isSumaiya ? 'SUMAIYA' : 'NIHAN'}
                       </span>
                       {badge && (
                         <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border flex items-center gap-1 ${badge.color}`}>
@@ -597,7 +597,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
                     <div className="pt-1">
                       <VoiceNotePlayer
                         src={resolveDataUrl(item.uri)}
-                        senderDisplay={isNila ? 'NILA' : 'FARHAN'}
+                        senderDisplay={isSumaiya ? 'SUMAIYA' : 'NIHAN'}
                         filename={item.filename}
                         date={item.date}
                         time={item.time}
@@ -692,7 +692,7 @@ export const MediaVaultView: React.FC<MediaVaultViewProps> = ({
         <PhotoLightbox
           src={resolveDataUrl(selectedPhoto.uri)}
           filename={selectedPhoto.filename}
-          senderDisplay={selectedPhoto.sender === 'NILU' ? 'NILA' : 'FARHAN'}
+          senderDisplay={selectedPhoto.sender === 'SUMAIYA' ? 'SUMAIYA' : 'NIHAN'}
           date={selectedPhoto.date}
           time={selectedPhoto.time}
           onClose={() => setSelectedPhoto(null)}

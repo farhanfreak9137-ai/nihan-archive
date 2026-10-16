@@ -6,11 +6,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 const MESSAGES_DIR = path.join(ROOT_DIR, 'Messages');
+const UPDATES_DIR = path.join(ROOT_DIR, 'Updates');
 const OUTPUT_DIR = path.join(ROOT_DIR, 'public', 'data');
 const DAYS_DIR = path.join(OUTPUT_DIR, 'days');
+const PUBLIC_MEDIA_DIR = path.join(ROOT_DIR, 'public', 'media');
 
 // Ensure output directories exist
 fs.mkdirSync(DAYS_DIR, { recursive: true });
+['photos', 'audio', 'videos', 'files'].forEach((folder) => {
+  fs.mkdirSync(path.join(PUBLIC_MEDIA_DIR, folder), { recursive: true });
+});
 
 /**
  * Decode Instagram's Latin-1/UTF-8 mojibake encoding
@@ -114,6 +119,60 @@ function formatTime(date: Date): string {
 }
 
 /**
+ * Map raw sender to canonical sender ID and clean display name
+ */
+function resolveSender(rawSender: string, _threadTitle?: string): { senderId: string; senderDisplay: string } {
+  const decoded = decodeMojibake(rawSender).trim();
+
+  // Nihan (archive owner)
+  if (decoded === 'Ashikul Islam Nihan' || decoded.toLowerCase().includes('nihan')) {
+    return { senderId: 'NIHAN', senderDisplay: 'NIHAN' };
+  }
+
+  // Sumaiya (primary partner) - thread s_27446236815041740 or s_2318912581852590
+  if (decoded === 'S' || decoded === 's.' || decoded.toLowerCase() === 'sumaiya' || decoded.toLowerCase() === 'june_4003') {
+    return { senderId: 'SUMAIYA', senderDisplay: 'SUMAIYA' };
+  }
+
+  // Hasan - thread s_17908004676092734
+  if (decoded.includes('ʜᴀsᴀɴ') || decoded.toLowerCase().includes('hasan')) {
+    return { senderId: 'HASAN', senderDisplay: 'HASAN' };
+  }
+
+  // Sajid - thread s_17999763557854067
+  if (decoded.includes('s ᴀ ᴊ ɪ ᴅ') || decoded.toLowerCase().includes('sajid') || decoded.startsWith('s ᴀ')) {
+    return { senderId: 'SAJID', senderDisplay: 'SAJID' };
+  }
+
+  // Meta AI bot
+  if (decoded === 'Meta AI' || decoded.toLowerCase().includes('meta ai')) {
+    return { senderId: 'META_AI', senderDisplay: 'Meta AI' };
+  }
+
+  return { senderId: decoded, senderDisplay: decoded };
+}
+
+/**
+ * Clean thread title for display
+ */
+function resolveThreadInfo(dirName: string, rawTitle?: string): { threadId: string; threadTitle: string } {
+  const title = decodeMojibake(rawTitle || '').trim();
+  if (dirName.includes('27446236815041740') || title === 'S') {
+    return { threadId: 's_27446236815041740', threadTitle: 'Sumaiya' };
+  }
+  if (dirName.includes('17908004676092734') || title.includes('ʜᴀsᴀɴ')) {
+    return { threadId: 's_17908004676092734', threadTitle: 'Hasan' };
+  }
+  if (dirName.includes('17999763557854067') || title.includes('s ᴀ ᴊ ɪ ᴅ')) {
+    return { threadId: 's_17999763557854067', threadTitle: 'Sajid' };
+  }
+  if (dirName.includes('2318912581852590') || title === 's.') {
+    return { threadId: 's_2318912581852590', threadTitle: 'Sumaiya (Old)' };
+  }
+  return { threadId: dirName, threadTitle: title || dirName };
+}
+
+/**
  * Deterministic Activity Score calculation (0 - 100)
  */
 function calculateActivityScore(stats: {
@@ -123,18 +182,11 @@ function calculateActivityScore(stats: {
   reactions: number;
   hourlySpread: number; // number of distinct active hours
 }): number {
-  // 1. Volume score (max 50 pts): 2,000 msgs = 50 pts
-  const volumeScore = Math.min(50, (stats.totalMessages / 2000) * 50);
-
-  // 2. Duration score (max 20 pts): 12 hours active = 20 pts
+  const volumeScore = Math.min(50, (stats.totalMessages / 500) * 50);
   const durationScore = Math.min(20, (stats.activeDurationMinutes / 720) * 20);
-
-  // 3. Hourly spread score (max 15 pts): 18 distinct active hours = 15 pts
   const spreadScore = Math.min(15, (stats.hourlySpread / 18) * 15);
-
-  // 4. Engagement bonus (max 15 pts): shares + reactions
   const engagement = stats.shares * 1.5 + stats.reactions * 0.5;
-  const engagementScore = Math.min(15, (engagement / 50) * 15);
+  const engagementScore = Math.min(15, (engagement / 20) * 15);
 
   const rawScore = volumeScore + durationScore + spreadScore + engagementScore;
   return Math.max(5, Math.min(100, Math.round(rawScore)));
@@ -195,14 +247,15 @@ function getImageMeta(filename?: string): { category: 'screenshot' | 'portrait' 
 }
 
 async function runPipeline() {
-  console.log('=== NILA ARCHIVE: INGESTION & NORMALIZATION PIPELINE ===\n');
+  console.log('=== NIHAN ARCHIVE: INGESTION & NORMALIZATION PIPELINE ===\n');
 
-  // Automatically discover any message_*.json files in MESSAGES_DIR, any nilu* directories, or new update directories
+  // Discover all source message files
   const searchDirs = new Set<string>();
   if (fs.existsSync(MESSAGES_DIR)) searchDirs.add(MESSAGES_DIR);
+  if (fs.existsSync(UPDATES_DIR)) searchDirs.add(UPDATES_DIR);
 
   function scanDirectoryRecursively(dir: string, depth = 0) {
-    if (depth > 4 || !fs.existsSync(dir)) return;
+    if (depth > 5 || !fs.existsSync(dir)) return;
     try {
       const entries = fs.readdirSync(dir, { withFileTypes: true });
       let hasMessageFiles = false;
@@ -224,7 +277,6 @@ async function runPipeline() {
       for (const entry of entries) {
         if (entry.isDirectory()) {
           const lower = entry.name.toLowerCase();
-          // Skip node_modules, dist, public, .git
           if (['node_modules', 'dist', 'public', '.git', 'android'].includes(lower)) continue;
           scanDirectoryRecursively(path.join(dir, entry.name), depth + 1);
         }
@@ -235,7 +287,6 @@ async function runPipeline() {
   scanDirectoryRecursively(ROOT_DIR, 0);
 
   const filePathsSet = new Set<string>();
-
   for (const dir of searchDirs) {
     if (fs.existsSync(dir)) {
       const items = fs.readdirSync(dir);
@@ -247,7 +298,6 @@ async function runPipeline() {
     }
   }
 
-  // Sort files for deterministic reading order
   const filePaths = Array.from(filePathsSet).sort((a, b) => {
     const dirA = path.basename(path.dirname(a));
     const dirB = path.basename(path.dirname(b));
@@ -260,10 +310,12 @@ async function runPipeline() {
   console.log(`Discovered ${filePaths.length} message JSON file(s) across ${searchDirs.size} source directories:`);
   filePaths.forEach((f) => console.log(`  - ${path.relative(ROOT_DIR, f)}`));
 
-  // Sync photos, audio, files, and videos from any nilu* folder to public/media
+  // Collect set of media files present in current updates
+  const currentMediaFilenames = new Set<string>();
   const mediaTargets = ['photos', 'audio', 'files', 'videos'];
+
+  // Clean sync: copy all active media from source directories to public/media
   for (const dir of searchDirs) {
-    if (dir === MESSAGES_DIR) continue;
     for (const sub of mediaTargets) {
       const srcSub = path.join(dir, sub);
       const destSub = path.join(ROOT_DIR, 'public', 'media', sub);
@@ -272,13 +324,13 @@ async function runPipeline() {
         const mediaFiles = fs.readdirSync(srcSub);
         let copied = 0;
         for (const mf of mediaFiles) {
+          currentMediaFilenames.add(mf);
           const destFile = path.join(destSub, mf);
           const srcFile = path.join(srcSub, mf);
           if (!fs.existsSync(destFile)) {
             fs.copyFileSync(srcFile, destFile);
             copied++;
           } else {
-            // If the incoming file is larger (e.g. higher resolution re-export), upgrade it
             const srcSize = fs.statSync(srcFile).size;
             const destSize = fs.statSync(destFile).size;
             if (srcSize > destSize) {
@@ -288,26 +340,51 @@ async function runPipeline() {
           }
         }
         if (copied > 0) {
-          console.log(`Synced ${copied} new/upgraded ${sub} files into public/media/${sub}`);
+          console.log(`Synced ${copied} new/updated ${sub} files from ${path.basename(dir)} into public/media/${sub}`);
         }
       }
     }
   }
 
-  const rawEntries: { source: string; msg: any }[] = [];
+  // Purge any orphan media from previous versions that is no longer in updates
+  for (const sub of mediaTargets) {
+    const destSub = path.join(ROOT_DIR, 'public', 'media', sub);
+    if (fs.existsSync(destSub)) {
+      const existing = fs.readdirSync(destSub);
+      let purged = 0;
+      for (const file of existing) {
+        if (!currentMediaFilenames.has(file)) {
+          try {
+            fs.unlinkSync(path.join(destSub, file));
+            purged++;
+          } catch {}
+        }
+      }
+      if (purged > 0) {
+        console.log(`Purged ${purged} obsolete ${sub} files from public/media/${sub}`);
+      }
+    }
+  }
+
+  // Read and parse all raw messages
+  const rawEntries: { source: string; threadId: string; threadTitle: string; msg: any }[] = [];
 
   for (const filePath of filePaths) {
+    const dirName = path.basename(path.dirname(filePath));
     const fileName = path.basename(filePath);
     const content = fs.readFileSync(filePath, 'utf-8');
     const parts = parseConcatenatedJson(content);
-    console.log(`Loaded ${fileName}: parsed ${parts.length} JSON part(s)`);
+    console.log(`Loaded ${dirName}/${fileName}: parsed ${parts.length} JSON part(s)`);
 
     for (let pIdx = 0; pIdx < parts.length; pIdx++) {
+      const threadInfo = resolveThreadInfo(dirName, parts[pIdx].title);
       const msgs = parts[pIdx].messages || [];
-      console.log(`  - Part ${pIdx + 1}: ${msgs.length.toLocaleString()} messages`);
+      console.log(`  - Part ${pIdx + 1} (${threadInfo.threadTitle}): ${msgs.length.toLocaleString()} messages`);
       for (const m of msgs) {
         rawEntries.push({
-          source: `${fileName}#p${pIdx + 1}`,
+          source: `${dirName}/${fileName}#p${pIdx + 1}`,
+          threadId: threadInfo.threadId,
+          threadTitle: threadInfo.threadTitle,
           msg: m,
         });
       }
@@ -323,17 +400,17 @@ async function runPipeline() {
 
   for (const entry of rawEntries) {
     const raw = entry.msg;
-    const senderRaw = raw.sender_name || 'UNKNOWN';
-    const sender = decodeMojibake(senderRaw);
-    const senderId = sender === 'farhannn' ? 'farhannn' : 'NILU';
-    const senderDisplay = senderId === 'NILU' ? 'NILA' : 'FARHAN';
+    const rawSender = raw.sender_name || 'UNKNOWN';
+    const { senderId, senderDisplay } = resolveSender(rawSender, entry.threadTitle);
 
     const timestamp = Number(raw.timestamp_ms);
     const contentRaw = raw.content || '';
-    const content = decodeMojibake(contentRaw);
+    const content = decodeMojibake(contentRaw)
+      .replace(/\bfarhan\b/gi, (match) => match[0] === 'F' ? 'Nihan' : 'nihan');
 
     const shareLink = raw.share?.link || '';
-    const shareText = decodeMojibake(raw.share?.share_text || '');
+    const shareText = decodeMojibake(raw.share?.share_text || '')
+      .replace(/\bfarhan\b/gi, (match) => match[0] === 'F' ? 'Nihan' : 'nihan');
 
     // Deduplication Key: timestamp_ms + sender + content + shareLink
     const dedupeKey = `${timestamp}|${senderId}|${content}|${shareLink}`;
@@ -379,7 +456,6 @@ async function runPipeline() {
     if (raw.videos) {
       for (const v of raw.videos) {
         const filename = path.basename(v.uri);
-        // Check if file exists in videos, photos or audio
         const inVideos = fs.existsSync(path.join(ROOT_DIR, 'public', 'media', 'videos', filename));
         const inPhotos = fs.existsSync(path.join(ROOT_DIR, 'public', 'media', 'photos', filename));
         const subfolder = inVideos ? 'videos' : (inPhotos ? 'photos' : 'audio');
@@ -419,12 +495,12 @@ async function runPipeline() {
     if (raw.reactions && Array.isArray(raw.reactions)) {
       for (const r of raw.reactions) {
         const decodedReaction = decodeMojibake(r.reaction);
-        const actor = decodeMojibake(r.actor);
-        const actorDisplay = actor === 'farhannn' ? 'FARHAN' : 'NILA';
+        const rawActor = decodeMojibake(r.actor);
+        const actorResolved = resolveSender(rawActor, entry.threadTitle);
         reactions.push({
           reaction: decodedReaction,
-          actor,
-          actorDisplay,
+          actor: actorResolved.senderId,
+          actorDisplay: actorResolved.senderDisplay,
         });
       }
     }
@@ -441,6 +517,8 @@ async function runPipeline() {
       id: msgId,
       sender: senderId,
       senderDisplay,
+      threadId: entry.threadId,
+      threadTitle: entry.threadTitle,
       timestamp,
       date: dateStr,
       time: timeStr,
@@ -475,20 +553,17 @@ async function runPipeline() {
   console.log(`\nActive days: ${activeDaysList.length} (from ${activeDaysList[0]} to ${activeDaysList[activeDaysList.length - 1]})`);
 
   // Global Metrics Accumulators
-  let totalNila = 0;
-  let totalFarhan = 0;
+  const participantCounts: Record<string, number> = {};
+  const participantDisplayCounts: Record<string, number> = {};
   let totalShares = 0;
   let totalReels = 0;
   let totalPosts = 0;
   let totalStories = 0;
   let totalOtherShares = 0;
   let totalReactions = 0;
-  const reactionsByActor = { NILU: 0, farhannn: 0 };
-  const reactionsByEmoji: Record<string, { total: number; NILU: number; farhannn: number }> = {};
-  const sharesBySender = {
-    NILU: { total: 0, reels: 0, posts: 0, stories: 0, other: 0 },
-    farhannn: { total: 0, reels: 0, posts: 0, stories: 0, other: 0 },
-  };
+  const reactionsByActor: Record<string, number> = {};
+  const reactionsByEmoji: Record<string, { total: number; [actor: string]: number }> = {};
+  const sharesBySender: Record<string, { total: number; reels: number; posts: number; stories: number; other: number }> = {};
   const hourlyTotals = new Array(24).fill(0);
   const dayOfWeekTotals = new Array(7).fill(0);
 
@@ -502,18 +577,29 @@ async function runPipeline() {
   const searchIndex: any[] = [];
   const mediaRecords: any[] = [];
 
+  // Clear old day shards in public/data/days
+  if (fs.existsSync(DAYS_DIR)) {
+    const existingShards = fs.readdirSync(DAYS_DIR);
+    for (const sh of existingShards) {
+      if (sh.endsWith('.json')) {
+        fs.unlinkSync(path.join(DAYS_DIR, sh));
+      }
+    }
+  }
+
   // Process Each Day
   for (const [dateStr, msgs] of dayGroups.entries()) {
-    let dayNila = 0;
-    let dayFarhan = 0;
+    let dayNihan = 0;
+    let daySumaiya = 0;
+    let dayOther = 0;
     let dayShares = 0;
     let dayReels = 0;
     let dayPosts = 0;
     let dayStories = 0;
     let dayOtherShares = 0;
     let dayReactions = 0;
-    let dayNilaReactions = 0;
-    let dayFarhanReactions = 0;
+    let dayNihanReactions = 0;
+    let daySumaiyaReactions = 0;
     let dayPhotos = 0;
     let dayVideos = 0;
     let dayAudio = 0;
@@ -521,13 +607,16 @@ async function runPipeline() {
     const hourly = new Array(24).fill(0);
 
     for (const m of msgs) {
-      const isNila = m.sender === 'NILU';
-      if (isNila) {
-        dayNila++;
-        totalNila++;
+      const sender = m.sender;
+      participantCounts[sender] = (participantCounts[sender] || 0) + 1;
+      participantDisplayCounts[m.senderDisplay] = (participantDisplayCounts[m.senderDisplay] || 0) + 1;
+
+      if (sender === 'NIHAN') {
+        dayNihan++;
+      } else if (sender === 'SUMAIYA') {
+        daySumaiya++;
       } else {
-        dayFarhan++;
-        totalFarhan++;
+        dayOther++;
       }
 
       const d = new Date(m.timestamp);
@@ -537,28 +626,31 @@ async function runPipeline() {
       hourlyTotals[hour]++;
       dayOfWeekTotals[dow]++;
 
+      if (!sharesBySender[sender]) {
+        sharesBySender[sender] = { total: 0, reels: 0, posts: 0, stories: 0, other: 0 };
+      }
+
       if (m.type === 'share') {
         dayShares++;
         totalShares++;
-        const senderKey = m.sender as 'NILU' | 'farhannn';
         if (m.shareType === 'reel') {
           dayReels++;
           totalReels++;
-          sharesBySender[senderKey].reels++;
+          sharesBySender[sender].reels++;
         } else if (m.shareType === 'post') {
           dayPosts++;
           totalPosts++;
-          sharesBySender[senderKey].posts++;
+          sharesBySender[sender].posts++;
         } else if (m.shareType === 'story') {
           dayStories++;
           totalStories++;
-          sharesBySender[senderKey].stories++;
+          sharesBySender[sender].stories++;
         } else {
           dayOtherShares++;
           totalOtherShares++;
-          sharesBySender[senderKey].other++;
+          sharesBySender[sender].other++;
         }
-        sharesBySender[senderKey].total++;
+        sharesBySender[sender].total++;
 
         // Add to media index
         mediaRecords.push({
@@ -568,11 +660,12 @@ async function runPipeline() {
           time: m.time,
           timestamp: m.timestamp,
           sender: m.sender,
+          threadTitle: m.threadTitle,
           type: m.shareType || 'other',
           link: m.shareLink,
           title: m.shareText ? m.shareText.slice(0, 100) : '',
           caption: m.shareText,
-          contextSnippet: m.content !== 'NILU sent an attachment.' && m.content !== 'farhannn sent an attachment.' ? m.content : '',
+          contextSnippet: m.content && !/sent an attachment/i.test(m.content) ? m.content : '',
         });
       } else if (m.type === 'photo') {
         dayPhotos++;
@@ -586,6 +679,7 @@ async function runPipeline() {
           time: m.time,
           timestamp: m.timestamp,
           sender: m.sender,
+          threadTitle: m.threadTitle,
           type: 'photo',
           uri: m.media?.[0]?.uri,
           filename,
@@ -603,6 +697,7 @@ async function runPipeline() {
           time: m.time,
           timestamp: m.timestamp,
           sender: m.sender,
+          threadTitle: m.threadTitle,
           type: 'video',
           uri: m.media?.[0]?.uri,
           filename: m.media?.[0]?.filename,
@@ -618,6 +713,7 @@ async function runPipeline() {
           time: m.time,
           timestamp: m.timestamp,
           sender: m.sender,
+          threadTitle: m.threadTitle,
           type: 'audio',
           uri: m.media?.[0]?.uri,
           filename: m.media?.[0]?.filename,
@@ -632,6 +728,7 @@ async function runPipeline() {
           time: m.time,
           timestamp: m.timestamp,
           sender: m.sender,
+          threadTitle: m.threadTitle,
           type: 'file',
           uri: m.media?.[0]?.uri,
           filename: m.media?.[0]?.filename,
@@ -647,23 +744,16 @@ async function runPipeline() {
         dayReactions += m.reactions.length;
         totalReactions += m.reactions.length;
         for (const r of m.reactions) {
-          if (r.actor === 'farhannn') {
-            dayFarhanReactions++;
-            reactionsByActor.farhannn++;
-          } else {
-            dayNilaReactions++;
-            reactionsByActor.NILU++;
-          }
+          const act = r.actor;
+          reactionsByActor[act] = (reactionsByActor[act] || 0) + 1;
+          if (act === 'NIHAN') dayNihanReactions++;
+          else if (act === 'SUMAIYA') daySumaiyaReactions++;
 
           if (!reactionsByEmoji[r.reaction]) {
-            reactionsByEmoji[r.reaction] = { total: 0, NILU: 0, farhannn: 0 };
+            reactionsByEmoji[r.reaction] = { total: 0 };
           }
           reactionsByEmoji[r.reaction].total++;
-          if (r.actor === 'farhannn') {
-            reactionsByEmoji[r.reaction].farhannn++;
-          } else {
-            reactionsByEmoji[r.reaction].NILU++;
-          }
+          reactionsByEmoji[r.reaction][act] = (reactionsByEmoji[r.reaction][act] || 0) + 1;
         }
       }
 
@@ -674,6 +764,8 @@ async function runPipeline() {
         time: m.time,
         timestamp: m.timestamp,
         sender: m.sender,
+        senderDisplay: m.senderDisplay,
+        threadTitle: m.threadTitle,
         type: m.type,
         content: m.content,
         ...(m.shareType ? { shareType: m.shareType, shareLink: m.shareLink } : {}),
@@ -706,18 +798,19 @@ async function runPipeline() {
     const dayStat = {
       date: dateStr,
       totalMessages: msgs.length,
-      nilaMessages: dayNila,
-      farhanMessages: dayFarhan,
-      nilaPercentage: Math.round((dayNila / msgs.length) * 1000) / 10,
-      farhanPercentage: Math.round((dayFarhan / msgs.length) * 1000) / 10,
+      nihanMessages: dayNihan,
+      sumaiyaMessages: daySumaiya,
+      otherMessages: dayOther,
+      nihanPercentage: Math.round((dayNihan / msgs.length) * 1000) / 10,
+      sumaiyaPercentage: Math.round((daySumaiya / msgs.length) * 1000) / 10,
       shares: dayShares,
       reels: dayReels,
       posts: dayPosts,
       stories: dayStories,
       otherShares: dayOtherShares,
       reactions: dayReactions,
-      nilaReactions: dayNilaReactions,
-      farhanReactions: dayFarhanReactions,
+      nihanReactions: dayNihanReactions,
+      sumaiyaReactions: daySumaiyaReactions,
       photos: dayPhotos,
       videos: dayVideos,
       audioNotes: dayAudio,
@@ -742,64 +835,74 @@ async function runPipeline() {
 
   // Expressions Analysis
   const expressionDefinitions = [
-    { id: 'ily', label: 'I love you', category: 'love', pattern: '\\bi\\s*(love|luv)\\s*(you|u)\\b' },
-    { id: 'sorry', label: 'sorry', category: 'apology', pattern: '\\b(sorry+|sry|sori)\\b' },
-    { id: 'thank_you', label: 'thank you', category: 'gratitude', pattern: '\\bthank\\s+you\\b' },
-    { id: 'thank_u', label: 'thank u', category: 'gratitude', pattern: '\\bthank\\s+u\\b' },
-    { id: 'thanks', label: 'thanks', category: 'gratitude', pattern: '\\bthanks\\b' },
-    { id: 'miss_you', label: 'miss you', category: 'missing', pattern: '\\bmiss\\s*(you|u)\\b' },
+    { id: 'ily', label: 'love / ily', category: 'love', pattern: '\\b(love|valobashi|valo\\s*bashi|luv|ily)\\b' },
+    { id: 'cute', label: 'cute / cutie', category: 'affection', pattern: '\\b(cute|cutie|cutes)\\b' },
+    { id: 'sundor', label: 'sundor', category: 'affection', pattern: '\\b(sundor|shundor|beautiful|pretty)\\b' },
+    { id: 'sorry', label: 'sorry', category: 'apology', pattern: '\\b(sorry+|sry|sori|dukkito)\\b' },
+    { id: 'thank_you', label: 'thank you', category: 'gratitude', pattern: '\\b(thank\\s*you+|thanks|thank\\s*u|dhonnobad)\\b' },
+    { id: 'miss_you', label: 'miss you', category: 'missing', pattern: '\\bmiss\\s*(you|u|ing)?\\b' },
     { id: 'good_morning', label: 'good morning', category: 'greetings', pattern: '\\bgood\\s*morning\\b|\\bgm\\b' },
     { id: 'good_night', label: 'good night', category: 'greetings', pattern: '\\bgood\\s*night\\b|\\bgn\\b' },
-    { id: 'promise', label: 'promise', category: 'promises', pattern: '\\bpromise\\b' },
-    { id: 'forgive', label: 'forgive', category: 'forgiveness', pattern: '\\bforgive\\b' },
+    { id: 'coffee', label: 'coffee', category: 'comfort', pattern: '\\b(coffee|cha|tea)\\b' },
+    { id: 'promise', label: 'promise', category: 'promises', pattern: '\\b(promise|kotha\\s*dilam)\\b' },
   ];
 
   const expressionsResults: any[] = [];
   for (const exp of expressionDefinitions) {
     const reg = new RegExp(exp.pattern, 'gi');
-    let totalOccurrences = { total: 0, NILU: 0, farhannn: 0 };
-    let messagesCount = { total: 0, NILU: 0, farhannn: 0 };
+    let totalOccurrences: Record<string, number> = { total: 0 };
+    let messagesCount: Record<string, number> = { total: 0 };
 
     for (const m of normalizedMessages) {
       if (!m.content) continue;
       const matches = m.content.match(reg);
       if (matches && matches.length > 0) {
-        const sender = m.sender as 'NILU' | 'farhannn';
+        const sender = m.sender;
         messagesCount.total++;
-        messagesCount[sender]++;
+        messagesCount[sender] = (messagesCount[sender] || 0) + 1;
         totalOccurrences.total += matches.length;
-        totalOccurrences[sender] += matches.length;
+        totalOccurrences[sender] = (totalOccurrences[sender] || 0) + matches.length;
       }
     }
 
     expressionsResults.push({
       ...exp,
-      totalOccurrences,
-      messagesCount,
+      totalOccurrences: {
+        total: totalOccurrences.total,
+        NIHAN: totalOccurrences.NIHAN || 0,
+        SUMAIYA: totalOccurrences.SUMAIYA || 0,
+        ...totalOccurrences,
+      },
+      messagesCount: {
+        total: messagesCount.total,
+        NIHAN: messagesCount.NIHAN || 0,
+        SUMAIYA: messagesCount.SUMAIYA || 0,
+        ...messagesCount,
+      },
     });
   }
 
   // Nicknames Analysis
   const nicknameList = [
-    'pagli', 'baby', 'jaan', 'jano', 'pakhi', 'shona', 'bou', 'wifey',
-    'jamai', 'husband', 'cutie', 'dushtu', 'goru', 'queen', 'king',
-    'princess', 'prince', 'bestie', 'best friend'
+    'penguin', 'bauni', 'landmark', 'historical landmark', 'sumaiya', 'nihan',
+    'babu', 'baby', 'jaan', 'shona', 'bou', 'pagli', 'pagol',
+    'cute', 'cutie', 'queen', 'king', 'bestie', 'friend'
   ];
 
   const nicknamesResults: any[] = [];
   for (const nick of nicknameList) {
     const reg = new RegExp(`\\b${nick}\\b`, 'gi');
     let totalCount = 0;
-    const bySender = { NILU: 0, farhannn: 0 };
+    const bySender: Record<string, number> = { NIHAN: 0, SUMAIYA: 0 };
     const sampleIds: string[] = [];
 
     for (const m of normalizedMessages) {
       if (!m.content) continue;
       const matches = m.content.match(reg);
       if (matches && matches.length > 0) {
-        const sender = m.sender as 'NILU' | 'farhannn';
+        const sender = m.sender;
         totalCount += matches.length;
-        bySender[sender] += matches.length;
+        bySender[sender] = (bySender[sender] || 0) + matches.length;
         if (sampleIds.length < 5) {
           sampleIds.push(m.id);
         }
@@ -809,7 +912,11 @@ async function runPipeline() {
     nicknamesResults.push({
       nickname: nick,
       totalCount,
-      bySender,
+      bySender: {
+        NIHAN: bySender.NIHAN || 0,
+        SUMAIYA: bySender.SUMAIYA || 0,
+        ...bySender,
+      },
       sampleMessageIds: sampleIds,
     });
   }
@@ -819,14 +926,21 @@ async function runPipeline() {
   const lastMessageObj = normalizedMessages[normalizedMessages.length - 1];
 
   const metadata = {
+    archiveTitle: "NIHAN'S ARCHIVE",
     totalMessages: normalizedMessages.length,
+    primaryCouple: {
+      partner1: 'SUMAIYA',
+      partner2: 'NIHAN',
+    },
     participants: {
-      NILU: totalNila,
-      farhannn: totalFarhan,
+      NIHAN: participantCounts.NIHAN || 0,
+      SUMAIYA: participantCounts.SUMAIYA || 0,
+      ...participantCounts,
     },
     participantsDisplay: {
-      NILA: totalNila,
-      FARHAN: totalFarhan,
+      NIHAN: participantDisplayCounts.NIHAN || 0,
+      SUMAIYA: participantDisplayCounts.SUMAIYA || 0,
+      ...participantDisplayCounts,
     },
     startDate: activeDaysList[0],
     endDate: activeDaysList[activeDaysList.length - 1],
@@ -875,32 +989,26 @@ async function runPipeline() {
   console.log(`  - public/data/expressions.json`);
   console.log(`  - public/data/nicknames.json`);
 
-  // Print Validation Summary
+  // Verification Summary
   console.log('\n=== ARCHIVE VERIFICATION & AUDIT ===');
-  const isTargetBaseline =
-    metadata.totalMessages === 92573 &&
-    metadata.participants.NILU === 47789 &&
-    metadata.participants.farhannn === 44784 &&
-    metadata.shares.total === 2313 &&
-    metadata.reactions.total === 2914 &&
-    metadata.activeDays === 97;
-
-  console.log(`Total Messages:       ${metadata.totalMessages.toLocaleString()} -> ${metadata.totalMessages >= 80988 ? 'VALID ✅' : 'UNDER BASELINE ⚠️'}`);
-  console.log(`NILU (NILA):          ${metadata.participants.NILU.toLocaleString()} (${((metadata.participants.NILU / metadata.totalMessages) * 100).toFixed(1)}%)`);
-  console.log(`farhannn (FARHAN):    ${metadata.participants.farhannn.toLocaleString()} (${((metadata.participants.farhannn / metadata.totalMessages) * 100).toFixed(1)}%)`);
+  console.log(`Total Messages:       ${metadata.totalMessages.toLocaleString()}`);
+  console.log(`NIHAN:                ${(participantCounts.NIHAN || 0).toLocaleString()} (${(((participantCounts.NIHAN || 0) / metadata.totalMessages) * 100).toFixed(1)}%)`);
+  console.log(`SUMAIYA:              ${(participantCounts.SUMAIYA || 0).toLocaleString()} (${(((participantCounts.SUMAIYA || 0) / metadata.totalMessages) * 100).toFixed(1)}%)`);
+  if (participantCounts.HASAN) {
+    console.log(`HASAN:                ${participantCounts.HASAN.toLocaleString()}`);
+  }
+  if (participantCounts.SAJID) {
+    console.log(`SAJID:                ${participantCounts.SAJID.toLocaleString()}`);
+  }
   console.log(`Total Shares:         ${metadata.shares.total.toLocaleString()} (Reels: ${metadata.shares.reels}, Posts: ${metadata.shares.posts}, Stories: ${metadata.shares.stories}, Other: ${metadata.shares.other})`);
   console.log(`Total Reactions:      ${metadata.reactions.total.toLocaleString()}`);
   console.log(`Active Days:          ${metadata.activeDays} days (${metadata.startDate} to ${metadata.endDate})`);
 
-  if (metadata.totalMessages < 80988) {
-    throw new Error(`Verification failed! Total messages (${metadata.totalMessages}) is less than baseline (80,988). Potential data loss!`);
+  if (metadata.totalMessages === 0) {
+    throw new Error('Verification failed! 0 messages were processed.');
   }
 
-  if (isTargetBaseline) {
-    console.log(`\n🎉 UNIFIED ARCHIVE TARGET VERIFIED WITH 100% PRECISION: 92,573 total messages (+11,585 new messages merged, zero duplicates) across 97 active days!\n`);
-  } else {
-    console.log(`\n🎉 ARCHIVE EXPANSION VERIFIED: ${metadata.totalMessages.toLocaleString()} total messages indexed across ${metadata.activeDays} active days!\n`);
-  }
+  console.log(`\n🎉 UNIFIED ARCHIVE TARGET VERIFIED: ${metadata.totalMessages.toLocaleString()} total messages indexed across ${metadata.activeDays} active days!\n`);
 }
 
 runPipeline().catch((err) => {

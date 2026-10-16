@@ -32,7 +32,7 @@ export const StickyAudioDock: React.FC = () => {
 
   if (!currentTrack) return null;
 
-  const isNila = currentTrack.senderDisplay === 'NILA';
+  const isSumaiya = currentTrack.senderDisplay === 'SUMAIYA';
 
   const formatSecs = (sec: number) => {
     if (!sec || isNaN(sec)) return '0:00';
@@ -61,7 +61,7 @@ export const StickyAudioDock: React.FC = () => {
         {/* Glow ambient background tint */}
         <div
           className={`absolute -inset-0.5 rounded-2xl blur-xl opacity-30 -z-10 ${
-            isNila ? 'bg-rose-500' : 'bg-sky-500'
+            isSumaiya ? 'bg-rose-500' : 'bg-sky-500'
           }`}
         />
 
@@ -71,7 +71,7 @@ export const StickyAudioDock: React.FC = () => {
             {/* Sender Badge */}
             <span
               className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold tracking-wide shrink-0 ${
-                isNila
+                isSumaiya
                   ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
                   : 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
               }`}
@@ -128,7 +128,7 @@ export const StickyAudioDock: React.FC = () => {
                     style={{ height: `${height}%` }}
                     className={`w-[2px] rounded-full transition-all ${
                       isPassed
-                        ? isNila
+                        ? isSumaiya
                           ? 'bg-rose-400 opacity-90'
                           : 'bg-sky-400 opacity-90'
                         : 'bg-slate-400'
@@ -195,7 +195,7 @@ export const StickyAudioDock: React.FC = () => {
             <button
               onClick={togglePlay}
               className={`w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95 ${
-                isNila
+                isSumaiya
                   ? 'bg-gradient-to-tr from-rose-600 to-pink-500 text-white'
                   : 'bg-gradient-to-tr from-sky-600 to-cyan-500 text-white'
               }`}
@@ -232,7 +232,7 @@ export const StickyAudioDock: React.FC = () => {
               <div
                 key={i}
                 className={`w-[2px] rounded-full transition-all duration-300 ${
-                  isNila ? 'bg-rose-400' : 'bg-sky-400'
+                  isSumaiya ? 'bg-rose-400' : 'bg-sky-400'
                 } ${isPlaying ? 'animate-pulse' : 'h-1 opacity-30'}`}
                 style={{
                   height: isPlaying ? `${8 + (i % 3) * 6}px` : '4px',

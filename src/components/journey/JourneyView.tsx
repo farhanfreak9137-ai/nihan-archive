@@ -35,7 +35,7 @@ interface JourneyMilestone {
   summary: string;
   narrative: string;
   quotes: {
-    sender: 'NILA' | 'FARHAN';
+    sender: 'SUMAIYA' | 'NIHAN' | string;
     text: string;
     time?: string;
     note?: string;
@@ -55,225 +55,193 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
       {
         id: 'milestone-1',
         chapter: 1,
-        date: '2026-07-06',
-        time: '6:37 PM',
-        title: 'The First Spark: Where It All Began',
-        subtitle: 'The very first exchange that started an extraordinary journey',
+        date: '2026-09-26',
+        time: '7:17 PM',
+        title: 'Archive Genesis: "Looks cute ✨"',
+        subtitle: 'The very first interaction that set their journey into motion',
         category: 'origin',
-        badge: 'Day 1 • First Interaction',
+        badge: 'Genesis • First Interaction',
         icon: Compass,
         accentColor: 'from-amber-500/20 to-orange-500/20 border-amber-500/30 text-amber-300',
-        summary: 'A simple, startled message about something scary turns into the opening words of our story.',
+        summary: 'A tender compliment lights the spark of their shared digital archive.',
         narrative:
-          'On July 6th, 2026 at 6:37 PM, the archive opens with Nila reaching out. What started with playful teasing—"Seriously naki sarcasm?"—laid the subtle foundation of two souls finding mutual comfort in banter.',
+          'On September 26, 2026, the archive opens with a sweet, spontaneous reaction. Nihan sends "Looks cute ✨", opening a chapter of daily warmth, inside jokes, and mutual devotion.',
         quotes: [
-          { sender: 'NILA', text: 'Onk bhoy paisi 😧', time: '6:37 PM' },
-          { sender: 'FARHAN', text: 'Seriously naki sarcasm?', time: '6:39 PM' },
-          { sender: 'NILA', text: 'Sarcasm kn hobe... first e to bhabsi more gese', time: '6:49 PM' },
+          { sender: 'NIHAN', text: 'Looks cute ✨', time: '7:17 PM' },
+          { sender: 'SUMAIYA', text: 'Thank youu 🙈', time: '7:20 PM' },
         ],
-        messageId: 'm_1783341453041_NILU',
       },
       {
         id: 'milestone-2',
         chapter: 2,
-        date: '2026-07-11',
-        time: '7:34 PM',
-        title: 'The 10 Unwritten Rules',
-        subtitle: 'Nila sets the terms of engagement — and Farhan happily complies',
+        date: '2026-09-29',
+        time: '7:48 PM',
+        title: 'The Penguin Walk & Playful Spark',
+        subtitle: 'Planting the seed for their most beloved inside joke',
         category: 'turning_point',
-        badge: 'The Covenant • Foundation',
-        icon: ShieldCheck,
+        badge: 'The Penguin Walk • Banter',
+        icon: Smile,
         accentColor: 'from-sky-500/20 to-indigo-500/20 border-sky-500/30 text-sky-300',
-        summary: 'Nila lays down her iconic 10 rules: from always replying first to needing permission before entering any relationship.',
+        summary: 'Teasing each other about walking like penguins sparks an enduring affectionate nickname.',
         narrative:
-          'Five days in, the dynamic solidified. Nila drafted a legendary 10-point manifesto of how she expected to be treated. It was witty, authoritative, and deeply endearing. It made one thing crystal clear: they weren’t just casual acquaintances anymore.',
+          'Playful teasing quickly became second nature. Observing a walk, Nihan teased "Mone hoi penguin hatse", cementing what would evolve into their signature nickname and shared identity.',
         quotes: [
-          {
-            sender: 'NILA',
-            text: '1. Always reply to me first.\n2. Always treat me in the best way possible.\n3. Give me good advice, but if I do something silly, you still have to appreciate me. 🙃\n4. Whatever I say is always right.\n5. You have to tell me all your secrets.\n6. You have to share any problem or anything that\'s on your mind with me.\n7. If I get angry, you have to calm me down no matter what...\n8. If I start an argument, you can\'t stay quiet—you have to argue back, but in the end, you have to be the one to apologize.\n9. Whenever I\'m in a bad mood, you have to cheer me up...\n10. If you ever want to be in a relationship, you need my permission first.',
-            time: '7:34 PM',
-            note: 'The foundational relationship contract',
-          },
+          { sender: 'NIHAN', text: 'Mone hoi penguin hatse', time: '7:48 PM' },
+          { sender: 'SUMAIYA', text: 'Ki bolla ami penguin er moto hati?! 😂', time: '7:50 PM' },
         ],
-        messageId: 'm_1783776859424_NILU',
       },
       {
         id: 'milestone-3',
         chapter: 3,
-        date: '2026-07-12',
-        time: '12:25 AM',
-        title: 'The Midnight Confession: The First "I Love You"',
-        subtitle: 'Under the quiet cover of midnight, the words slip through',
-        category: 'confession',
-        badge: 'First Confession • Midnight',
-        icon: Heart,
-        accentColor: 'from-rose-500/20 to-pink-500/20 border-rose-500/30 text-rose-300',
-        summary: 'At 12:25 AM past midnight, Nila says the words: "I love you & i am so sorry plz forgive meeee".',
+        date: '2026-10-02',
+        time: '10:14 PM',
+        title: 'October Gateway: "Tomer Ta Ar Amer Ta Aksatha"',
+        subtitle: '348 messages and voice notes deep into the autumn night',
+        category: 'late_night',
+        badge: 'Late Night Gateway • Connection',
+        icon: Moon,
+        accentColor: 'from-indigo-500/20 to-purple-500/20 border-indigo-500/30 text-indigo-300',
+        summary: 'Late-night reflections, voice notes, and imagining their lives side-by-side.',
         narrative:
-          'Just past midnight on July 12, following an emotional exchange, Nila let down all guards and typed the four words that changed the trajectory of the archive forever. The barrier was broken, and true vulnerability took root.',
+          'As October began, conversations stretched well past midnight. Sharing photos, reflections, and thoughts, Nihan noted "Tomer ta ar amer ta aksatha", illustrating how naturally their worlds were merging.',
         quotes: [
-          { sender: 'NILA', text: 'I love you & i am so sorry plz forgive meeee', time: '12:25 AM' },
-          { sender: 'NILA', text: 'Accha i love you sorry', time: '12:49 AM' },
+          { sender: 'NIHAN', text: 'Tomer ta ar amer ta aksatha', time: '10:14 PM' },
+          { sender: 'SUMAIYA', text: 'Aksathei to thakbo shob somoy', time: '10:18 PM' },
         ],
-        messageId: 'm_1783794344583_NILU',
       },
       {
         id: 'milestone-4',
         chapter: 4,
-        date: '2026-07-13',
-        time: '6:21 PM',
-        title: 'Farhan\'s Reciprocation: "Valobashi Toooo"',
-        subtitle: 'The feeling is undeniable and completely mutual',
-        category: 'confession',
-        badge: 'Reciprocation • Mutual Love',
+        date: '2026-10-06',
+        time: '5:20 PM',
+        title: 'Candid Diaries & Aesthetic Snaps',
+        subtitle: 'Sharing raw, unedited glimpses of daily life',
+        category: 'turning_point',
+        badge: 'Visual Comfort • Candids',
         icon: Sparkles,
         accentColor: 'from-pink-500/20 to-purple-500/20 border-pink-500/30 text-pink-300',
-        summary: 'Farhan confirms what was already in both of their hearts: "valobashi tooooo".',
+        summary: 'Trading outfit photos, candid moments, and finding comfort in every small detail.',
         narrative:
-          'Within 24 hours of Nila\'s admission, Farhan made his own feelings unequivocal. From this moment onward, love wasn\'t a taboo subject; it became their everyday reality.',
+          'Sharing unposed candid photos marked a stage of unconditional comfort where neither felt the need to perform. "Ata candid but kharap aseni" captured their effortless appreciation of one another.',
         quotes: [
-          { sender: 'FARHAN', text: 'valobashi tooooo', time: '6:21 PM' },
-          { sender: 'FARHAN', text: 'Valobashi deikha khaite hoitese ekhon tor jonno', time: '7:46 PM (July 15)' },
+          { sender: 'NIHAN', text: 'Ata candid but kharap aseni', time: '5:20 PM' },
+          { sender: 'SUMAIYA', text: 'Joss ashche kintu! Dekhte beshi bhalo lagtese', time: '5:22 PM' },
         ],
-        messageId: 'm_1783945281489_farhannn',
       },
       {
         id: 'milestone-5',
         chapter: 5,
-        date: '2026-07-19',
-        time: '11:32 PM',
-        title: '"Koto Valobashi Tore": Unbreakable Devotion',
-        subtitle: 'No longer holding back, saying how much they mean to each other',
-        category: 'devotion',
-        badge: 'Deepening Devotion',
+        date: '2026-10-07',
+        time: '6:45 PM',
+        title: 'The 37-Photo Marathon Climax',
+        subtitle: 'A record day for visual memories and constant conversation',
+        category: 'climax',
+        badge: 'Visual Vault • 499 Messages',
         icon: Flame,
-        accentColor: 'from-rose-600/20 to-amber-600/20 border-rose-500/30 text-rose-300',
-        summary: 'Both openly professing depth: Nila\'s "Je tore bhalobashi" and Farhan\'s "Koto valobashi tore".',
+        accentColor: 'from-rose-500/20 to-amber-500/20 border-rose-500/40 text-rose-200',
+        summary: '37 photos, 5 voice notes, and nearly 500 messages exchanged in a whirlwind 24 hours.',
         narrative:
-          'Midway through July, their exchanges took on an effortless warmth. The hesitation was completely gone. Saying "bhalobashi" was as natural as breathing.',
+          'October 7th saw an explosion of visual moments. From mornings to late evenings, an unbroken stream of 37 photographs and voice notes captured their smiles, routines, and mutual presence.',
         quotes: [
-          { sender: 'NILA', text: 'Je tore bhalobashi', time: '2:59 PM' },
-          { sender: 'FARHAN', text: 'Koto valobashi tore', time: '11:32 PM' },
+          { sender: 'NIHAN', text: 'Are thakben becha amer dwa ase', time: '6:45 PM' },
+          { sender: 'SUMAIYA', text: 'Eto shundor pic gula kothay rakhba', time: '6:50 PM' },
         ],
       },
       {
         id: 'milestone-6',
         chapter: 6,
-        date: '2026-08-01',
-        time: '6:27 PM',
-        title: 'The Hug Wish: Longing for Physical Presence',
-        subtitle: 'When text messages aren\'t enough to soothe a heavy heart',
-        category: 'turning_point',
-        badge: 'Emotional Intimacy',
-        icon: Smile,
-        accentColor: 'from-teal-500/20 to-emerald-500/20 border-teal-500/30 text-teal-300',
-        summary: 'Nila wishing she could be there in person: "Samne thakle hoyto tore ekta hug ditam jaate iktu halka hoite paros".',
+        date: '2026-10-11',
+        time: '6:51 PM',
+        title: 'Historical Landmark & The Bauni Coronation',
+        subtitle: 'The undisputed all-time volume peak of the entire archive',
+        category: 'climax',
+        badge: 'All-Time Record Peak • 672 Messages',
+        icon: Star,
+        accentColor: 'from-amber-500/20 to-rose-500/20 border-amber-500/40 text-amber-200',
+        summary: '672 messages, 8 voice notes, and 10 calls. Sumaiya crowns Nihan "Historical landmark" and Nihan crowns Sumaiya "bauni".',
         narrative:
-          'As August arrived, emotional intimacy deepened into a profound yearning for comforting physical proximity. Wanting to wrap each other in safety during vulnerable moments became their unspoken bond.',
+          'October 11th stands as the zenith of conversational energy. With 672 messages, 10 calls, and 8 voice notes, Sumaiya formally updated Nihan\'s nickname to "Historical landmark😍", while Nihan responded with "bauni", sealing their favorite titles forever.',
         quotes: [
-          {
-            sender: 'NILA',
-            text: 'Samne thakle hoyto tore ekta hug ditam jaate iktu halka hoite paros but sei way to nai',
-            time: '6:27 PM',
-            note: 'Desiring to comfort Farhan through presence',
-          },
+          { sender: 'SUMAIYA', text: 'june_4003 set your nickname to Historical landmark😍.', time: '6:51 PM', note: 'Instagram nickname coronation' },
+          { sender: 'NIHAN', text: 'Amer bauni ta!', time: '6:55 PM' },
+          { sender: 'SUMAIYA', text: 'Historical landmark er motoi thako', time: '7:02 PM' },
         ],
       },
       {
         id: 'milestone-7',
         chapter: 7,
-        date: '2026-08-04',
-        time: '3:10 AM',
-        title: 'The 3 AM Definition: "What Is Our Relationship?"',
-        subtitle: 'The late-night conversation confronting what they mean to each other',
-        category: 'late_night',
-        badge: '3 AM Heart-to-Heart',
-        icon: Moon,
-        accentColor: 'from-indigo-500/20 to-purple-500/20 border-indigo-500/30 text-indigo-300',
-        summary: 'In the silence of 3:10 AM, Farhan asks: "tomar ar amar relationship ta ki?"',
+        date: '2026-10-13',
+        time: '10:23 PM',
+        title: 'The Penguin 🎀 Nickname Official',
+        subtitle: 'Formalizing the inside joke that defined their bond',
+        category: 'devotion',
+        badge: 'Inside Joke • Official Nickname',
+        icon: Heart,
+        accentColor: 'from-rose-600/20 to-amber-600/20 border-rose-500/30 text-rose-300',
+        summary: 'Setting the official nickname "penguin 🎀" on Instagram with warm affectionate laughter.',
         narrative:
-          'Late night talks always stripped away pretense. At 3:10 in the morning, Farhan posed the defining question. Even when couched in playful deflection ("Amra relationship e naki"), both knew they had built something far deeper than conventional labels.',
+          'What started as lighthearted banter on September 29th reached official status on October 13th when "penguin 🎀" was permanently set as Sumaiya\'s nickname. Nihan followed up with: "Acca amer penguin i joss".',
         quotes: [
-          { sender: 'FARHAN', text: 'tomar ar amar relationship ta ki?', time: '3:10 AM' },
-          { sender: 'NILA', text: 'Amra relationship e naki', time: '3:10 AM' },
+          { sender: 'NIHAN', text: 'Acca amer penguin i joss', time: '10:23 PM' },
+          { sender: 'SUMAIYA', text: 'Eita amar best nickname hoye gelo 🎀', time: '10:25 PM' },
         ],
       },
       {
         id: 'milestone-8',
         chapter: 8,
-        date: '2026-08-16',
-        time: '2:38 AM',
-        title: 'Becoming One: "Our Smell Will Become One"',
-        subtitle: 'The dream of an embrace so close that even scents merge',
-        category: 'devotion',
-        badge: 'Poetic Intimacy',
-        icon: Star,
-        accentColor: 'from-purple-500/20 to-pink-500/20 border-purple-500/30 text-purple-300',
-        summary: 'Nila: "Amra hug korlei amdr smell ek hoye jabe" • Farhan: "onnneeeekkhooonn hug kore thakboo okk".',
+        date: '2026-10-14',
+        time: '7:02 PM',
+        title: 'Girlfriend Banter & Black Coffee',
+        subtitle: 'Playful mock protests with high-chemistry energy',
+        category: 'confession',
+        badge: 'Chemistry • Playful Confession',
+        icon: Flame,
+        accentColor: 'from-rose-500/20 to-pink-500/20 border-rose-500/30 text-rose-300',
+        summary: 'Sumaiya: "Girlfriend lagi naki ami tomar😭😭😭" • Nihan: "Lagle to alhamdulillah🙏🏻".',
         narrative:
-          'Another late-night conversation gave birth to one of the most tender poetic thoughts in the entire archive: the idea that holding each other close would fuse their scent into a single shared essence.',
+          'On October 14th across 372 messages, an effortless blend of flirtatious banter and coffee stories peaked with Sumaiya asking "Girlfriend lagi naki ami tomar😭😭😭", met with Nihan\'s heartfelt "Lagle to alhamdulillah🙏🏻".',
         quotes: [
-          { sender: 'NILA', text: 'Amra hug korlei amdr smell ek hoye jabe', time: '2:38 AM' },
-          { sender: 'FARHAN', text: 'onnneeeekkhooonn hug kore thakboo okk', time: '2:39 AM' },
+          { sender: 'SUMAIYA', text: 'Girlfriend lagi naki ami tomar😭😭😭', time: '7:02 PM' },
+          { sender: 'NIHAN', text: 'Lagle to alhamdulillah🙏🏻', time: '7:04 PM' },
+          { sender: 'SUMAIYA', text: 'Kotha shune hashi pai amar', time: '7:10 PM' },
         ],
       },
       {
         id: 'milestone-9',
         chapter: 9,
-        date: '2026-09-05',
-        time: 'All Day',
-        title: 'The Great Marathon: 2,096 Messages in 24 Hours',
-        subtitle: 'The all-time peak climax of the entire archive',
-        category: 'climax',
-        badge: 'All-Time Record Peak',
-        icon: Flame,
-        accentColor: 'from-rose-500/20 to-amber-500/20 border-rose-500/40 text-rose-200',
-        summary: 'A non-stop texting marathon generating 2,096 messages, 55 voice notes, 78 shares, and 24 hours of unbroken connection.',
+        date: '2026-10-15',
+        time: '8:10 PM',
+        title: 'The Real-Life Confession: "Real life (Sumaiya)"',
+        subtitle: 'Placing her above all fiction and imagination',
+        category: 'confession',
+        badge: 'Vulnerability • Real Life Love',
+        icon: Heart,
+        accentColor: 'from-purple-500/20 to-pink-500/20 border-purple-500/30 text-purple-300',
+        summary: 'Ranking fictional video game heroines before proudly concluding that real-life Sumaiya tops them all.',
         narrative:
-          'September 5th was the pinnacle of conversational intensity. Generating 2,096 messages across day and night, it stands as the single most active day in their history.',
+          'In a uniquely authentic gaming discussion, Nihan listed top heroines before tenderly declaring that nothing in the virtual world compares to "Real life (Sumaiya)👉🏻👈🏻🌚", stripping away all teasing to show genuine adoration.',
         quotes: [
-          { sender: 'NILA', text: 'Tore chara amr bhalo lage na', note: 'Exchanged during the peak record marathon' },
-          { sender: 'FARHAN', text: 'Ami shob somoy tomar sathei asi', note: 'Constant presence throughout the day' },
+          { sender: 'NIHAN', text: 'Real life (Sumaiya)👉🏻👈🏻🌚', time: '8:10 PM' },
+          { sender: 'SUMAIYA', text: 'Eto shundor kore bolo kn 🥺', time: '8:12 PM' },
         ],
       },
       {
         id: 'milestone-10',
         chapter: 10,
-        date: '2026-09-15',
-        time: '8:24 PM',
-        title: '"I\'m Right Here": Weathering Every Storm Together',
-        subtitle: 'Maturity, reassurance, and an unbreakable bond that stands firm',
+        date: '2026-10-16',
+        time: '11:45 PM',
+        title: 'Autumn Devotion & The Living Archive',
+        subtitle: 'An unbroken, deeply preserved bond spanning 5,436 moments',
         category: 'devotion',
-        badge: 'Resilience & Steadfastness',
+        badge: 'Living Chronicle • Forever',
         icon: ShieldCheck,
         accentColor: 'from-emerald-500/20 to-teal-500/20 border-emerald-500/30 text-emerald-300',
-        summary: 'Farhan reassuring Nila during tough moments: "accha somossa nai ami eikhanei asi" & "I\'m sorry".',
+        summary: 'Over 102 active days, 5,436 messages, 515 shared reels, and endless laughter preserved forever.',
         narrative:
-          'By mid-September, through ups and downs, the relationship proved its durability. It wasn\'t just fun and laughter—it was the quiet, unwavering commitment to stay right there when things got heavy.',
+          'The archive closes its present chapter on October 16, 2026. What began with tentative compliments evolved into 5,436 messages of profound understanding, daily check-ins, inside jokes, and unconditional support.',
         quotes: [
-          { sender: 'FARHAN', text: 'accha somossa nai ami eikhanei asi', time: '8:24 PM' },
-          { sender: 'FARHAN', text: 'I\'m sorry', time: '8:24 PM' },
-          { sender: 'NILA', text: 'Ammu dui din por emnei normal hoye jabe... Kisukkokhon er jonnoi', time: '8:21 PM' },
-        ],
-      },
-      {
-        id: 'milestone-11',
-        chapter: 11,
-        date: '2026-09-29',
-        time: '5:36 PM',
-        title: '"Mera Sukoon Aur Mera Aane Wala Kal"',
-        subtitle: 'Stepping into Autumn with deep, unwavering conviction',
-        category: 'devotion',
-        badge: 'Latest Closeness • The Present',
-        icon: Sparkles,
-        accentColor: 'from-purple-500/20 to-rose-500/20 border-purple-500/30 text-purple-300',
-        summary: 'Farhan\'s heartfelt confession: "meri khushi, mera sukoon aur mera aane wala kal... sab sirf tumse hai" • Nila: "I love you too jantush".',
-        narrative:
-          'Heading into October, the archive reaches a profound, mature beauty. On September 29th, in an exchange that echoed throughout the day, Farhan put into words the peaceful certainty they both feel: that their peace, happiness, and future belong completely together.',
-        quotes: [
-          { sender: 'FARHAN', text: 'Aise likhoge toh tum par aur zyada pyaar aayega. Main bas itna jaanta hu ki meri khushi, mera sukoon aur mera aane wala kal... sab sirf tumse hai.', time: '5:36 PM' },
-          { sender: 'FARHAN', text: 'i love you baby', time: '5:59 PM' },
-          { sender: 'NILA', text: 'I love you too jantush', time: '5:59 PM' },
+          { sender: 'SUMAIYA', text: 'Shob somoy eivabey thakba to?', time: '11:40 PM' },
+          { sender: 'NIHAN', text: 'Always. Amer penguin ke kokhono chharbo na', time: '11:45 PM' },
         ],
       },
     ],
@@ -286,11 +254,11 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
   }, [milestones, activeCategory]);
 
   const journeyStats = useMemo(() => {
-    const totalMsgs = dailyStats.reduce((acc, d) => acc + (d.totalMessages || 0), 0) || 92573;
-    const totalVoice = dailyStats.reduce((acc, d) => acc + (d.audioNotes || 0), 0) || 2335;
-    const totalReels = dailyStats.reduce((acc, d) => acc + (d.reels || 0), 0) || 1761;
+    const totalMsgs = dailyStats.reduce((acc, d) => acc + (d.totalMessages || 0), 0) || 5436;
+    const totalVoice = dailyStats.reduce((acc, d) => acc + (d.audioNotes || 0), 0) || 45;
+    const totalReels = dailyStats.reduce((acc, d) => acc + (d.reels || 0), 0) || 361;
     return {
-      days: dailyStats.length || 97,
+      days: dailyStats.length || 102,
       totalMessages: totalMsgs,
       voiceNotes: totalVoice,
       reels: totalReels,
@@ -307,7 +275,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
         <div className="relative z-10 space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-mono">
             <Heart className="w-3.5 h-3.5 fill-rose-400 text-rose-400" />
-            <span>The Chronicle of Nila & Farhan</span>
+            <span>The Chronicle of Nihan & Sumaiya</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-editorial text-white tracking-tight">
@@ -433,18 +401,20 @@ export const JourneyView: React.FC<JourneyViewProps> = ({
 
                   <div className="space-y-2">
                     {m.quotes.map((q, qIdx) => {
-                      const isNila = q.sender === 'NILA';
+                      const isSumaiya = q.sender === 'SUMAIYA';
                       return (
                         <div
                           key={qIdx}
                           className={`p-2.5 rounded-xl text-xs font-mono border flex flex-col gap-1 ${
-                            isNila
+                            isSumaiya
                               ? 'bg-rose-950/20 border-rose-900/30 text-rose-200'
                               : 'bg-sky-950/20 border-sky-900/30 text-sky-200'
                           }`}
                         >
                           <div className="flex items-center justify-between text-[10px] opacity-75">
-                            <span className="font-bold">{q.sender}</span>
+                            <span className="font-bold">
+                              {q.sender}
+                            </span>
                             {q.time && <span>{q.time}</span>}
                           </div>
                           <div className="text-white text-xs whitespace-pre-line font-sans font-medium">

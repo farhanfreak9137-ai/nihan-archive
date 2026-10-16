@@ -4,7 +4,7 @@ import { useAudioPlayer } from '../../context/AudioPlayerContext';
 
 interface VoiceNotePlayerProps {
   src: string;
-  senderDisplay: 'NILA' | 'FARHAN';
+  senderDisplay: string;
   filename?: string;
   date?: string;
   time?: string;
@@ -39,7 +39,7 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
   const duration = isCurrent ? globalDuration : 0;
   const playbackRate = isCurrent ? globalPlaybackRate : 1;
 
-  const isNila = senderDisplay === 'NILA';
+  const isSumaiya = senderDisplay === 'SUMAIYA';
   const bookmarked = isBookmarked(src);
 
   // Generate deterministic realistic audio waveform bars from filename/src hash
@@ -119,7 +119,7 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
         <button
           onClick={handleToggle}
           className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shrink-0 shadow-md active:scale-95 ${
-            isNila
+            isSumaiya
               ? 'bg-gradient-to-tr from-rose-600 to-pink-500 hover:from-rose-500 hover:to-pink-400 text-white'
               : 'bg-gradient-to-tr from-sky-500 to-cyan-400 hover:from-sky-400 hover:to-cyan-300 text-black'
           }`}
@@ -154,7 +154,7 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({
                 }}
                 className={`flex-1 rounded-full transition-all duration-100 ${
                   isPassed
-                    ? isNila
+                    ? isSumaiya
                       ? 'bg-rose-500'
                       : 'bg-sky-400'
                     : 'bg-[#262c36] group-hover:bg-[#38414f]'

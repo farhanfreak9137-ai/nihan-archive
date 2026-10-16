@@ -1,98 +1,104 @@
 [
   {
     "id": "ily",
-    "label": "I love you",
+    "label": "love / ily",
     "category": "love",
-    "pattern": "\\bi\\s*(love|luv)\\s*(you|u)\\b",
+    "pattern": "\\b(love|valobashi|valo\\s*bashi|luv|ily)\\b",
     "totalOccurrences": {
-      "total": 760,
-      "NILU": 359,
-      "farhannn": 401
+      "total": 16,
+      "NIHAN": 8,
+      "SUMAIYA": 8
     },
     "messagesCount": {
-      "total": 622,
-      "NILU": 307,
-      "farhannn": 315
+      "total": 16,
+      "NIHAN": 8,
+      "SUMAIYA": 8
+    }
+  },
+  {
+    "id": "cute",
+    "label": "cute / cutie",
+    "category": "affection",
+    "pattern": "\\b(cute|cutie|cutes)\\b",
+    "totalOccurrences": {
+      "total": 24,
+      "NIHAN": 22,
+      "SUMAIYA": 2
+    },
+    "messagesCount": {
+      "total": 24,
+      "NIHAN": 22,
+      "SUMAIYA": 2
+    }
+  },
+  {
+    "id": "sundor",
+    "label": "sundor",
+    "category": "affection",
+    "pattern": "\\b(sundor|shundor|beautiful|pretty)\\b",
+    "totalOccurrences": {
+      "total": 35,
+      "NIHAN": 23,
+      "SUMAIYA": 10,
+      "SAJID": 2
+    },
+    "messagesCount": {
+      "total": 30,
+      "NIHAN": 19,
+      "SUMAIYA": 9,
+      "SAJID": 2
     }
   },
   {
     "id": "sorry",
     "label": "sorry",
     "category": "apology",
-    "pattern": "\\b(sorry+|sry|sori)\\b",
+    "pattern": "\\b(sorry+|sry|sori|dukkito)\\b",
     "totalOccurrences": {
-      "total": 1982,
-      "NILU": 372,
-      "farhannn": 1610
+      "total": 30,
+      "NIHAN": 29,
+      "SUMAIYA": 0,
+      "SAJID": 1
     },
     "messagesCount": {
-      "total": 1208,
-      "NILU": 357,
-      "farhannn": 851
+      "total": 26,
+      "NIHAN": 25,
+      "SUMAIYA": 0,
+      "SAJID": 1
     }
   },
   {
     "id": "thank_you",
     "label": "thank you",
     "category": "gratitude",
-    "pattern": "\\bthank\\s+you\\b",
+    "pattern": "\\b(thank\\s*you+|thanks|thank\\s*u|dhonnobad)\\b",
     "totalOccurrences": {
-      "total": 45,
-      "NILU": 26,
-      "farhannn": 19
+      "total": 14,
+      "NIHAN": 4,
+      "SUMAIYA": 10
     },
     "messagesCount": {
-      "total": 41,
-      "NILU": 25,
-      "farhannn": 16
-    }
-  },
-  {
-    "id": "thank_u",
-    "label": "thank u",
-    "category": "gratitude",
-    "pattern": "\\bthank\\s+u\\b",
-    "totalOccurrences": {
-      "total": 20,
-      "NILU": 19,
-      "farhannn": 1
-    },
-    "messagesCount": {
-      "total": 19,
-      "NILU": 18,
-      "farhannn": 1
-    }
-  },
-  {
-    "id": "thanks",
-    "label": "thanks",
-    "category": "gratitude",
-    "pattern": "\\bthanks\\b",
-    "totalOccurrences": {
-      "total": 21,
-      "NILU": 9,
-      "farhannn": 12
-    },
-    "messagesCount": {
-      "total": 21,
-      "NILU": 9,
-      "farhannn": 12
+      "total": 14,
+      "NIHAN": 4,
+      "SUMAIYA": 10
     }
   },
   {
     "id": "miss_you",
     "label": "miss you",
     "category": "missing",
-    "pattern": "\\bmiss\\s*(you|u)\\b",
+    "pattern": "\\bmiss\\s*(you|u|ing)?\\b",
     "totalOccurrences": {
-      "total": 6,
-      "NILU": 4,
-      "farhannn": 2
+      "total": 9,
+      "NIHAN": 4,
+      "SUMAIYA": 4,
+      "SAJID": 1
     },
     "messagesCount": {
-      "total": 5,
-      "NILU": 3,
-      "farhannn": 2
+      "total": 9,
+      "NIHAN": 4,
+      "SUMAIYA": 4,
+      "SAJID": 1
     }
   },
   {
@@ -101,14 +107,14 @@
     "category": "greetings",
     "pattern": "\\bgood\\s*morning\\b|\\bgm\\b",
     "totalOccurrences": {
-      "total": 15,
-      "NILU": 7,
-      "farhannn": 8
+      "total": 21,
+      "NIHAN": 13,
+      "SUMAIYA": 8
     },
     "messagesCount": {
-      "total": 15,
-      "NILU": 7,
-      "farhannn": 8
+      "total": 21,
+      "NIHAN": 13,
+      "SUMAIYA": 8
     }
   },
   {
@@ -117,46 +123,46 @@
     "category": "greetings",
     "pattern": "\\bgood\\s*night\\b|\\bgn\\b",
     "totalOccurrences": {
-      "total": 109,
-      "NILU": 65,
-      "farhannn": 44
+      "total": 5,
+      "NIHAN": 4,
+      "SUMAIYA": 1
     },
     "messagesCount": {
-      "total": 108,
-      "NILU": 64,
-      "farhannn": 44
+      "total": 5,
+      "NIHAN": 4,
+      "SUMAIYA": 1
+    }
+  },
+  {
+    "id": "coffee",
+    "label": "coffee",
+    "category": "comfort",
+    "pattern": "\\b(coffee|cha|tea)\\b",
+    "totalOccurrences": {
+      "total": 20,
+      "NIHAN": 11,
+      "SUMAIYA": 9
+    },
+    "messagesCount": {
+      "total": 19,
+      "NIHAN": 10,
+      "SUMAIYA": 9
     }
   },
   {
     "id": "promise",
     "label": "promise",
     "category": "promises",
-    "pattern": "\\bpromise\\b",
-    "totalOccurrences": {
-      "total": 31,
-      "NILU": 3,
-      "farhannn": 28
-    },
-    "messagesCount": {
-      "total": 31,
-      "NILU": 3,
-      "farhannn": 28
-    }
-  },
-  {
-    "id": "forgive",
-    "label": "forgive",
-    "category": "forgiveness",
-    "pattern": "\\bforgive\\b",
+    "pattern": "\\b(promise|kotha\\s*dilam)\\b",
     "totalOccurrences": {
       "total": 2,
-      "NILU": 1,
-      "farhannn": 1
+      "NIHAN": 2,
+      "SUMAIYA": 0
     },
     "messagesCount": {
       "total": 2,
-      "NILU": 1,
-      "farhannn": 1
+      "NIHAN": 2,
+      "SUMAIYA": 0
     }
   }
 ]

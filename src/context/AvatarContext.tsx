@@ -1,19 +1,19 @@
 import React, { createContext, useContext, useState } from 'react';
 
 interface AvatarContextType {
-  nilaAvatar: string;
-  farhanAvatar: string;
-  hasCustomNila: boolean;
-  hasCustomFarhan: boolean;
-  setNilaAvatar: (url: string) => void;
-  setFarhanAvatar: (url: string) => void;
-  resetNilaAvatar: () => void;
-  resetFarhanAvatar: () => void;
+  sumaiyaAvatar: string;
+  nihanAvatar: string;
+  hasCustomSumaiya: boolean;
+  hasCustomNihan: boolean;
+  setSumaiyaAvatar: (url: string) => void;
+  setNihanAvatar: (url: string) => void;
+  resetSumaiyaAvatar: () => void;
+  resetNihanAvatar: () => void;
   resetAvatars: () => void;
 }
 
-export const DEFAULT_NILA = '/avatars/nila.jpg';
-export const DEFAULT_FARHAN = '/avatars/farhan.jpg';
+export const DEFAULT_SUMAIYA = '/avatars/sumaiya.svg';
+export const DEFAULT_NIHAN = '/avatars/nihan.svg';
 
 const AvatarContext = createContext<AvatarContextType | undefined>(undefined);
 
@@ -50,73 +50,73 @@ export function processAvatarFile(file: File, maxSize = 400): Promise<string> {
 }
 
 export const AvatarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [customNila, setCustomNila] = useState<string | null>(() => {
+  const [customSumaiya, setCustomSumaiya] = useState<string | null>(() => {
     try {
-      return localStorage.getItem('nila_custom_avatar');
+      return localStorage.getItem('sumaiya_custom_avatar');
     } catch {
       return null;
     }
   });
 
-  const [customFarhan, setCustomFarhan] = useState<string | null>(() => {
+  const [customNihan, setCustomNihan] = useState<string | null>(() => {
     try {
-      return localStorage.getItem('farhan_custom_avatar');
+      return localStorage.getItem('nihan_custom_avatar');
     } catch {
       return null;
     }
   });
 
-  const setNilaAvatar = (url: string) => {
-    setCustomNila(url);
+  const setSumaiyaAvatar = (url: string) => {
+    setCustomSumaiya(url);
     try {
-      localStorage.setItem('nila_custom_avatar', url);
+      localStorage.setItem('sumaiya_custom_avatar', url);
     } catch (err) {
-      console.error('Failed to save Nila avatar to localStorage:', err);
+      console.error('Failed to save Sumaiya avatar to localStorage:', err);
     }
   };
 
-  const setFarhanAvatar = (url: string) => {
-    setCustomFarhan(url);
+  const setNihanAvatar = (url: string) => {
+    setCustomNihan(url);
     try {
-      localStorage.setItem('farhan_custom_avatar', url);
+      localStorage.setItem('nihan_custom_avatar', url);
     } catch (err) {
-      console.error('Failed to save Farhan avatar to localStorage:', err);
+      console.error('Failed to save Nihan avatar to localStorage:', err);
     }
   };
 
-  const resetNilaAvatar = () => {
-    setCustomNila(null);
+  const resetSumaiyaAvatar = () => {
+    setCustomSumaiya(null);
     try {
-      localStorage.removeItem('nila_custom_avatar');
+      localStorage.removeItem('sumaiya_custom_avatar');
     } catch {}
   };
 
-  const resetFarhanAvatar = () => {
-    setCustomFarhan(null);
+  const resetNihanAvatar = () => {
+    setCustomNihan(null);
     try {
-      localStorage.removeItem('farhan_custom_avatar');
+      localStorage.removeItem('nihan_custom_avatar');
     } catch {}
   };
 
   const resetAvatars = () => {
-    resetNilaAvatar();
-    resetFarhanAvatar();
+    resetSumaiyaAvatar();
+    resetNihanAvatar();
   };
 
-  const nilaAvatar = customNila || DEFAULT_NILA;
-  const farhanAvatar = customFarhan || DEFAULT_FARHAN;
+  const sumaiyaAvatar = customSumaiya || DEFAULT_SUMAIYA;
+  const nihanAvatar = customNihan || DEFAULT_NIHAN;
 
   return (
     <AvatarContext.Provider
       value={{
-        nilaAvatar,
-        farhanAvatar,
-        hasCustomNila: !!customNila,
-        hasCustomFarhan: !!customFarhan,
-        setNilaAvatar,
-        setFarhanAvatar,
-        resetNilaAvatar,
-        resetFarhanAvatar,
+        sumaiyaAvatar,
+        nihanAvatar,
+        hasCustomSumaiya: !!customSumaiya,
+        hasCustomNihan: !!customNihan,
+        setSumaiyaAvatar,
+        setNihanAvatar,
+        resetSumaiyaAvatar,
+        resetNihanAvatar,
         resetAvatars,
       }}
     >

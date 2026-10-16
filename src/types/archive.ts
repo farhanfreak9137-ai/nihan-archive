@@ -1,5 +1,18 @@
-export type SenderId = 'NILU' | 'farhannn';
-export type SenderDisplayName = 'NILA' | 'FARHAN';
+export type SenderId =
+  | 'NIHAN'
+  | 'SUMAIYA'
+  | 'HASAN'
+  | 'SAJID'
+  | 'META_AI'
+  | string;
+
+export type SenderDisplayName =
+  | 'NIHAN'
+  | 'SUMAIYA'
+  | 'HASAN'
+  | 'SAJID'
+  | 'Meta AI'
+  | string;
 
 export type MessageType =
   | 'text'
@@ -30,6 +43,8 @@ export interface Message {
   id: string;
   sender: SenderId;
   senderDisplay: SenderDisplayName;
+  threadId?: string;
+  threadTitle?: string;
   timestamp: number; // milliseconds
   date: string; // YYYY-MM-DD
   time: string; // e.g. "10:42 AM"
@@ -49,18 +64,19 @@ export interface Message {
 export interface DailyStats {
   date: string; // YYYY-MM-DD
   totalMessages: number;
-  nilaMessages: number;
-  farhanMessages: number;
-  nilaPercentage: number;
-  farhanPercentage: number;
+  nihanMessages: number;
+  sumaiyaMessages: number;
+  otherMessages?: number;
+  nihanPercentage: number;
+  sumaiyaPercentage: number;
   shares: number;
   reels: number;
   posts: number;
   stories: number;
   otherShares: number;
   reactions: number;
-  nilaReactions: number;
-  farhanReactions: number;
+  nihanReactions: number;
+  sumaiyaReactions: number;
   photos: number;
   videos: number;
   audioNotes: number;
@@ -74,18 +90,25 @@ export interface DailyStats {
   peakHourCount: number;
   hourlyActivity: number[]; // 24 numbers
   activityScore: number; // 0-100 deterministic
-  notableExpressions: Record<string, number>;
+  notableExpressions?: Record<string, number>;
 }
 
 export interface ArchiveMetadata {
+  archiveTitle?: string;
   totalMessages: number;
+  primaryCouple?: {
+    partner1: string;
+    partner2: string;
+  };
   participants: {
-    NILU: number;
-    farhannn: number;
+    NIHAN: number;
+    SUMAIYA: number;
+    [key: string]: number;
   };
   participantsDisplay: {
-    NILA: number;
-    FARHAN: number;
+    NIHAN: number;
+    SUMAIYA: number;
+    [key: string]: number;
   };
   startDate: string;
   endDate: string;
@@ -99,17 +122,11 @@ export interface ArchiveMetadata {
     stories: number;
     other: number;
   };
-  sharesBySender: {
-    NILU: { total: number; reels: number; posts: number; stories: number; other: number };
-    farhannn: { total: number; reels: number; posts: number; stories: number; other: number };
-  };
+  sharesBySender: Record<string, { total: number; reels: number; posts: number; stories: number; other: number }>;
   reactions: {
     total: number;
-    byActor: {
-      NILU: number;
-      farhannn: number;
-    };
-    byEmoji: Record<string, { total: number; NILU: number; farhannn: number }>;
+    byActor: Record<string, number>;
+    byEmoji: Record<string, { total: number; [actor: string]: number }>;
   };
   media: {
     photos: number;
@@ -128,6 +145,8 @@ export interface SearchItem {
   time: string;
   timestamp: number;
   sender: SenderId;
+  senderDisplay?: SenderDisplayName;
+  threadTitle?: string;
   type: MessageType;
   content: string;
   shareType?: ShareType;
@@ -142,6 +161,7 @@ export interface MediaRecord {
   time: string;
   timestamp: number;
   sender: SenderId;
+  threadTitle?: string;
   type: 'reel' | 'post' | 'story' | 'photo' | 'video' | 'audio' | 'file';
   link?: string;
   uri?: string;
@@ -164,17 +184,20 @@ export interface ExpressionEntry {
     | 'missing'
     | 'greetings'
     | 'promises'
+    | 'comfort'
     | 'forgiveness';
   pattern: string;
   totalOccurrences: {
     total: number;
-    NILU: number;
-    farhannn: number;
+    NIHAN?: number;
+    SUMAIYA?: number;
+    [key: string]: number | undefined;
   };
   messagesCount: {
     total: number;
-    NILU: number;
-    farhannn: number;
+    NIHAN?: number;
+    SUMAIYA?: number;
+    [key: string]: number | undefined;
   };
 }
 
@@ -182,8 +205,9 @@ export interface NicknameEntry {
   nickname: string;
   totalCount: number;
   bySender: {
-    NILU: number;
-    farhannn: number;
+    NIHAN?: number;
+    SUMAIYA?: number;
+    [key: string]: number | undefined;
   };
   sampleMessageIds: string[];
 }
@@ -209,7 +233,7 @@ export interface Moment {
   category?: MomentCategory;
   quote?: {
     text: string;
-    sender: 'NILU' | 'farhannn';
+    sender: string;
     time?: string;
   };
   statsSnippet?: {

@@ -5,7 +5,7 @@ import { X, Download, ExternalLink } from 'lucide-react';
 interface PhotoLightboxProps {
   src: string;
   filename?: string;
-  senderDisplay?: 'NILA' | 'FARHAN';
+  senderDisplay?: string;
   date?: string;
   time?: string;
   onClose: () => void;
@@ -63,7 +63,7 @@ export const PhotoLightbox: React.FC<PhotoLightboxProps> = ({
             {senderDisplay && (
               <span
                 className={`font-semibold shrink-0 ${
-                  senderDisplay === 'NILA' ? 'text-rose-400' : 'text-sky-400'
+                  senderDisplay === 'SUMAIYA' ? 'text-rose-400' : 'text-sky-400'
                 }`}
               >
                 {senderDisplay}

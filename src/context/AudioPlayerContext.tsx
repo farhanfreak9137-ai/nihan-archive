@@ -46,7 +46,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const [bookmarkedUris, setBookmarkedUris] = useState<string[]>(() => {
     try {
-      const saved = localStorage.getItem('nila_archive_audio_bookmarks');
+      const saved = localStorage.getItem('nihan_archive_audio_bookmarks');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -57,7 +57,7 @@ export const AudioPlayerProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setBookmarkedUris((prev) => {
       const next = prev.includes(uri) ? prev.filter((u) => u !== uri) : [...prev, uri];
       try {
-        localStorage.setItem('nila_archive_audio_bookmarks', JSON.stringify(next));
+        localStorage.setItem('nihan_archive_audio_bookmarks', JSON.stringify(next));
       } catch {}
       return next;
     });

@@ -22,7 +22,7 @@ interface TriviaQuizModalProps {
 interface QuizQuestion {
   item: SearchItem;
   correctSender: SenderId;
-  correctSenderDisplay: 'NILA' | 'FARHAN';
+  correctSenderDisplay: 'SUMAIYA' | 'NIHAN';
 }
 
 export const TriviaQuizModal: React.FC<TriviaQuizModalProps> = ({
@@ -80,7 +80,7 @@ export const TriviaQuizModal: React.FC<TriviaQuizModalProps> = ({
       ) {
         return false;
       }
-      return m.sender === 'NILU' || m.sender === 'farhannn';
+      return m.sender === 'SUMAIYA' || m.sender === 'NIHAN';
     });
   }, [searchIndex]);
 
@@ -91,11 +91,15 @@ export const TriviaQuizModal: React.FC<TriviaQuizModalProps> = ({
     if (candidateQuotes.length < 5) return;
     // Shuffle and pick 5 distinct quotes
     const shuffled = [...candidateQuotes].sort(() => 0.5 - Math.random());
-    const picked = shuffled.slice(0, 5).map((item) => ({
-      item,
-      correctSender: item.sender,
-      correctSenderDisplay: item.sender === 'NILU' ? ('NILA' as const) : ('FARHAN' as const),
-    }));
+    const picked = shuffled.slice(0, 5).map((item) => {
+      const isSumaiya = item.sender === 'SUMAIYA';
+      const resolvedSender: SenderId = isSumaiya ? 'SUMAIYA' : 'NIHAN';
+      return {
+        item,
+        correctSender: resolvedSender,
+        correctSenderDisplay: isSumaiya ? ('SUMAIYA' as const) : ('NIHAN' as const),
+      };
+    });
 
     setQuestions(picked);
     setCurrentRound(0);
@@ -119,7 +123,8 @@ export const TriviaQuizModal: React.FC<TriviaQuizModalProps> = ({
     if (isAnswerRevealed || !currentQ) return;
     setSelectedAnswer(answer);
     setIsAnswerRevealed(true);
-    if (answer === currentQ.correctSender) {
+    const isMatch = answer === currentQ.correctSender;
+    if (isMatch) {
       setScore((s) => s + 1);
     }
   };
@@ -182,7 +187,7 @@ export const TriviaQuizModal: React.FC<TriviaQuizModalProps> = ({
         {isLoading || questions.length === 0 ? (
           <div className="py-20 flex flex-col items-center justify-center text-slate-400 gap-3">
             <Loader2 className="w-7 h-7 animate-spin text-rose-500" />
-            <p className="text-xs font-mono">Generating trivia questions from 61,372 messages...</p>
+            <p className="text-xs font-mono">Generating trivia questions from 5,436 messages...</p>
           </div>
         ) : isFinished ? (
           /* Finished Scorecard */
@@ -272,19 +277,19 @@ export const TriviaQuizModal: React.FC<TriviaQuizModalProps> = ({
             {!isAnswerRevealed ? (
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <button
-                  onClick={() => handleChoose('NILU')}
+                  onClick={() => handleChoose('SUMAIYA')}
                   className="py-3 px-4 rounded-2xl bg-[#161b22] hover:bg-rose-500/20 hover:border-rose-500/50 border border-[#30363d] text-rose-300 font-semibold font-mono text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 group"
                 >
                   <span className="w-2 h-2 rounded-full bg-rose-500 group-hover:scale-125 transition-transform" />
-                  <span>NILA</span>
+                  <span>SUMAIYA</span>
                 </button>
 
                 <button
-                  onClick={() => handleChoose('farhannn')}
+                  onClick={() => handleChoose('NIHAN')}
                   className="py-3 px-4 rounded-2xl bg-[#161b22] hover:bg-sky-500/20 hover:border-sky-500/50 border border-[#30363d] text-sky-300 font-semibold font-mono text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 group"
                 >
                   <span className="w-2 h-2 rounded-full bg-sky-400 group-hover:scale-125 transition-transform" />
-                  <span>FARHAN</span>
+                  <span>NIHAN</span>
                 </button>
               </div>
             ) : (

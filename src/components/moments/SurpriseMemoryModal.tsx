@@ -72,8 +72,8 @@ export const SurpriseMemoryModal: React.FC<SurpriseMemoryModalProps> = ({
 
   if (!isOpen) return null;
 
-  const isNila = currentMemory?.sender === 'NILU';
-  const senderDisplay = isNila ? 'NILA' : 'FARHAN';
+  const isSumaiya = currentMemory?.sender === 'SUMAIYA';
+  const senderDisplay = isSumaiya ? 'SUMAIYA' : 'NIHAN';
 
   const formattedDate = currentMemory
     ? new Date(`${currentMemory.date}T00:00:00`).toLocaleDateString('en-US', {
@@ -90,7 +90,7 @@ export const SurpriseMemoryModal: React.FC<SurpriseMemoryModalProps> = ({
         {/* Ambient Glow */}
         <div
           className={`absolute -top-24 -left-24 w-72 h-72 rounded-full blur-3xl opacity-20 pointer-events-none transition-colors duration-500 ${
-            isNila ? 'bg-rose-500' : 'bg-sky-500'
+            isSumaiya ? 'bg-rose-500' : 'bg-sky-500'
           }`}
         />
 
@@ -138,7 +138,7 @@ export const SurpriseMemoryModal: React.FC<SurpriseMemoryModalProps> = ({
               <div className="flex items-center justify-between text-xs font-mono">
                 <span
                   className={`px-2.5 py-1 rounded-full font-semibold border ${
-                    isNila
+                    isSumaiya
                       ? 'bg-rose-500/15 text-rose-300 border-rose-500/30'
                       : 'bg-sky-500/15 text-sky-300 border-sky-500/30'
                   }`}

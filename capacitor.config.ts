@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.nila.archive',
-  appName: 'NILA ARCHIVE',
+  appId: 'com.nihan.archive',
+  appName: 'NihanArchive',
   webDir: 'dist',
   server: {
     androidScheme: 'https',

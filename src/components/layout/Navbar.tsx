@@ -53,14 +53,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="relative p-[2px] rounded-2xl bg-gradient-to-tr from-rose-500 via-purple-500 to-amber-400 shadow-md shadow-rose-500/25 group-hover:shadow-rose-500/50 group-hover:scale-105 transition-all shrink-0">
               <img
                 src="/logo.png"
-                alt="Nila Archive Logo"
+                alt="Nihan's Archive Logo"
                 className="w-8 h-8 sm:w-9 sm:h-9 rounded-[14px] object-cover bg-[#0b0d10]"
               />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-editorial text-base sm:text-lg tracking-wider font-bold bg-gradient-to-r from-white via-rose-100 to-purple-200 bg-clip-text text-transparent whitespace-nowrap">
-                  NILA ARCHIVE
+                  NIHAN'S ARCHIVE
                 </span>
                 <span className="text-[9px] sm:text-[10px] tracking-widest uppercase px-2 py-0.5 rounded-full bg-gradient-to-r from-rose-500/25 to-purple-500/25 border border-rose-500/40 text-rose-200 font-mono font-bold shadow-[0_0_12px_rgba(244,63,94,0.3)] shrink-0">
                   2026
@@ -82,14 +82,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="hidden 2xl:flex items-center gap-2 bg-[#12161c] border border-[#21262d] rounded-full px-3 py-1 text-xs shrink-0">
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-                <span className="text-rose-200 font-medium">NILA</span>
+                <span className="text-rose-200 font-medium">SUMAIYA</span>
                 <span className="text-[#8b949e] font-mono">
-                  {metadata.participantsDisplay.NILA.toLocaleString()}
+                  {(metadata.participantsDisplay.SUMAIYA ?? 0).toLocaleString()}
                 </span>
                 <span className="text-[10px] text-rose-400/80 font-mono">
                   (
                   {(
-                    (metadata.participantsDisplay.NILA / metadata.totalMessages) *
+                    (((metadata.participantsDisplay.SUMAIYA ?? 0)) / metadata.totalMessages) *
                     100
                   ).toFixed(1)}
                   %)
@@ -98,14 +98,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="text-[#30363d]">•</span>
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-sky-400"></span>
-                <span className="text-sky-200 font-medium">FARHAN</span>
+                <span className="text-sky-200 font-medium">NIHAN</span>
                 <span className="text-[#8b949e] font-mono">
-                  {metadata.participantsDisplay.FARHAN.toLocaleString()}
+                  {(metadata.participantsDisplay.NIHAN ?? 0).toLocaleString()}
                 </span>
                 <span className="text-[10px] text-sky-400/80 font-mono">
                   (
                   {(
-                    (metadata.participantsDisplay.FARHAN / metadata.totalMessages) *
+                    (((metadata.participantsDisplay.NIHAN ?? 0)) / metadata.totalMessages) *
                     100
                   ).toFixed(1)}
                   %)
@@ -118,14 +118,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                 <span className="text-rose-300 font-medium">
-                  {((metadata.participantsDisplay.NILA / metadata.totalMessages) * 100).toFixed(1)}%
+                  {((((metadata.participantsDisplay.SUMAIYA ?? 0)) / metadata.totalMessages) * 100).toFixed(1)}%
                 </span>
               </div>
               <span className="text-[#30363d]">•</span>
               <div className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
                 <span className="text-sky-300 font-medium">
-                  {((metadata.participantsDisplay.FARHAN / metadata.totalMessages) * 100).toFixed(1)}%
+                  {((((metadata.participantsDisplay.NIHAN ?? 0)) / metadata.totalMessages) * 100).toFixed(1)}%
                 </span>
               </div>
             </div>

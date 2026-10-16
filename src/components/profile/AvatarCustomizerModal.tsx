@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { X, Upload, RotateCcw, Camera, Heart, Shield, Check, Info } from 'lucide-react';
+import { X, Upload, RotateCcw, Camera, Heart, Shield, Check } from 'lucide-react';
 import { useAvatars, processAvatarFile } from '../../context/AvatarContext';
 
 interface AvatarCustomizerModalProps {
@@ -12,21 +12,21 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
   onClose,
 }) => {
   const {
-    nilaAvatar,
-    farhanAvatar,
-    hasCustomNila,
-    hasCustomFarhan,
-    setNilaAvatar,
-    setFarhanAvatar,
-    resetNilaAvatar,
-    resetFarhanAvatar,
+    sumaiyaAvatar,
+    nihanAvatar,
+    hasCustomSumaiya,
+    hasCustomNihan,
+    setSumaiyaAvatar,
+    setNihanAvatar,
+    resetSumaiyaAvatar,
+    resetNihanAvatar,
   } = useAvatars();
 
-  const nilaInputRef = useRef<HTMLInputElement>(null);
-  const farhanInputRef = useRef<HTMLInputElement>(null);
+  const sumaiyaInputRef = useRef<HTMLInputElement>(null);
+  const nihanInputRef = useRef<HTMLInputElement>(null);
 
-  const [nilaError, setNilaError] = useState(false);
-  const [farhanError, setFarhanError] = useState(false);
+  const [sumaiyaError, setSumaiyaError] = useState(false);
+  const [nihanError, setNihanError] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
@@ -37,7 +37,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
     setTimeout(() => setSuccessToast(null), 3500);
   };
 
-  const handleFile = async (file: File, target: 'nila' | 'farhan') => {
+  const handleFile = async (file: File, target: 'sumaiya' | 'nihan') => {
     if (!file.type.startsWith('image/')) {
       alert('Please select an image file (JPG, PNG, WEBP, etc.)');
       return;
@@ -45,14 +45,14 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
     try {
       setIsProcessing(true);
       const processedUrl = await processAvatarFile(file, 400);
-      if (target === 'nila') {
-        setNilaAvatar(processedUrl);
-        setNilaError(false);
-        showNotification("Nila's photo updated successfully!");
+      if (target === 'sumaiya') {
+        setSumaiyaAvatar(processedUrl);
+        setSumaiyaError(false);
+        showNotification("Sumaiya's photo updated successfully!");
       } else {
-        setFarhanAvatar(processedUrl);
-        setFarhanError(false);
-        showNotification("Farhan's photo updated successfully!");
+        setNihanAvatar(processedUrl);
+        setNihanError(false);
+        showNotification("Nihan's photo updated successfully!");
       }
     } catch (err) {
       console.error('Failed to process image:', err);
@@ -83,7 +83,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                 <Heart className="w-4 h-4 fill-rose-500 text-rose-500" />
               </h2>
               <p className="text-xs text-[#8b949e]">
-                Choose photos for Nila and Farhan shown in the archive sidebar
+                Choose photos for Sumaiya and Nihan shown in the archive sidebar
               </p>
             </div>
           </div>
@@ -109,28 +109,28 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
           {/* Hidden inputs */}
           <input
             type="file"
-            ref={nilaInputRef}
+            ref={sumaiyaInputRef}
             className="hidden"
             accept="image/*"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) handleFile(file, 'nila');
+              if (file) handleFile(file, 'sumaiya');
             }}
           />
           <input
             type="file"
-            ref={farhanInputRef}
+            ref={nihanInputRef}
             className="hidden"
             accept="image/*"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) handleFile(file, 'farhan');
+              if (file) handleFile(file, 'nihan');
             }}
           />
 
           {/* Two Profile Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* NILA CARD */}
+            {/* SUMAIYA CARD */}
             <div className="p-5 rounded-2xl bg-[#161b22]/70 border border-rose-500/30 hover:border-rose-500/60 transition-all flex flex-col items-center text-center relative group">
               <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2.5 py-0.5 rounded-full mb-4">
                 Her Profile
@@ -138,20 +138,20 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
 
               {/* Avatar Frame with hover overlay */}
               <div
-                onClick={() => nilaInputRef.current?.click()}
+                onClick={() => sumaiyaInputRef.current?.click()}
                 className="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-rose-500 via-pink-500 to-purple-500 shadow-lg shadow-rose-500/25 relative cursor-pointer group/avatar mb-3"
               >
                 <div className="w-full h-full rounded-full overflow-hidden bg-[#0c0e12] flex items-center justify-center relative">
-                  {!nilaError ? (
+                  {!sumaiyaError ? (
                     <img
-                      src={nilaAvatar}
-                      alt="Nila"
-                      onError={() => setNilaError(true)}
+                      src={sumaiyaAvatar}
+                      alt="Sumaiya"
+                      onError={() => setSumaiyaError(true)}
                       className="w-full h-full object-cover object-[center_20%]"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white text-3xl font-mono font-bold">
-                      N
+                      S
                     </div>
                   )}
 
@@ -163,31 +163,31 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                 </div>
               </div>
 
-              <div className="font-bold text-white text-base">Nila</div>
+              <div className="font-bold text-white text-base">Sumaiya</div>
               <p className="text-[11px] text-[#8b949e] mb-4">
-                {hasCustomNila ? 'Custom photo active' : 'Using default'}
+                {hasCustomSumaiya ? 'Custom photo active' : 'Using default'}
               </p>
 
               {/* Action Buttons */}
               <div className="w-full flex items-center gap-2 mt-auto">
                 <button
-                  onClick={() => nilaInputRef.current?.click()}
+                  onClick={() => sumaiyaInputRef.current?.click()}
                   disabled={isProcessing}
-                  className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-medium text-xs flex items-center justify-center gap-1.5 shadow-md shadow-rose-950/50 transition-all"
+                  className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-medium text-xs flex items-center justify-center gap-1.5 shadow-md shadow-rose-950/50 transition-all cursor-pointer"
                 >
                   <Upload className="w-3.5 h-3.5" />
                   <span>Choose Photo</span>
                 </button>
 
-                {hasCustomNila && (
+                {hasCustomSumaiya && (
                   <button
                     onClick={() => {
-                      resetNilaAvatar();
-                      setNilaError(false);
-                      showNotification("Reset Nila's photo to default.");
+                      resetSumaiyaAvatar();
+                      setSumaiyaError(false);
+                      showNotification("Reset Sumaiya's photo to default.");
                     }}
                     title="Reset to default"
-                    className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-[#8b949e] hover:text-white transition-colors"
+                    className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-[#8b949e] hover:text-white transition-colors cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                   </button>
@@ -195,7 +195,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               </div>
             </div>
 
-            {/* FARHAN CARD */}
+            {/* NIHAN CARD */}
             <div className="p-5 rounded-2xl bg-[#161b22]/70 border border-sky-500/30 hover:border-sky-500/60 transition-all flex flex-col items-center text-center relative group">
               <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2.5 py-0.5 rounded-full mb-4">
                 His Profile
@@ -203,20 +203,20 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
 
               {/* Avatar Frame with hover overlay */}
               <div
-                onClick={() => farhanInputRef.current?.click()}
+                onClick={() => nihanInputRef.current?.click()}
                 className="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-sky-400 via-blue-500 to-indigo-500 shadow-lg shadow-sky-500/25 relative cursor-pointer group/avatar mb-3"
               >
                 <div className="w-full h-full rounded-full overflow-hidden bg-[#0c0e12] flex items-center justify-center relative">
-                  {!farhanError ? (
+                  {!nihanError ? (
                     <img
-                      src={farhanAvatar}
-                      alt="Farhan"
-                      onError={() => setFarhanError(true)}
+                      src={nihanAvatar}
+                      alt="Nihan"
+                      onError={() => setNihanError(true)}
                       className="w-full h-full object-cover object-[center_20%]"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white text-3xl font-mono font-bold">
-                      F
+                      N
                     </div>
                   )}
 
@@ -228,31 +228,31 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                 </div>
               </div>
 
-              <div className="font-bold text-white text-base">Farhan</div>
+              <div className="font-bold text-white text-base">Nihan</div>
               <p className="text-[11px] text-[#8b949e] mb-4">
-                {hasCustomFarhan ? 'Custom photo active' : 'Using default'}
+                {hasCustomNihan ? 'Custom photo active' : 'Using default'}
               </p>
 
               {/* Action Buttons */}
               <div className="w-full flex items-center gap-2 mt-auto">
                 <button
-                  onClick={() => farhanInputRef.current?.click()}
+                  onClick={() => nihanInputRef.current?.click()}
                   disabled={isProcessing}
-                  className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-medium text-xs flex items-center justify-center gap-1.5 shadow-md shadow-sky-950/50 transition-all"
+                  className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-medium text-xs flex items-center justify-center gap-1.5 shadow-md shadow-sky-950/50 transition-all cursor-pointer"
                 >
                   <Upload className="w-3.5 h-3.5" />
                   <span>Choose Photo</span>
                 </button>
 
-                {hasCustomFarhan && (
+                {hasCustomNihan && (
                   <button
                     onClick={() => {
-                      resetFarhanAvatar();
-                      setFarhanError(false);
-                      showNotification("Reset Farhan's photo to default.");
+                      resetNihanAvatar();
+                      setNihanError(false);
+                      showNotification("Reset Nihan's photo to default.");
                     }}
                     title="Reset to default"
-                    className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-[#8b949e] hover:text-white transition-colors"
+                    className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-[#8b949e] hover:text-white transition-colors cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                   </button>
@@ -261,43 +261,26 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
             </div>
           </div>
 
-          {/* Helpful Information Box */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-950/20 via-pink-950/15 to-transparent border border-white/5 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-semibold text-rose-300">
-              <Info className="w-4 h-4 text-rose-400 shrink-0" />
-              <span>Two Easy Ways to Add Your Photos</span>
+          {/* Privacy & Storage Explainer Banner */}
+          <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-200">
+              <Shield className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>100% Private, Local-Only Storage</span>
             </div>
-            <ul className="text-[11px] text-[#8b949e] space-y-1.5 pl-6 list-disc">
-              <li>
-                <strong className="text-white">Option 1 (Instant Click):</strong> Click{' '}
-                <span className="text-rose-300">"Choose Photo"</span> above to pick any picture from your computer. It is automatically optimized and securely saved in your browser.
-              </li>
-              <li>
-                <strong className="text-white">Option 2 (Folder Drop):</strong> Or place image files into your project folder at{' '}
-                <code className="px-1.5 py-0.5 rounded bg-black/40 text-purple-300 font-mono text-[10px]">
-                  public/avatars/nila.jpg
-                </code>{' '}
-                and{' '}
-                <code className="px-1.5 py-0.5 rounded bg-black/40 text-sky-300 font-mono text-[10px]">
-                  public/avatars/farhan.jpg
-                </code>.
-              </li>
-            </ul>
+            <p className="text-[11px] text-[#8b949e] leading-relaxed">
+              Your uploaded profile photos are resized locally in your browser and saved directly to your device’s localStorage. They are never transmitted to any external server or cloud.
+            </p>
           </div>
+        </div>
 
-          {/* Privacy Guarantee */}
-          <div className="flex items-center justify-between text-[11px] text-[#8b949e] pt-1">
-            <div className="flex items-center gap-1.5 text-emerald-400">
-              <Shield className="w-3.5 h-3.5" />
-              <span>100% Offline & Private to Your Browser</span>
-            </div>
-            <button
-              onClick={onClose}
-              className="px-4 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-medium text-xs transition-colors"
-            >
-              Done
-            </button>
-          </div>
+        {/* Modal Footer */}
+        <div className="px-6 py-4 border-t border-[#21262d] flex items-center justify-end bg-[#0c0e12]/50 relative z-10">
+          <button
+            onClick={onClose}
+            className="px-5 py-2 rounded-xl bg-[#21262d] hover:bg-[#30363d] text-white text-xs font-mono font-medium transition-colors cursor-pointer"
+          >
+            Done
+          </button>
         </div>
       </div>
     </div>

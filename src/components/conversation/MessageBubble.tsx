@@ -34,8 +34,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   isGroupedWithNext = false,
 }) => {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-  const isNila = message.sender === 'NILU';
-  const { nilaAvatar, farhanAvatar } = useAvatars();
+  const isIncoming = message.sender !== 'NIHAN';
+  const isSumaiya = isIncoming;
+  const { sumaiyaAvatar, nihanAvatar } = useAvatars();
 
   // Detect standalone emoji messages (e.g. 🐵, 🥺😍, ❤️, etc.)
   const isEmojiOnly = React.useMemo(() => {
@@ -53,7 +54,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     <div
       id={message.id}
       className={`group w-full flex flex-col transition-all duration-200 ${
-        isNila ? 'items-start' : 'items-end'
+        isSumaiya ? 'items-start' : 'items-end'
       } ${isGroupedWithPrevious ? 'mt-1' : 'mt-3 sm:mt-4'} ${
         isGroupedWithNext
           ? message.reactions?.length
@@ -72,25 +73,25 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
       {!isGroupedWithPrevious && (
         <div
           className={`flex items-center gap-1.5 text-xs text-[#8b949e] font-mono px-2 mb-1 ${
-            isNila ? 'flex-row' : 'flex-row-reverse'
+            isSumaiya ? 'flex-row' : 'flex-row-reverse'
           }`}
         >
           <div
             className={`w-4 h-4 rounded-full overflow-hidden shrink-0 border ${
-              isNila
+              isSumaiya
                 ? 'border-rose-500/50 shadow-[0_0_6px_rgba(244,63,94,0.3)]'
                 : 'border-sky-500/50 shadow-[0_0_6px_rgba(56,189,248,0.3)]'
             }`}
           >
             <img
-              src={isNila ? nilaAvatar : farhanAvatar}
+              src={isSumaiya ? sumaiyaAvatar : nihanAvatar}
               alt=""
               className="w-full h-full object-cover object-[center_20%]"
             />
           </div>
           <span
             className={`font-semibold tracking-wide ${
-              isNila ? 'text-rose-400' : 'text-sky-400'
+              isSumaiya ? 'text-rose-400' : 'text-sky-400'
             }`}
           >
             {message.senderDisplay}
@@ -109,7 +110,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           isEmojiOnly
             ? 'p-1 select-text'
             : `min-w-[68px] sm:min-w-[76px] max-w-[85%] sm:max-w-[78%] px-4 py-2.5 sm:px-5 sm:py-3 shadow-md text-[15px] sm:text-[16px] leading-[1.55] ${
-                isNila
+                isSumaiya
                   ? `bg-[#181a20] border border-[#282f3a] text-[#f0f6fc] ${
                       isGroupedWithPrevious ? 'rounded-tl-sm' : 'rounded-tl-2xl'
                     } ${isGroupedWithNext ? 'rounded-bl-sm' : 'rounded-bl-2xl'} rounded-tr-2xl rounded-br-2xl`
@@ -238,8 +239,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 
         {/* Message Text Content */}
         {message.content &&
-          message.content !== 'NILU sent an attachment.' &&
-          message.content !== 'farhannn sent an attachment.' && (
+          !message.content.endsWith('sent an attachment.') && (
             <div
               className={`selection:bg-rose-500/30 ${
                 isEmojiOnly
@@ -257,7 +257,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
             className={`absolute ${
               isEmojiOnly ? '-bottom-4' : '-bottom-3'
             } ${
-              isNila ? 'left-2' : 'right-2'
+              isSumaiya ? 'left-2' : 'right-2'
             } flex items-center gap-1.5 bg-[#161b22]/95 backdrop-blur-md border border-[#30363d] rounded-full px-2.5 py-0.5 shadow-lg z-10`}
           >
             {message.reactions.map((r, i) => (
@@ -280,7 +280,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
       {isGroupedWithNext === false && isGroupedWithPrevious && (
         <span
           className={`text-[10px] font-mono text-[#8b949e]/80 px-2 mt-0.5 ${
-            isNila ? 'text-left' : 'text-right'
+            isSumaiya ? 'text-left' : 'text-right'
           }`}
         >
           {message.time}

@@ -76,10 +76,10 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
   }, [isOpen]);
 
   // Derived Analytics Data
-  const nilaCount = metadata.participants.NILU;
-  const farhanCount = metadata.participants.farhannn;
-  const nilaPct = Math.round((nilaCount / metadata.totalMessages) * 1000) / 10;
-  const farhanPct = Math.round((farhanCount / metadata.totalMessages) * 1000) / 10;
+  const sumaiyaCount = metadata.participants.SUMAIYA ?? 0;
+  const nihanCount = metadata.participants.NIHAN ?? 0;
+  const sumaiyaPct = Math.round((sumaiyaCount / metadata.totalMessages) * 1000) / 10;
+  const nihanPct = Math.round((nihanCount / metadata.totalMessages) * 1000) / 10;
   const dailyAverage = Math.round(metadata.totalMessages / Math.max(1, metadata.activeDays));
 
   // Midnight Messages: 12 AM – 4:59 AM (hours 0..4)
@@ -152,18 +152,18 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
         badge: 'CHAPTER 2 • HARMONY',
         badgeColor: 'text-rose-400 bg-rose-500/20 border-rose-500/30',
         title: 'A Perfectly Symmetric Dialogue',
-        metric: `${nilaPct}% • ${farhanPct}%`,
-        unit: 'NILA vs FARHAN',
-        subtitle: `${nilaCount.toLocaleString()} vs ${farhanCount.toLocaleString()} messages`,
+        metric: `${sumaiyaPct}% • ${nihanPct}%`,
+        unit: 'SUMAIYA vs NIHAN',
+        subtitle: `${sumaiyaCount.toLocaleString()} vs ${nihanCount.toLocaleString()} messages`,
         customContent: (
           <div className="w-full max-w-xs mx-auto space-y-2 py-1">
             <div className="w-full h-3 rounded-full bg-slate-800 overflow-hidden flex border border-white/10">
-              <div style={{ width: `${nilaPct}%` }} className="h-full bg-rose-500 transition-all duration-1000" />
-              <div style={{ width: `${farhanPct}%` }} className="h-full bg-sky-400 transition-all duration-1000" />
+              <div style={{ width: `${sumaiyaPct}%` }} className="h-full bg-rose-500 transition-all duration-1000" />
+              <div style={{ width: `${nihanPct}%` }} className="h-full bg-sky-400 transition-all duration-1000" />
             </div>
             <div className="flex justify-between text-[11px] font-mono text-[#8b949e]">
-              <span className="text-rose-400 font-semibold">NILA {nilaPct}%</span>
-              <span className="text-sky-400 font-semibold">FARHAN {farhanPct}%</span>
+              <span className="text-rose-400 font-semibold">SUMAIYA {sumaiyaPct}%</span>
+              <span className="text-sky-400 font-semibold">NIHAN {nihanPct}%</span>
             </div>
           </div>
         ),
@@ -215,9 +215,9 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
         badge: 'CHAPTER 5 • HEART STRINGS',
         badgeColor: 'text-rose-400 bg-rose-500/20 border-rose-500/30',
         title: 'Words of the Heart',
-        metric: `${loveExpr?.totalOccurrences.total || 350}x`,
+        metric: `${loveExpr?.totalOccurrences.total || 15}x`,
         unit: '"I Love You" Confessions',
-        subtitle: `${loveExpr?.totalOccurrences.NILU || 128} by Nila • ${loveExpr?.totalOccurrences.farhannn || 222} by Farhan`,
+        subtitle: `${loveExpr?.totalOccurrences.SUMAIYA ?? 0} by Sumaiya • ${loveExpr?.totalOccurrences.NIHAN ?? 0} by Nihan`,
         narrative: `You reminded each other of your affection hundreds of times. Paired with ${sorryExpr?.messagesCount.total || 830} gentle apologies and ${missExpr?.totalOccurrences.total || 25} "miss you"s that kept your bond unbreakable.`,
         icon: Heart,
         accent: 'text-rose-400',
@@ -245,8 +245,8 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
         badge: 'CHAPTER 7 • THE CLIMAX',
         badgeColor: 'text-amber-400 bg-amber-500/20 border-amber-500/30',
         title: 'The All-Time Record Day',
-        metric: `${peakDay ? peakDay.totalMessages.toLocaleString() : '2,096'} msgs`,
-        unit: peakDay ? formatDateString(peakDay.date) : 'Saturday, Sep 5, 2026',
+        metric: `${peakDay ? peakDay.totalMessages.toLocaleString() : '672'} msgs`,
+        unit: peakDay ? formatDateString(peakDay.date) : 'Sunday, Oct 11, 2026',
         subtitle: peakDay ? `Peak hour had ${peakDay.peakHourCount} messages at ${peakDay.peakHour}:00` : 'Peak marathon of continuous chat',
         narrative:
           'Your most talkative, lively day ever recorded in the archive. An intense, joyful marathon of communication that didn’t stop from morning until late at night.',
@@ -314,7 +314,7 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
         accent: 'text-rose-400',
       },
     ];
-  }, [metadata, dailyStats, nilaCount, farhanCount, nilaPct, farhanPct, dailyAverage, midnightMessages, peakDay, topNicknames, loveExpr, sorryExpr, missExpr, topReaction]);
+  }, [metadata, dailyStats, sumaiyaCount, nihanCount, sumaiyaPct, nihanPct, dailyAverage, midnightMessages, peakDay, topNicknames, loveExpr, sorryExpr, missExpr, topReaction]);
 
   const totalSlides = slides.length;
 
@@ -373,20 +373,20 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
 
   // Copy Summary Recap Card to Clipboard
   const handleCopySummary = async () => {
-    const recapText = `🌟 OUR ARCHIVE WRAPPED 🌟
+    const recapText = `🌟 NIHAN & SUMAIYA WRAPPED 🌟
 ━━━━━━━━━━━━━━━━━━━━━━
 💌 Total Messages: ${metadata.totalMessages.toLocaleString()}
-📅 Unbroken Streak: ${metadata.activeDays} Days (${metadata.startDate} to ${metadata.endDate})
-⚖️ Communication Balance: Nila ${nilaPct}% • Farhan ${farhanPct}%
-🎙️ Voice Notes: ${(metadata.media?.audio || 2147).toLocaleString()}
+📅 Active Days: ${metadata.activeDays} Days (${metadata.startDate} to ${metadata.endDate})
+⚖️ Communication Balance: Sumaiya ${sumaiyaPct}% • Nihan ${nihanPct}%
+🎙️ Voice Notes: ${(metadata.media?.audio || 45).toLocaleString()}
 🌙 Midnight Messages: ${midnightMessages.toLocaleString()} (12 AM – 5 AM)
-💖 Top Nickname: "${topNicknames[0]?.nickname || 'pagli'}" (${topNicknames[0]?.totalCount || 184} times)
-❤️ "I Love You": ${loveExpr?.totalOccurrences.total || 350} times
+💖 Top Nickname: "${topNicknames[0]?.nickname || 'penguin'}" (${topNicknames[0]?.totalCount || 3} times)
+❤️ "I Love You": ${loveExpr?.totalOccurrences.total || 15} times
 🎬 Reels Shared: ${metadata.shares.reels.toLocaleString()}
-🔥 Peak Record Day: ${peakDay ? formatDateString(peakDay.date) : 'Sep 5, 2026'} (${peakDay ? peakDay.totalMessages.toLocaleString() : '2,096'} msgs)
+🔥 Peak Record Day: ${peakDay ? formatDateString(peakDay.date) : 'Oct 11, 2026'} (${peakDay ? peakDay.totalMessages.toLocaleString() : '672'} msgs)
 ✨ Relationship Persona: The Midnight Soulmates
 ━━━━━━━━━━━━━━━━━━━━━━
-🔒 Preserved forever in Our Archive.`;
+🔒 Preserved forever in Nihan's Archive.`;
 
     try {
       await navigator.clipboard.writeText(recapText);

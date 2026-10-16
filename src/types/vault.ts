@@ -2,7 +2,7 @@ export type VaultCategory = 'explicit' | 'sensual' | 'bedroom' | 'teasing';
 
 export interface VaultMessage {
   id: string;
-  sender: 'NILU' | 'farhannn';
+  sender: string;
   content: string;
   time: string;
   timestamp: number;
@@ -22,7 +22,7 @@ export interface IntimateSession {
   title: string;
   subtitle: string;
   previewQuote: {
-    sender: 'NILU' | 'farhannn';
+    sender: string;
     text: string;
   };
   messageCount: number;

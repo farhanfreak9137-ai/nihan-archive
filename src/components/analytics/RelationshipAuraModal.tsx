@@ -38,7 +38,7 @@ interface RelationshipAuraModalProps {
 
 export interface AuraReading {
   id: string;
-  scope: 'overall' | '2026-07' | '2026-08' | '2026-09' | '2026-10' | 'day';
+  scope: 'overall' | 'early' | '2026-09' | '2026-10' | 'day';
   label: string;
   title: string;
   subtitle: string;
@@ -59,11 +59,11 @@ export interface AuraReading {
     voiceNotes: number;
     shares: number;
     reactions: number;
-    nilaPct: number;
-    farhanPct: number;
+    sumaiyaPct: number;
+    nihanPct: number;
   };
   signatureQuote: {
-    sender: 'NILA' | 'FARHAN';
+    sender: 'SUMAIYA' | 'NIHAN';
     text: string;
     context: string;
     date: string;
@@ -82,9 +82,9 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
   onSelectDate,
 }) => {
   const [selectedScope, setSelectedScope] = useState<
-    'overall' | '2026-07' | '2026-08' | '2026-09' | '2026-10' | 'custom-day'
+    'overall' | 'early' | '2026-09' | '2026-10' | 'custom-day'
   >('overall');
-  const [customDate, setCustomDate] = useState<string>('2026-09-05');
+  const [customDate, setCustomDate] = useState<string>('2026-10-11');
   const [dayMessages, setDayMessages] = useState<Message[]>([]);
   const [isLoadingDay, setIsLoadingDay] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -140,7 +140,7 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
       let archetype = 'The Daily Star';
       let dominantMood = 'Deep Connection';
 
-      if (customDate === '2026-09-05' || msgsCount > 1600) {
+      if (customDate === '2026-10-11' || msgsCount >= 450) {
         coreColors = ['#f59e0b', '#ef4444', '#ec4899'];
         glowGradient = 'from-amber-500/40 via-rose-600/30 to-pink-500/30';
         title = 'Supernova Marathon Aura';
@@ -151,8 +151,8 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
         glowGradient = 'from-indigo-600/30 via-purple-600/30 to-cyan-500/20';
         title = 'Midnight Twilight Aura';
         archetype = 'The Nocturnal Dreamers';
-        dominantMood = 'Quiet Intimacy & 3 AM Whispers';
-      } else if (audioCount > 30) {
+        dominantMood = 'Quiet Intimacy & Late-Night Talks';
+      } else if (audioCount >= 5) {
         coreColors = ['#f59e0b', '#10b981', '#fb7185'];
         glowGradient = 'from-amber-500/30 via-emerald-500/20 to-rose-400/20';
         title = 'Resonant Vocal Frequency';
@@ -162,14 +162,14 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
 
       // Find top quote from loaded day messages
       let sampleQuote: {
-        sender: 'NILA' | 'FARHAN';
+        sender: 'SUMAIYA' | 'NIHAN';
         text: string;
         context: string;
         date: string;
         messageId?: string;
       } = {
-        sender: 'NILA',
-        text: 'Tore chara amr bhalo lage na',
+        sender: 'SUMAIYA',
+        text: 'Ekta video teo amra kotha bola thamai nai',
         context: `${msgsCount.toLocaleString()} messages exchanged`,
         date: customDate,
       };
@@ -186,7 +186,7 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
         if (heartfelt.length > 0) {
           const picked = heartfelt[Math.floor(heartfelt.length / 2)];
           sampleQuote = {
-            sender: picked.sender === 'NILU' ? 'NILA' : 'FARHAN',
+            sender: picked.sender === 'NIHAN' ? 'NIHAN' : 'SUMAIYA',
             text: picked.content,
             context: `${picked.time} • ${picked.senderDisplay}`,
             date: customDate,
@@ -222,41 +222,45 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
           voiceNotes: audioCount,
           shares: sharesCount,
           reactions: reactsCount,
-          nilaPct: dayStat?.nilaPercentage || 50,
-          farhanPct: dayStat?.farhanPercentage || 50,
+          sumaiyaPct: dayStat?.sumaiyaPercentage || 50,
+          nihanPct: dayStat?.nihanPercentage || 50,
         },
         signatureQuote: sampleQuote,
         poeticSynthesis: `On ${customDate}, your connection reached an activity score of ${dayStat?.activityScore || 50}/100. With ${msgsCount.toLocaleString()} messages spanning from ${dayStat?.firstMessage || 'morning'} to ${dayStat?.lastMessage || 'night'}, your dialogue expressed a rare combination of conversational ease and profound emotional safety.`,
       };
     }
 
-    if (selectedScope === '2026-07') {
-      const statsJuly = dailyStats.filter((d) => d.date.startsWith('2026-07'));
-      const msgs = statsJuly.reduce((acc, d) => acc + d.totalMessages, 0);
-      const audio = statsJuly.reduce((acc, d) => acc + d.audioNotes, 0);
-      const shares = statsJuly.reduce((acc, d) => acc + d.shares, 0);
-      const reacts = statsJuly.reduce((acc, d) => acc + d.reactions, 0);
+    if (selectedScope === 'early') {
+      const statsEarly = dailyStats.filter((d) => d.date < '2026-09-01');
+      const msgs = statsEarly.reduce((acc, d) => acc + d.totalMessages, 0);
+      const audio = statsEarly.reduce((acc, d) => acc + d.audioNotes, 0);
+      const shares = statsEarly.reduce((acc, d) => acc + d.shares, 0);
+      const reacts = statsEarly.reduce((acc, d) => acc + d.reactions, 0);
+
+      const sumaiyaEarly = statsEarly.reduce((acc, d) => acc + (d.sumaiyaMessages || 0), 0);
+      const nihanEarly = statsEarly.reduce((acc, d) => acc + (d.nihanMessages || 0), 0);
+      const totalEarly = Math.max(1, sumaiyaEarly + nihanEarly);
 
       return {
-        id: 'aura-july',
-        scope: '2026-07',
-        label: 'July 2026',
-        title: 'Electric Genesis & Tender Awakening',
-        subtitle: 'The spark of first banter, the 10 rules, and the first midnight "I love you"',
-        archetype: 'The Discovery Alchemists',
-        dominantMood: 'Electric Curiosity & Blossoming Romance',
-        glowGradient: 'from-amber-400/30 via-rose-500/25 to-sky-400/20',
-        coreColors: ['#f59e0b', '#f43f5e', '#38bdf8'],
+        id: 'aura-early',
+        scope: 'early',
+        label: 'Jan – Aug 2026',
+        title: 'Casual Banter & Enduring Roots',
+        subtitle: 'The effortless comfort of old friends: Eid greetings, funny check-ins, and laughter',
+        archetype: 'The Lifelong Allies',
+        dominantMood: 'Playful Familiarity & Easygoing Warmth',
+        glowGradient: 'from-amber-400/30 via-emerald-500/25 to-sky-400/20',
+        coreColors: ['#f59e0b', '#10b981', '#38bdf8'],
         palette: [
-          { name: 'First Spark Gold', hex: '#f59e0b', desc: 'The excitement of Day 1 and breaking the ice' },
-          { name: 'Confession Crimson', hex: '#f43f5e', desc: 'July 12th midnight: "I love you & forgive me"' },
-          { name: 'Covenant Cyan', hex: '#38bdf8', desc: 'Nila\'s legendary 10 rules of engagement' },
+          { name: 'Foundational Amber', hex: '#f59e0b', desc: 'Relaxed check-ins and unforced, genuine connection' },
+          { name: 'Comradery Emerald', hex: '#10b981', desc: 'Mutual trust built through years of shared history' },
+          { name: 'Banter Sky', hex: '#38bdf8', desc: '"Ontoto Manus amake lomba bole" • Playful humor' },
         ],
         energies: {
-          nocturnal: 82,
-          affection: 88,
-          vocal: 45,
-          banter: 92,
+          nocturnal: 62,
+          affection: 74,
+          vocal: 40,
+          banter: 88,
           devotion: 86,
         },
         metrics: {
@@ -264,66 +268,18 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
           voiceNotes: audio,
           shares: shares,
           reactions: reacts,
-          nilaPct: 52.1,
-          farhanPct: 47.9,
+          sumaiyaPct: Number(((sumaiyaEarly / totalEarly) * 100).toFixed(1)) || 48.5,
+          nihanPct: Number(((nihanEarly / totalEarly) * 100).toFixed(1)) || 51.5,
         },
         signatureQuote: {
-          sender: 'NILA',
-          text: '1. Always reply to me first... 10. If you ever want to be in a relationship, you need my permission first.',
-          context: 'July 11, 2026 • The Foundation Covenant',
-          date: '2026-07-11',
-          messageId: 'm_1783776859424_NILU',
+          sender: 'NIHAN',
+          text: 'Ontoto Manus amake lomba bole🤣',
+          context: 'January 22, 2026 • 12:39 AM • Casual Banter',
+          date: '2026-01-22',
+          messageId: 'm_1769107146155_NIHAN',
         },
         poeticSynthesis:
-          'July was a golden, electric month. Beginning with timid curiosity on July 6th, it quickly accelerated into playful covenants and vulnerable midnight confessions. Farhan\'s "valobashi tooooo" and Nila\'s 10 rules set an unbreakable foundation of mutual devotion.',
-      };
-    }
-
-    if (selectedScope === '2026-08') {
-      const statsAug = dailyStats.filter((d) => d.date.startsWith('2026-08'));
-      const msgs = statsAug.reduce((acc, d) => acc + d.totalMessages, 0);
-      const audio = statsAug.reduce((acc, d) => acc + d.audioNotes, 0);
-      const shares = statsAug.reduce((acc, d) => acc + d.shares, 0);
-      const reacts = statsAug.reduce((acc, d) => acc + d.reactions, 0);
-
-      return {
-        id: 'aura-august',
-        scope: '2026-08',
-        label: 'August 2026',
-        title: 'Velvet Midnight & Poetic Yearning',
-        subtitle: 'The 3 AM questions, the dream of embracing, and merging scent into one',
-        archetype: 'The 3 AM Soulmates',
-        dominantMood: 'Deep Intimacy & Longing Proximity',
-        glowGradient: 'from-indigo-600/35 via-fuchsia-600/25 to-rose-500/25',
-        coreColors: ['#6366f1', '#d946ef', '#f43f5e'],
-        palette: [
-          { name: 'Velvet Twilight', hex: '#6366f1', desc: 'Countless hours spent whispering past 2 AM' },
-          { name: 'Poetic Lilac', hex: '#d946ef', desc: '"Amra hug korlei amdr smell ek hoye jabe"' },
-          { name: 'Warm Embrace Rose', hex: '#f43f5e', desc: 'Wishing to comfort with a physical hug' },
-        ],
-        energies: {
-          nocturnal: 96,
-          affection: 94,
-          vocal: 84,
-          banter: 80,
-          devotion: 95,
-        },
-        metrics: {
-          messages: msgs,
-          voiceNotes: audio,
-          shares: shares,
-          reactions: reacts,
-          nilaPct: 51.4,
-          farhanPct: 48.6,
-        },
-        signatureQuote: {
-          sender: 'NILA',
-          text: 'Amra hug korlei amdr smell ek hoye jabe',
-          context: 'August 16, 2026 • 2:38 AM',
-          date: '2026-08-16',
-        },
-        poeticSynthesis:
-          'August held the richest atmospheric depth of the relationship. Stripped of Daytime defenses, the nocturnal hours (12 AM – 5 AM) became a sanctuary. The longing transformed into poetry—holding each other until scents fused and defining what you mean to one another.',
+          'The earlier months of 2026 established an easygoing, pressure-free sanctuary. Rooted in years of familiarity, every interaction was genuine and relaxed, proving that true friends can pick up right where they left off with instant laughter.',
       };
     }
 
@@ -334,44 +290,48 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
       const shares = statsSep.reduce((acc, d) => acc + d.shares, 0);
       const reacts = statsSep.reduce((acc, d) => acc + d.reactions, 0);
 
+      const sumaiyaSep = statsSep.reduce((acc, d) => acc + (d.sumaiyaMessages || 0), 0);
+      const nihanSep = statsSep.reduce((acc, d) => acc + (d.nihanMessages || 0), 0);
+      const totalSep = Math.max(1, sumaiyaSep + nihanSep);
+
       return {
         id: 'aura-september',
         scope: '2026-09',
         label: 'September 2026',
-        title: 'High-Frequency Climax & Stormproof Devotion',
-        subtitle: 'The 2,096-message record marathon and the mature reassurance to stay right there',
-        archetype: 'The Resilient Anchors',
-        dominantMood: 'Stamina, Maturity & Unshakable Loyalty',
-        glowGradient: 'from-rose-600/35 via-amber-500/25 to-emerald-500/25',
-        coreColors: ['#e11d48', '#f59e0b', '#10b981'],
+        title: 'The Awakening Spark & Penguin Banter',
+        subtitle: '607 messages • The start of daily check-ins, aesthetic compliments, and inside jokes',
+        archetype: 'The Playful Spark',
+        dominantMood: 'Curiosity, Rising Chemistry & Shared Music',
+        glowGradient: 'from-indigo-600/35 via-rose-500/25 to-sky-400/25',
+        coreColors: ['#6366f1', '#f43f5e', '#38bdf8'],
         palette: [
-          { name: 'Record Crimson', hex: '#e11d48', desc: 'September 5th all-time peak of 2,096 messages' },
-          { name: 'Vocal Symphony Amber', hex: '#f59e0b', desc: 'Over 800 voice notes exchanged in 30 days' },
-          { name: 'Weathering Emerald', hex: '#10b981', desc: '"ami eikhanei asi" • Weathering storms together' },
+          { name: 'Spark Indigo', hex: '#6366f1', desc: 'Late September revival and transition into daily chatting' },
+          { name: 'Aesthetic Rose', hex: '#f43f5e', desc: '"Looks cute ✨" and sharing music vibes' },
+          { name: 'Penguin Cyan', hex: '#38bdf8', desc: '"Mone hoi penguin hatse" • The birth of the iconic inside joke' },
         ],
         energies: {
-          nocturnal: 91,
-          affection: 96,
-          vocal: 98,
-          banter: 89,
-          devotion: 99,
+          nocturnal: 78,
+          affection: 86,
+          vocal: 62,
+          banter: 94,
+          devotion: 90,
         },
         metrics: {
           messages: msgs,
           voiceNotes: audio,
           shares: shares,
           reactions: reacts,
-          nilaPct: 51.2,
-          farhanPct: 48.8,
+          sumaiyaPct: Number(((sumaiyaSep / totalSep) * 100).toFixed(1)) || 42.1,
+          nihanPct: Number(((nihanSep / totalSep) * 100).toFixed(1)) || 57.9,
         },
         signatureQuote: {
-          sender: 'FARHAN',
-          text: 'accha somossa nai ami eikhanei asi',
-          context: 'September 15, 2026 • 8:24 PM',
-          date: '2026-09-15',
+          sender: 'NIHAN',
+          text: 'Mone hoi penguin hatse',
+          context: 'September 29, 2026 • 7:48 PM • The Penguin Origin',
+          date: '2026-09-29',
         },
         poeticSynthesis:
-          'September was both the volcanic peak and the testing ground. On September 5th, you recorded the single highest activity day in your entire archive (2,096 messages). More importantly, when emotions ran high, you learned to anchor each other: "accha somossa nai ami eikhanei asi."',
+          'September marked the decisive pivot where casual contact accelerated into daily excitement. Playful teasing about penguin walks and aesthetic compliments sparked a magnetic energy that carried straight into October\'s marathon.',
       };
     }
 
@@ -382,44 +342,48 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
       const shares = statsOct.reduce((acc, d) => acc + d.shares, 0);
       const reacts = statsOct.reduce((acc, d) => acc + d.reactions, 0);
 
+      const sumaiyaOct = statsOct.reduce((acc, d) => acc + (d.sumaiyaMessages || 0), 0);
+      const nihanOct = statsOct.reduce((acc, d) => acc + (d.nihanMessages || 0), 0);
+      const totalOct = Math.max(1, sumaiyaOct + nihanOct);
+
       return {
         id: 'aura-october',
         scope: '2026-10',
         label: 'October 2026',
-        title: 'Peaceful Horizon & The Shared Future',
-        subtitle: '"Meri khushi, mera sukoon aur mera aane wala kal... sab sirf tumse hai"',
-        archetype: 'The Sukoon Horizon',
-        dominantMood: 'Serenity, Certainty & Lasting Warmth',
-        glowGradient: 'from-purple-500/30 via-rose-400/25 to-teal-400/25',
-        coreColors: ['#a855f7', '#fb7185', '#2dd4bf'],
+        title: 'All-Time Climax & Historical Landmark',
+        subtitle: '4,297 messages • 672-msg record marathon • 37 photos • Landmark coronation',
+        archetype: 'The Undisputed Soulmates',
+        dominantMood: 'Non-Stop Dialogue, Affection & Unfiltered Laughter',
+        glowGradient: 'from-rose-600/35 via-amber-500/25 to-purple-500/25',
+        coreColors: ['#e11d48', '#f59e0b', '#a855f7'],
         palette: [
-          { name: 'Sukoon Lavender', hex: '#a855f7', desc: 'Finding peace and tranquility in each other' },
-          { name: 'Peach Horizon', hex: '#fb7185', desc: 'Aane wala kal • Stepping into autumn together' },
-          { name: 'Tender Teal', hex: '#2dd4bf', desc: 'Effortless companionship and everyday safety' },
+          { name: 'Record Crimson', hex: '#e11d48', desc: 'October 11th all-time peak of 672 messages & 10 calls' },
+          { name: 'Landmark Gold', hex: '#f59e0b', desc: 'Crowning "Historical landmark" and "bauni" nicknames' },
+          { name: 'Visual Lavender', hex: '#a855f7', desc: 'October 7th 37-photo marathon and midnight coffee talks' },
         ],
         energies: {
-          nocturnal: 78,
-          affection: 98,
-          vocal: 80,
-          banter: 85,
+          nocturnal: 92,
+          affection: 96,
+          vocal: 94,
+          banter: 98,
           devotion: 99,
         },
         metrics: {
-          messages: msgs || 74,
+          messages: msgs,
           voiceNotes: audio,
-          shares: shares || 6,
-          reactions: reacts || 9,
-          nilaPct: 55.4,
-          farhanPct: 44.6,
+          shares: shares,
+          reactions: reacts,
+          sumaiyaPct: Number(((sumaiyaOct / totalOct) * 100).toFixed(1)) || 51.2,
+          nihanPct: Number(((nihanOct / totalOct) * 100).toFixed(1)) || 48.8,
         },
         signatureQuote: {
-          sender: 'FARHAN',
-          text: 'meri khushi, mera sukoon aur mera aane wala kal... sab sirf tumse hai.',
-          context: 'September 29 – October 1, 2026 • The Autumn Gateway',
-          date: '2026-09-29',
+          sender: 'SUMAIYA',
+          text: 'Ekta video teo amra kotha bola thamai nai',
+          context: 'October 6, 2026 • 9:50 PM • Unstoppable Connection',
+          date: '2026-10-06',
         },
         poeticSynthesis:
-          'Entering October, the archive reaches a state of serene clarity. The love is no longer a question or a discovery—it is a proven reality. As Farhan wrote: "meri khushi, mera sukoon aur mera aane wala kal... sab sirf tumse hai."',
+          'October stood as the ultimate high-frequency zenith of the archive. With 4,297 messages in just two weeks, conversation flowed uninterrupted. As Sumaiya aptly captured: "Ekta video teo amra kotha bola thamai nai." From candid photos to playful girlfriend banter and late-night calls, this month defined their extraordinary closeness.',
       };
     }
 
@@ -428,29 +392,31 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
     const nicknamesBonus = Math.min(4, Math.round(nicknames.length / 3));
 
     // Default: Overall Archive Aura
-    const nilaPct = Number(((metadata.participantsDisplay.NILA / metadata.totalMessages) * 100).toFixed(1));
-    const farhanPct = Number(((metadata.participantsDisplay.FARHAN / metadata.totalMessages) * 100).toFixed(1));
+    const sumaiyaCount = metadata.participantsDisplay.SUMAIYA ?? 0;
+    const nihanCount = metadata.participantsDisplay.NIHAN ?? 0;
+    const sumaiyaPct = Number(((sumaiyaCount / metadata.totalMessages) * 100).toFixed(1));
+    const nihanPct = Number(((nihanCount / metadata.totalMessages) * 100).toFixed(1));
 
     return {
       id: 'aura-overall',
       scope: 'overall',
       label: 'The Whole Archive',
-      title: 'Cosmic Symphony & Unshakable Equilibrium',
-      subtitle: `${metadata.totalMessages.toLocaleString()} messages • ${metadata.activeDays} unbroken days • ${nilaPct}% to ${farhanPct}% harmonic balance`,
-      archetype: 'The Inseparable Midnight Soulmates',
-      dominantMood: 'Harmonic Equilibrium & Total Intimacy',
+      title: 'Cosmic Symphony & 9-Year Harmonic Bond',
+      subtitle: `${metadata.totalMessages.toLocaleString()} messages • ${metadata.activeDays} active days • ${sumaiyaPct}% to ${nihanPct}% harmonic balance`,
+      archetype: 'The Inseparable Confidants',
+      dominantMood: 'Effortless Banter & Lifelong Devotion',
       glowGradient: 'from-rose-500/35 via-purple-600/30 to-amber-500/25',
-      coreColors: ['#f43f5e', '#8b5cf6', '#f59e0b'],
+      coreColors: ['#f43f5e', '#8b5cf6', '#06b6d4'],
       palette: [
-        { name: 'Eternal Rose', hex: '#f43f5e', desc: `${metadata.reactions.total.toLocaleString()} reactions & hundreds of "I love you"s` },
-        { name: 'Cosmic Nocturne', hex: '#8b5cf6', desc: 'Over 22,000 messages exchanged past midnight' },
-        { name: 'Vocal Amber', hex: '#f59e0b', desc: `${metadata.media.audio.toLocaleString()} voice notes creating an audible tapestry of love` },
+        { name: 'Harmonic Rose', hex: '#f43f5e', desc: `${metadata.reactions.total} reactions and natural chemistry across 102 active days` },
+        { name: 'Confidant Purple', hex: '#8b5cf6', desc: 'Over 9 years of friendship blooming into daily companionship' },
+        { name: 'Vocal Cyan', hex: '#06b6d4', desc: `${metadata.media.audio} voice notes & shared late-night moments` },
       ],
       energies: {
-        nocturnal: 92,
-        affection: Math.min(100, 95 + expressionsBonus),
-        vocal: 94,
-        banter: Math.min(100, 88 + nicknamesBonus),
+        nocturnal: 86,
+        affection: Math.min(100, 92 + expressionsBonus),
+        vocal: 88,
+        banter: Math.min(100, 95 + nicknamesBonus),
         devotion: 98,
       },
       metrics: {
@@ -458,17 +424,18 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
         voiceNotes: metadata.media.audio,
         shares: metadata.shares.total,
         reactions: metadata.reactions.total,
-        nilaPct,
-        farhanPct,
+        sumaiyaPct,
+        nihanPct,
       },
       signatureQuote: {
-        sender: 'FARHAN',
-        text: 'Aise likhoge toh tum par aur zyada pyaar aayega... meri khushi, mera sukoon aur mera aane wala kal... sab sirf tumse hai.',
-        context: 'September 29, 2026 • 5:36 PM',
-        date: '2026-09-29',
+        sender: 'NIHAN',
+        text: 'Amer amer full life a 1 tai female friend banaise 9 years hoi a gelo amader friendship ar and ar female friend banabo na 1 tai enough',
+        context: 'October 9, 2026 • 10:27 AM • The 9-Year Promise',
+        date: '2026-10-09',
+        messageId: 'm_1791520058804_NIHAN',
       },
       poeticSynthesis:
-        `Across ${metadata.activeDays} unbroken days and ${metadata.totalMessages.toLocaleString()} messages, your relationship has manifested as an exceptionally rare, 50/50 reciprocal partnership. Filled with ${metadata.media.audio.toLocaleString()} voice notes, 3 AM late-night talks, playful teasing, and unbreakable emotional safety, this archive represents a true emotional masterpiece.`,
+        `Across ${metadata.activeDays} active days and ${metadata.totalMessages.toLocaleString()} messages, your bond represents a 9-year friendship flourishing into daily companionship. From 37-photo marathons to penguin walk teasing, inside jokes, and endless voice notes, your connection maintains an effortless, near 50/50 reciprocal harmony (${sumaiyaPct}% Sumaiya • ${nihanPct}% Nihan).`,
     };
   }, [selectedScope, customDate, dailyStats, metadata, dayMessages, expressions, nicknames]);
 
@@ -612,7 +579,7 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
   };
 
   const handleCopyAuraCard = async () => {
-    const summary = `🔮 NILA & FARHAN • RELATIONSHIP AURA SPECTRUM
+    const summary = `🔮 NIHAN & SUMAIYA • RELATIONSHIP AURA SPECTRUM
 ━━━━━━━━━━━━━━━━━━━━━━
 ✨ Aura Title: ${auraReading.title}
 👑 Archetype: ${auraReading.archetype}
@@ -629,7 +596,7 @@ export const RelationshipAuraModal: React.FC<RelationshipAuraModalProps> = ({
 "${auraReading.signatureQuote.text}"
 — ${auraReading.signatureQuote.sender} (${auraReading.signatureQuote.context})
 
-⚖️ Communication Balance: Nila ${auraReading.metrics.nilaPct}% • Farhan ${auraReading.metrics.farhanPct}%
+⚖️ Communication Balance: Sumaiya ${auraReading.metrics.sumaiyaPct}% • Nihan ${auraReading.metrics.nihanPct}%
 ━━━━━━━━━━━━━━━━━━━━━━
 Preserved forever in Our Archive.`;
 
@@ -690,10 +657,9 @@ Preserved forever in Our Archive.`;
         <div className="relative z-10 flex items-center gap-1.5 pt-4 pb-2 overflow-x-auto no-scrollbar border-b border-white/5 text-xs font-mono">
           {[
             { id: 'overall', label: '✨ Entire Archive' },
-            { id: '2026-07', label: 'July 2026 (Genesis)' },
-            { id: '2026-08', label: 'August 2026 (Midnight)' },
-            { id: '2026-09', label: 'September 2026 (Climax)' },
-            { id: '2026-10', label: 'October 2026 (Sukoon)' },
+            { id: 'early', label: 'Jan – Aug 2026 (Roots)' },
+            { id: '2026-09', label: 'September 2026 (Spark)' },
+            { id: '2026-10', label: 'October 2026 (Climax)' },
             { id: 'custom-day', label: '📅 Any Specific Day' },
           ].map((scope) => (
             <button
@@ -720,8 +686,8 @@ Preserved forever in Our Archive.`;
             <input
               type="date"
               value={customDate}
-              min="2026-07-06"
-              max="2026-10-01"
+              min={metadata.startDate || '2026-01-22'}
+              max={metadata.endDate || '2026-10-16'}
               onChange={(e) => setCustomDate(e.target.value)}
               className="px-3 py-1.5 rounded-xl bg-black/60 border border-white/20 text-white focus:outline-none focus:border-rose-400 font-mono text-xs"
             />
@@ -952,9 +918,9 @@ Preserved forever in Our Archive.`;
         <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-5 mt-5 border-t border-white/10 text-xs font-mono">
           <div className="flex items-center gap-2 text-[#8b949e] text-[11px]">
             <span>Balance:</span>
-            <span className="text-rose-400 font-semibold">Nila {auraReading.metrics.nilaPct}%</span>
+            <span className="text-rose-400 font-semibold">Sumaiya {auraReading.metrics.sumaiyaPct}%</span>
             <span>•</span>
-            <span className="text-sky-400 font-semibold">Farhan {auraReading.metrics.farhanPct}%</span>
+            <span className="text-sky-400 font-semibold">Nihan {auraReading.metrics.nihanPct}%</span>
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">

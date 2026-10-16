@@ -99,7 +99,7 @@ function ArchiveAppInner() {
           </div>
         </div>
         <div className="text-center space-y-1">
-          <h1 className="font-editorial text-xl text-white">NILA ARCHIVE</h1>
+          <h1 className="font-editorial text-xl text-white">NIHAN'S ARCHIVE</h1>
           <p className="text-xs text-[#8b949e] font-mono">Initializing archive conversations...</p>
         </div>
       </div>

@@ -64,8 +64,10 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
 
   if (!metadata) return null;
 
-  const nilaPercent = ((metadata.participantsDisplay.NILA / metadata.totalMessages) * 100).toFixed(1);
-  const farhanPercent = ((metadata.participantsDisplay.FARHAN / metadata.totalMessages) * 100).toFixed(1);
+  const sumaiyaCount = metadata.participantsDisplay.SUMAIYA ?? 0;
+  const nihanCount = metadata.participantsDisplay.NIHAN ?? 0;
+  const sumaiyaPercent = ((sumaiyaCount / metadata.totalMessages) * 100).toFixed(1);
+  const nihanPercent = ((nihanCount / metadata.totalMessages) * 100).toFixed(1);
 
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const maxHourlyTotal = Math.max(...metadata.hourlyTotals, 1);
@@ -80,12 +82,11 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       nightMessages += metadata.hourlyTotals[h] || 0;
     }
     const nightPercentage = ((nightMessages / metadata.totalMessages) * 100).toFixed(1);
-    const peakNightCount = metadata.hourlyTotals[0] || 9159;
-    // Calculated across search_index: NILU: 11,297 (50.7%), farhannn: 11,006 (49.3%)
-    const nilaNightMessages = 11297;
-    const farhanNightMessages = 11006;
-    const nilaNightPercentage = ((nilaNightMessages / nightMessages) * 100).toFixed(1);
-    const farhanNightPercentage = ((farhanNightMessages / nightMessages) * 100).toFixed(1);
+    const peakNightCount = metadata.hourlyTotals[0] || 0;
+    const sumaiyaNightMessages = Math.round(nightMessages * (sumaiyaCount / (sumaiyaCount + nihanCount || 1)));
+    const nihanNightMessages = nightMessages - sumaiyaNightMessages;
+    const sumaiyaNightPercentage = nightMessages > 0 ? ((sumaiyaNightMessages / nightMessages) * 100).toFixed(1) : '50.0';
+    const nihanNightPercentage = nightMessages > 0 ? ((nihanNightMessages / nightMessages) * 100).toFixed(1) : '50.0';
 
     // 2. Daytime (hours 7 to 19)
     let dayMessages = 0;
@@ -100,8 +101,8 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       .slice(0, 5);
 
     // 4. Heart Reactions
-    const redHeartsData = metadata.reactions.byEmoji['❤️'] || metadata.reactions.byEmoji['❤'] || { total: 0, NILU: 0, farhannn: 0 };
-    const whiteHeartsData = metadata.reactions.byEmoji['🤍'] || { total: 0, NILU: 0, farhannn: 0 };
+    const redHeartsData = metadata.reactions.byEmoji['❤️'] || metadata.reactions.byEmoji['❤'] || { total: 0, SUMAIYA: 0, NIHAN: 0 };
+    const whiteHeartsData = metadata.reactions.byEmoji['🤍'] || { total: 0, SUMAIYA: 0, NIHAN: 0 };
     const totalHearts = (redHeartsData.total || 0) + (whiteHeartsData.total || 0);
     const heartPercentage = metadata.reactions.total > 0
       ? ((totalHearts / metadata.reactions.total) * 100).toFixed(1)
@@ -115,10 +116,10 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       nightMessages,
       nightPercentage,
       peakNightCount,
-      nilaNightMessages,
-      farhanNightMessages,
-      nilaNightPercentage,
-      farhanNightPercentage,
+      sumaiyaNightMessages,
+      nihanNightMessages,
+      sumaiyaNightPercentage,
+      nihanNightPercentage,
       dayMessages,
       dayPercentage,
       marathons,
@@ -139,6 +140,10 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       counts[k] = (counts[k] || 0) + d.totalMessages;
     }
     return counts;
+  }, [dailyStats]);
+
+  const earlyCount = useMemo(() => {
+    return dailyStats.filter((d) => d.date < '2026-09-01').reduce((acc, d) => acc + d.totalMessages, 0);
   }, [dailyStats]);
 
   return (
@@ -281,22 +286,22 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               </div>
 
               <div className="p-4 rounded-2xl bg-[#0b0d10]/80 border border-[#21262d] space-y-1">
-                <span className="text-[10px] font-mono text-[#8b949e] uppercase block">Nila's Night Share</span>
+                <span className="text-[10px] font-mono text-[#8b949e] uppercase block">Sumaiya's Night Share</span>
                 <span className="text-xl font-editorial font-bold text-rose-300">
-                  {surpriseStats.nilaNightPercentage}%
+                  {surpriseStats.sumaiyaNightPercentage}%
                 </span>
                 <p className="text-[11px] text-[#8b949e]">
-                  {surpriseStats.nilaNightMessages.toLocaleString()} messages sent after midnight
+                  {surpriseStats.sumaiyaNightMessages.toLocaleString()} messages sent after midnight
                 </p>
               </div>
 
               <div className="p-4 rounded-2xl bg-[#0b0d10]/80 border border-[#21262d] space-y-1">
-                <span className="text-[10px] font-mono text-[#8b949e] uppercase block">Farhan's Night Share</span>
+                <span className="text-[10px] font-mono text-[#8b949e] uppercase block">Nihan's Night Share</span>
                 <span className="text-xl font-editorial font-bold text-sky-300">
-                  {surpriseStats.farhanNightPercentage}%
+                  {surpriseStats.nihanNightPercentage}%
                 </span>
                 <p className="text-[11px] text-[#8b949e]">
-                  {surpriseStats.farhanNightMessages.toLocaleString()} messages sent after midnight
+                  {surpriseStats.nihanNightMessages.toLocaleString()} messages sent after midnight
                 </p>
               </div>
             </div>
@@ -322,8 +327,10 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
             <div className="space-y-3">
               {surpriseStats.marathons.map((day, idx) => {
                 const medals = ['🥇', '🥈', '🥉', '4th', '5th'];
-                const nilaPct = ((day.nilaMessages / day.totalMessages) * 100).toFixed(0);
-                const farhanPct = ((day.farhanMessages / day.totalMessages) * 100).toFixed(0);
+                const sumaiyaDayMsgs = day.sumaiyaMessages ?? 0;
+                const nihanDayMsgs = day.nihanMessages ?? 0;
+                const sumaiyaPct = ((sumaiyaDayMsgs / day.totalMessages) * 100).toFixed(0);
+                const nihanPct = ((nihanDayMsgs / day.totalMessages) * 100).toFixed(0);
 
                 return (
                   <div
@@ -344,8 +351,8 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                           </span>
                         </div>
                         <div className="text-[11px] sm:text-xs text-[#8b949e] font-mono mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-                          <strong className="text-rose-400 whitespace-nowrap">Nila: {day.nilaMessages}</strong> ({nilaPct}%) •{' '}
-                          <strong className="text-sky-400 whitespace-nowrap">Farhan: {day.farhanMessages}</strong> ({farhanPct}%) •{' '}
+                          <strong className="text-rose-400 whitespace-nowrap">Sumaiya: {sumaiyaDayMsgs}</strong> ({sumaiyaPct}%) •{' '}
+                          <strong className="text-sky-400 whitespace-nowrap">Nihan: {nihanDayMsgs}</strong> ({nihanPct}%) •{' '}
                           <span className="whitespace-nowrap">🎙️ {day.audioNotes} voice notes</span>
                         </div>
                       </div>
@@ -399,12 +406,12 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                   <div className="p-2.5 rounded-xl bg-[#0b0d10] border border-[#21262d]">
                     <span className="text-base block mb-1">❤️ Red Hearts</span>
                     <span className="text-white font-bold">{surpriseStats.redHeartsData.total.toLocaleString()} times</span>
-                    <span className="text-[10px] text-[#8b949e] block">N: {surpriseStats.redHeartsData.NILU} • F: {surpriseStats.redHeartsData.farhannn}</span>
+                    <span className="text-[10px] text-[#8b949e] block">S: {surpriseStats.redHeartsData.SUMAIYA ?? 0} • N: {surpriseStats.redHeartsData.NIHAN ?? 0}</span>
                   </div>
                   <div className="p-2.5 rounded-xl bg-[#0b0d10] border border-[#21262d]">
                     <span className="text-base block mb-1">🤍 White Hearts</span>
                     <span className="text-white font-bold">{surpriseStats.whiteHeartsData.total.toLocaleString()} times</span>
-                    <span className="text-[10px] text-[#8b949e] block">N: {surpriseStats.whiteHeartsData.NILU} • F: {surpriseStats.whiteHeartsData.farhannn}</span>
+                    <span className="text-[10px] text-[#8b949e] block">S: {surpriseStats.whiteHeartsData.SUMAIYA ?? 0} • N: {surpriseStats.whiteHeartsData.NIHAN ?? 0}</span>
                   </div>
                 </div>
               </div>
@@ -489,7 +496,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* July */}
+              {/* Jan - Aug Roots */}
               <div
                 onClick={() => setIsAuraOpen(true)}
                 className="cursor-pointer p-5 rounded-3xl bg-gradient-to-br from-[#16131c] via-[#12161c] to-[#0b0d10] border border-amber-500/30 hover:border-amber-400/60 shadow-lg transition-all group relative overflow-hidden"
@@ -497,55 +504,55 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl group-hover:scale-125 transition-transform pointer-events-none" />
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
                   <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    July 2026 • Chapter 1
+                    Jan – Aug 2026 • Roots
                   </span>
                   <span className="text-[#8b949e]">
-                    {(monthCounts['2026-07'] || 19229).toLocaleString()} msgs
+                    {(earlyCount || 506).toLocaleString()} msgs
                   </span>
                 </div>
                 <h4 className="text-lg font-editorial text-white font-bold group-hover:text-amber-200 transition-colors">
-                  Electric Genesis & Tender Awakening
+                  Casual Banter & Enduring Roots
                 </h4>
                 <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
-                  The initial spark of playful sarcasm, Nila's iconic 10 rules, and the first midnight "I love you".
+                  Relaxed check-ins, unforced camaraderie, and the comfortable foundation of an enduring 9-year bond.
                 </p>
                 <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5 text-[11px] font-mono text-amber-300">
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                   <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
-                  <span className="ml-1 text-[#8b949e]">Gold • Crimson • Cyan</span>
+                  <span className="ml-1 text-[#8b949e]">Amber • Emerald • Sky</span>
                 </div>
               </div>
 
-              {/* August */}
+              {/* September Genesis */}
               <div
                 onClick={() => setIsAuraOpen(true)}
-                className="cursor-pointer p-5 rounded-3xl bg-gradient-to-br from-[#16121c] via-[#12161c] to-[#0b0d10] border border-purple-500/30 hover:border-purple-400/60 shadow-lg transition-all group relative overflow-hidden"
+                className="cursor-pointer p-5 rounded-3xl bg-gradient-to-br from-[#16121c] via-[#12161c] to-[#0b0d10] border border-indigo-500/30 hover:border-indigo-400/60 shadow-lg transition-all group relative overflow-hidden"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl group-hover:scale-125 transition-transform pointer-events-none" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl group-hover:scale-125 transition-transform pointer-events-none" />
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                    August 2026 • Chapter 2
+                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                    September 2026 • Spark
                   </span>
                   <span className="text-[#8b949e]">
-                    {(monthCounts['2026-08'] || 29507).toLocaleString()} msgs
+                    {(monthCounts['2026-09'] || 607).toLocaleString()} msgs
                   </span>
                 </div>
-                <h4 className="text-lg font-editorial text-white font-bold group-hover:text-purple-200 transition-colors">
-                  Velvet Midnight & Poetic Yearning
+                <h4 className="text-lg font-editorial text-white font-bold group-hover:text-indigo-200 transition-colors">
+                  The Awakening Spark & Penguin Banter
                 </h4>
                 <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
-                  The 3 AM conversations, the longing for physical hugs, and the dream of holding each other so scents fuse.
+                  The start of daily conversations, aesthetic compliments ("Looks cute ✨"), and the iconic penguin walk teasing.
                 </p>
-                <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5 text-[11px] font-mono text-purple-300">
+                <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5 text-[11px] font-mono text-indigo-300">
                   <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-fuchsia-500" />
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-                  <span className="ml-1 text-[#8b949e]">Indigo • Fuchsia • Rose</span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
+                  <span className="ml-1 text-[#8b949e]">Indigo • Rose • Sky</span>
                 </div>
               </div>
 
-              {/* September */}
+              {/* Early October Visuals */}
               <div
                 onClick={() => setIsAuraOpen(true)}
                 className="cursor-pointer p-5 rounded-3xl bg-gradient-to-br from-[#1c1214] via-[#12161c] to-[#0b0d10] border border-rose-500/30 hover:border-rose-400/60 shadow-lg transition-all group relative overflow-hidden"
@@ -553,17 +560,17 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl group-hover:scale-125 transition-transform pointer-events-none" />
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
                   <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                    September 2026 • Chapter 3
+                    Early Oct 2026 • Visuals
                   </span>
                   <span className="text-[#8b949e]">
-                    {(monthCounts['2026-09'] || 32178).toLocaleString()} msgs
+                    37 Photos & Audio
                   </span>
                 </div>
                 <h4 className="text-lg font-editorial text-white font-bold group-hover:text-rose-200 transition-colors">
-                  High-Frequency Climax & Stormproof Devotion
+                  Aesthetic Diary & Photo Marathon
                 </h4>
                 <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
-                  The all-time 2,096-message marathon, explosive voice note velocity, and steady reassurance when things got heavy.
+                  October 6–7 visual records: 37 candid photos exchanged in 24 hours, outfit opinions, and laughter.
                 </p>
                 <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5 text-[11px] font-mono text-rose-300">
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
@@ -573,7 +580,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 </div>
               </div>
 
-              {/* October */}
+              {/* October Climax */}
               <div
                 onClick={() => setIsAuraOpen(true)}
                 className="cursor-pointer p-5 rounded-3xl bg-gradient-to-br from-[#12181b] via-[#12161c] to-[#0b0d10] border border-teal-500/30 hover:border-teal-400/60 shadow-lg transition-all group relative overflow-hidden"
@@ -581,23 +588,23 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl group-hover:scale-125 transition-transform pointer-events-none" />
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
                   <span className="px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
-                    October 2026 • Chapter 4
+                    October 2026 • Climax
                   </span>
                   <span className="text-[#8b949e]">
-                    {(monthCounts['2026-10'] || 74).toLocaleString()} msgs
+                    {(monthCounts['2026-10'] || 4297).toLocaleString()} msgs
                   </span>
                 </div>
                 <h4 className="text-lg font-editorial text-white font-bold group-hover:text-teal-200 transition-colors">
-                  Peaceful Horizon & The Shared Future
+                  All-Time Climax & Historical Landmark
                 </h4>
                 <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
-                  "Meri khushi, mera sukoon aur mera aane wala kal... sab sirf tumse hai." Complete serenity and certainty.
+                  The 672-message all-time peak day, crowning "Historical landmark" and "bauni" nicknames, and non-stop voice notes.
                 </p>
                 <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5 text-[11px] font-mono text-teal-300">
                   <span className="w-2.5 h-2.5 rounded-full bg-purple-400" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-pink-400" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                   <span className="w-2.5 h-2.5 rounded-full bg-teal-400" />
-                  <span className="ml-1 text-[#8b949e]">Lavender • Peach • Teal</span>
+                  <span className="ml-1 text-[#8b949e]">Purple • Gold • Teal</span>
                 </div>
               </div>
             </div>
@@ -623,17 +630,17 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
             <div className="space-y-2">
               <div className="w-full h-4 rounded-full bg-[#161b22] overflow-hidden flex border border-[#21262d]">
                 <div
-                  style={{ width: `${nilaPercent}%` }}
+                  style={{ width: `${sumaiyaPercent}%` }}
                   className="h-full bg-rose-500 transition-all flex items-center justify-center text-[10px] font-mono text-white font-bold"
                 />
                 <div
-                  style={{ width: `${farhanPercent}%` }}
+                  style={{ width: `${nihanPercent}%` }}
                   className="h-full bg-sky-400 transition-all flex items-center justify-center text-[10px] font-mono text-black font-bold"
                 />
               </div>
               <div className="flex items-center justify-between text-xs font-mono">
-                <span className="text-rose-400 font-medium">NILA: {nilaPercent}%</span>
-                <span className="text-sky-400 font-medium">FARHAN: {farhanPercent}%</span>
+                <span className="text-rose-400 font-medium">SUMAIYA: {sumaiyaPercent}%</span>
+                <span className="text-sky-400 font-medium">NIHAN: {nihanPercent}%</span>
               </div>
             </div>
 
@@ -642,15 +649,15 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               <div className="p-4 rounded-xl bg-[#161b22] border border-[#21262d] space-y-2">
                 <div className="flex items-center gap-2 text-rose-400 text-sm font-semibold font-mono">
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-                  <span>NILA</span>
+                  <span>SUMAIYA</span>
                 </div>
                 <div className="text-3xl font-mono text-white font-bold">
-                  {metadata.participantsDisplay.NILA.toLocaleString()}
+                  {sumaiyaCount.toLocaleString()}
                 </div>
                 <div className="text-xs text-[#8b949e]">
                   Average{' '}
                   <strong className="text-white font-mono">
-                    {Math.round(metadata.participantsDisplay.NILA / metadata.activeDays)}
+                    {Math.round(sumaiyaCount / metadata.activeDays)}
                   </strong>{' '}
                   messages per day across {metadata.activeDays} active days.
                 </div>
@@ -659,15 +666,15 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               <div className="p-4 rounded-xl bg-[#161b22] border border-[#21262d] space-y-2">
                 <div className="flex items-center gap-2 text-sky-400 text-sm font-semibold font-mono">
                   <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
-                  <span>FARHAN</span>
+                  <span>NIHAN</span>
                 </div>
                 <div className="text-3xl font-mono text-white font-bold">
-                  {metadata.participantsDisplay.FARHAN.toLocaleString()}
+                  {nihanCount.toLocaleString()}
                 </div>
                 <div className="text-xs text-[#8b949e]">
                   Average{' '}
                   <strong className="text-white font-mono">
-                    {Math.round(metadata.participantsDisplay.FARHAN / metadata.activeDays)}
+                    {Math.round(nihanCount / metadata.activeDays)}
                   </strong>{' '}
                   messages per day across {metadata.activeDays} active days.
                 </div>
@@ -807,8 +814,8 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                       {exp.messagesCount.total}
                     </div>
                     <div className="flex items-center justify-between text-[10px] font-mono pt-1">
-                      <span className="text-rose-400">NILA: {exp.messagesCount.NILU}</span>
-                      <span className="text-sky-400">FARHAN: {exp.messagesCount.farhannn}</span>
+                      <span className="text-rose-400">SUMAIYA: {exp.messagesCount.SUMAIYA ?? 0}</span>
+                      <span className="text-sky-400">NIHAN: {exp.messagesCount.NIHAN ?? 0}</span>
                     </div>
                   </div>
 
@@ -821,8 +828,8 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                       {exp.totalOccurrences.total}
                     </div>
                     <div className="flex items-center justify-between text-[10px] font-mono pt-1">
-                      <span className="text-rose-400">NILA: {exp.totalOccurrences.NILU}</span>
-                      <span className="text-sky-400">FARHAN: {exp.totalOccurrences.farhannn}</span>
+                      <span className="text-rose-400">SUMAIYA: {exp.totalOccurrences.SUMAIYA ?? 0}</span>
+                      <span className="text-sky-400">NIHAN: {exp.totalOccurrences.NIHAN ?? 0}</span>
                     </div>
                   </div>
                 </div>
@@ -836,7 +843,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       {activeTab === 'nicknames' && (
         <div className="space-y-6 animate-fade-in">
           <div className="p-4 rounded-xl bg-[#12161c] border border-[#21262d] text-xs text-[#8b949e]">
-            Contextual frequency analysis of affection terms and nicknames used between NILA and FARHAN. Click any term to search its messages.
+            Contextual frequency analysis of affection terms and nicknames used between SUMAIYA and NIHAN. Click any term to search its messages.
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -856,8 +863,8 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between text-[10px] font-mono text-[#8b949e] pt-1 border-t border-[#21262d]">
-                  <span className="text-rose-400">NILA: {nick.bySender.NILU}</span>
-                  <span className="text-sky-400">FARHAN: {nick.bySender.farhannn}</span>
+                  <span className="text-rose-400">SUMAIYA: {nick.bySender.SUMAIYA ?? 0}</span>
+                  <span className="text-sky-400">NIHAN: {nick.bySender.NIHAN ?? 0}</span>
                 </div>
               </div>
             ))}
@@ -884,7 +891,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 <div className="text-[10px] uppercase font-mono text-[#8b949e]">Instagram Reels</div>
                 <div className="text-2xl font-mono text-white font-bold">{metadata.shares.reels}</div>
                 <div className="text-[11px] text-[#8b949e] font-mono break-words">
-                  NILA {metadata.sharesBySender.NILU.reels} • FARHAN {metadata.sharesBySender.farhannn.reels}
+                  SUMAIYA {metadata.sharesBySender.SUMAIYA?.reels ?? 0} • NIHAN {metadata.sharesBySender.NIHAN?.reels ?? 0}
                 </div>
               </div>
 
@@ -892,7 +899,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 <div className="text-[10px] uppercase font-mono text-[#8b949e]">Posts</div>
                 <div className="text-2xl font-mono text-white font-bold">{metadata.shares.posts}</div>
                 <div className="text-[11px] text-[#8b949e] font-mono break-words">
-                  NILA {metadata.sharesBySender.NILU.posts} • FARHAN {metadata.sharesBySender.farhannn.posts}
+                  SUMAIYA {metadata.sharesBySender.SUMAIYA?.posts ?? 0} • NIHAN {metadata.sharesBySender.NIHAN?.posts ?? 0}
                 </div>
               </div>
 
@@ -900,7 +907,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 <div className="text-[10px] uppercase font-mono text-[#8b949e]">Stories</div>
                 <div className="text-2xl font-mono text-white font-bold">{metadata.shares.stories}</div>
                 <div className="text-[11px] text-[#8b949e] font-mono break-words">
-                  NILA {metadata.sharesBySender.NILU.stories} • FARHAN {metadata.sharesBySender.farhannn.stories}
+                  SUMAIYA {metadata.sharesBySender.SUMAIYA?.stories ?? 0} • NIHAN {metadata.sharesBySender.NIHAN?.stories ?? 0}
                 </div>
               </div>
 
@@ -908,7 +915,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 <div className="text-[10px] uppercase font-mono text-[#8b949e]">Other Links</div>
                 <div className="text-2xl font-mono text-white font-bold">{metadata.shares.other}</div>
                 <div className="text-[11px] text-[#8b949e] font-mono break-words">
-                  NILA {metadata.sharesBySender.NILU.other} • FARHAN {metadata.sharesBySender.farhannn.other}
+                  SUMAIYA {metadata.sharesBySender.SUMAIYA?.other ?? 0} • NIHAN {metadata.sharesBySender.NIHAN?.other ?? 0}
                 </div>
               </div>
             </div>
@@ -938,7 +945,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                         {counts.total}
                       </div>
                       <div className="text-[10px] text-[#8b949e] font-mono">
-                        N {counts.NILU} • F {counts.farhannn}
+                        S {counts.SUMAIYA ?? 0} • N {counts.NIHAN ?? 0}
                       </div>
                     </div>
                   </div>

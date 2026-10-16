@@ -47,12 +47,12 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
 
   // Form State
   const [newTitle, setNewTitle] = useState('');
-  const [newDate, setNewDate] = useState('2026-09-05');
+  const [newDate, setNewDate] = useState('2026-10-11');
   const [newCategory, setNewCategory] = useState<MomentCategory>('milestone');
   const [newIcon, setNewIcon] = useState('sparkles');
   const [newDesc, setNewDesc] = useState('');
   const [newQuoteText, setNewQuoteText] = useState('');
-  const [newQuoteSender, setNewQuoteSender] = useState<'NILU' | 'farhannn'>('farhannn');
+  const [newQuoteSender, setNewQuoteSender] = useState<'SUMAIYA' | 'NIHAN'>('NIHAN');
   const [newTags, setNewTags] = useState('milestone, memory');
 
   // Featured capsule moment (defaults to a high-impact moment like Sept 5, Sept 24, or Aug 1)
@@ -79,9 +79,19 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
       { id: 'audio', label: 'Voice Note Sagas', icon: '🎙️', count: counts.audio },
       { id: 'love', label: 'Love & Promises', icon: '❤️', count: counts.love },
       { id: 'banter', label: 'Inside Jokes & Banter', icon: '🤭', count: counts.banter },
-      { id: 'comfort', label: 'Comfort & Sukoon', icon: '🫂', count: counts.comfort },
+      { id: 'comfort', label: 'Comfort & Warmth', icon: '🫂', count: counts.comfort },
       { id: 'custom', label: 'Custom Added', icon: '✏️', count: counts.custom },
     ];
+  }, [moments]);
+
+  const peakMsgCount = useMemo(() => {
+    const counts = moments.map((m) => m.statsSnippet?.totalMessages || 0);
+    return counts.length > 0 ? Math.max(...counts, 672) : 672;
+  }, [moments]);
+
+  const peakAudioCount = useMemo(() => {
+    const counts = moments.map((m) => m.statsSnippet?.audioNotes || 0);
+    return counts.length > 0 ? Math.max(...counts, 8) : 8;
   }, [moments]);
 
   // Filtered moments list
@@ -141,10 +151,10 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
   const handleCopyKeepsake = (moment: Moment, e: React.MouseEvent) => {
     e.stopPropagation();
     const text = [
-      `✨ Nila & Farhan Archive Keepsake ✨`,
+      `✨ Nihan & Sumaiya Archive Keepsake ✨`,
       `📅 Date: ${moment.date}`,
       `🌟 Moment: ${moment.title}`,
-      moment.quote ? `💬 ${moment.quote.sender === 'NILU' ? 'Nila' : 'Farhan'}: "${moment.quote.text}"` : '',
+      moment.quote ? `💬 ${moment.quote.sender === 'SUMAIYA' ? 'Sumaiya' : 'Nihan'}: "${moment.quote.text}"` : '',
       moment.description ? `📖 Context: ${moment.description}` : '',
       moment.statsSnippet
         ? `📊 Activity: ${moment.statsSnippet.totalMessages?.toLocaleString() || 0} messages • ${
@@ -221,7 +231,7 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
       case 'banter':
         return { label: 'Playful Banter', color: 'text-sky-300 bg-sky-500/10 border-sky-500/30' };
       case 'comfort':
-        return { label: 'Sukoon & Care', color: 'text-pink-300 bg-pink-500/10 border-pink-500/30' };
+        return { label: 'Comfort & Care', color: 'text-pink-300 bg-pink-500/10 border-pink-500/30' };
       default:
         return { label: 'Memory', color: 'text-purple-300 bg-purple-500/10 border-purple-500/30' };
     }
@@ -239,10 +249,11 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
     });
 
     const monthNames: Record<string, string> = {
-      '2026-10': 'October 2026 • The Horizon',
-      '2026-09': 'September 2026 • Climax & Uncensored Heat',
-      '2026-08': 'August 2026 • Passion & 85 Voice Notes Peak',
-      '2026-07': 'July 2026 • Genesis & First Marathons',
+      '2026-10': 'October 2026 • Climax & Historical Landmark',
+      '2026-09': 'September 2026 • Awakening Spark & Penguin Banter',
+      '2026-06': 'June 2026 • Early Roots & Banter',
+      '2026-05': 'May 2026 • Casual Check-Ins',
+      '2026-01': 'January 2026 • Early Origins & Banter',
     };
 
     // Sort months descending
@@ -307,12 +318,12 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
                   <div className="text-xs font-mono italic text-slate-200">
                     <strong
                       className={
-                        featuredMoment.quote.sender === 'NILU'
+                        featuredMoment.quote.sender === 'SUMAIYA'
                           ? 'text-rose-400 not-italic mr-1.5 font-bold'
                           : 'text-sky-400 not-italic mr-1.5 font-bold'
                       }
                     >
-                      {featuredMoment.quote.sender === 'NILU' ? 'Nila:' : 'Farhan:'}
+                      {featuredMoment.quote.sender === 'SUMAIYA' ? 'Sumaiya:' : 'Nihan:'}
                     </strong>
                     "{featuredMoment.quote.text}"
                   </div>
@@ -388,7 +399,7 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
             <div className="text-[10px] font-mono uppercase tracking-wider text-[#8b949e]">
               Peak Climax Day
             </div>
-            <div className="text-xl font-mono font-bold text-amber-300">2,096 Msgs</div>
+            <div className="text-xl font-mono font-bold text-amber-300">{peakMsgCount.toLocaleString()} Msgs</div>
           </div>
         </div>
 
@@ -400,7 +411,7 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
             <div className="text-[10px] font-mono uppercase tracking-wider text-[#8b949e]">
               Audio Record
             </div>
-            <div className="text-xl font-mono font-bold text-teal-300">85 Voice Notes</div>
+            <div className="text-xl font-mono font-bold text-teal-300">{peakAudioCount} Voice Notes</div>
           </div>
         </div>
 
@@ -576,7 +587,7 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
                 <option value="audio">🎙️ Voice Note Saga</option>
                 <option value="love">❤️ Love & Devotion</option>
                 <option value="banter">🤭 Playful Banter</option>
-                <option value="comfort">🫂 Comfort & Sukoon</option>
+                <option value="comfort">🫂 Comfort & Warmth</option>
               </select>
             </div>
 
@@ -620,11 +631,11 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
               </label>
               <select
                 value={newQuoteSender}
-                onChange={(e) => setNewQuoteSender(e.target.value as 'NILU' | 'farhannn')}
+                onChange={(e) => setNewQuoteSender(e.target.value as 'SUMAIYA' | 'NIHAN')}
                 className="w-full px-3 py-2 rounded-xl bg-[#0b0d10] border border-[#21262d] text-xs text-white focus:outline-none focus:border-rose-500 font-mono"
               >
-                <option value="farhannn">Farhan</option>
-                <option value="NILU">Nila</option>
+                <option value="NIHAN">Nihan</option>
+                <option value="SUMAIYA">Sumaiya</option>
               </select>
             </div>
           </div>
@@ -808,12 +819,12 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
                             <div className="p-3 rounded-xl bg-[#0b0d10]/95 border border-[#21262d] text-xs font-mono text-slate-300 italic shadow-inner">
                               <strong
                                 className={
-                                  moment.quote.sender === 'NILU'
+                                  moment.quote.sender === 'SUMAIYA'
                                     ? 'text-rose-400 not-italic mr-1.5 font-bold'
                                     : 'text-sky-400 not-italic mr-1.5 font-bold'
                                 }
                               >
-                                {moment.quote.sender === 'NILU' ? 'Nila:' : 'Farhan:'}
+                                {moment.quote.sender === 'SUMAIYA' ? 'Sumaiya:' : 'Nihan:'}
                               </strong>
                               "{moment.quote.text}"
                               {moment.quote.time && (
@@ -975,12 +986,12 @@ export const MomentsView: React.FC<MomentsViewProps> = ({
                     <div className="p-3 rounded-xl bg-[#0b0d10]/95 border border-[#21262d] text-xs font-mono text-slate-300 italic shadow-inner line-clamp-2">
                       <strong
                         className={
-                          moment.quote.sender === 'NILU'
+                          moment.quote.sender === 'SUMAIYA'
                             ? 'text-rose-400 not-italic mr-1'
                             : 'text-sky-400 not-italic mr-1'
                         }
                       >
-                        {moment.quote.sender === 'NILU' ? 'Nila:' : 'Farhan:'}
+                        {moment.quote.sender === 'SUMAIYA' ? 'Sumaiya:' : 'Nihan:'}
                       </strong>
                       "{moment.quote.text}"
                     </div>

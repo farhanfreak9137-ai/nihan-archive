@@ -49,7 +49,7 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
     try {
-      const saved = localStorage.getItem('nila_archive_theme');
+      const saved = localStorage.getItem('nihan_archive_theme');
       if (saved === 'midnight-rose' || saved === 'starlight-obsidian' || saved === 'warm-amber') {
         return saved;
       }
@@ -60,7 +60,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const setTheme = (t: ThemeMode) => {
     setThemeState(t);
     try {
-      localStorage.setItem('nila_archive_theme', t);
+      localStorage.setItem('nihan_archive_theme', t);
     } catch {}
   };
 

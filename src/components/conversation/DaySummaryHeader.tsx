@@ -132,20 +132,20 @@ export const DaySummaryHeader: React.FC<DaySummaryHeaderProps> = ({
       <div className="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
         {stats && (
           <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5 text-xs font-mono shrink-0">
-            {/* NILA Pill */}
+            {/* SUMAIYA Pill */}
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#161b22] border border-rose-500/25 shrink-0">
               <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-              <span className="text-rose-400 font-semibold text-[11px]">NILA</span>
-              <span className="text-white font-semibold">{stats.nilaMessages.toLocaleString()}</span>
-              <span className="text-[#8b949e] text-[10px]">({stats.nilaPercentage}%)</span>
+              <span className="text-rose-400 font-semibold text-[11px]">SUMAIYA</span>
+              <span className="text-white font-semibold">{(stats.sumaiyaMessages ?? 0).toLocaleString()}</span>
+              <span className="text-[#8b949e] text-[10px]">({stats.sumaiyaPercentage ?? 50}%)</span>
             </div>
 
-            {/* FARHAN Pill */}
+            {/* NIHAN Pill */}
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#161b22] border border-sky-500/25 shrink-0">
               <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-              <span className="text-sky-400 font-semibold text-[11px]">FARHAN</span>
-              <span className="text-white font-semibold">{stats.farhanMessages.toLocaleString()}</span>
-              <span className="text-[#8b949e] text-[10px]">({stats.farhanPercentage}%)</span>
+              <span className="text-sky-400 font-semibold text-[11px]">NIHAN</span>
+              <span className="text-white font-semibold">{(stats.nihanMessages ?? 0).toLocaleString()}</span>
+              <span className="text-[#8b949e] text-[10px]">({stats.nihanPercentage ?? 50}%)</span>
             </div>
 
             {/* Shares Pill */}
@@ -162,7 +162,7 @@ export const DaySummaryHeader: React.FC<DaySummaryHeaderProps> = ({
               <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#161b22] border border-[#21262d] text-[#8b949e] shrink-0">
                 <Smile className="w-3 h-3 text-emerald-400" />
                 <span className="text-white font-medium">{stats.reactions}</span>
-                <span className="text-[10px]">({stats.nilaReactions}N/{stats.farhanReactions}F)</span>
+                <span className="text-[10px]">({stats.sumaiyaReactions ?? 0}S/{stats.nihanReactions ?? 0}N)</span>
               </div>
             )}
 

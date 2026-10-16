@@ -1,21 +1,22 @@
-# NILA ARCHIVE
+# NIHAN'S ARCHIVE
 
 > **Interactive Conversation Explorer & Relationship Analytics Suite**
 
-A private, beautifully designed, and high-performance digital archive built for the conversation history between **NILA** (`NILU`) and **FARHAN** (`farhannn`).
+A private, beautifully designed, and high-performance digital archive built for the conversation history of **NIHAN** (`Ashikul Islam Nihan`) and **SUMAIYA** (`S` / `s.` / `june_4003`), with multi-thread integration (Hasan, Sajid, Meta AI).
 
 ---
 
 ## 🌟 Overview
 
-The **NILA ARCHIVE** transforms raw exported messaging data into an editorial, interactive experience. Rather than browsing static JSON logs, the archive lets you explore conversations through time, search past messages instantly, play voice notes with animated scrubbers, view full-resolution photos, and discover conversational rhythms.
+The **NIHAN'S ARCHIVE** transforms raw exported messaging data into an editorial, interactive experience. Rather than browsing static JSON logs, the archive lets you explore conversations through time, search past messages instantly, play voice notes with animated scrubbers, view full-resolution photos, and discover conversational rhythms.
 
 ### Key Metrics
-* **Total Messages:** 92,573 (`47,789` by NILA • `44,784` by FARHAN)
-* **Active Days:** 97 days (July 6, 2026 – October 11, 2026)
-* **Shares & Links:** 2,313 (1,761 Reels, 412 Posts, 66 Stories, 74 Other)
-* **Voice Notes:** 2,335 voice messages
-* **Reactions:** 2,914 message reactions
+* **Total Messages:** 5,436 (`2,716` by NIHAN [50.0%] • `2,377` by SUMAIYA [43.7%] • `206` by HASAN [3.8%] • `132` by SAJID [2.4%] • `5` by META_AI [0.1%])
+* **Active Days:** 102 days (January 22, 2026 – October 16, 2026)
+* **Shares & Links:** 515 (361 Reels, 130 Posts, 5 Stories, 19 Other)
+* **Voice Notes:** 45 voice messages
+* **Reactions:** 175 message reactions
+* **All-Time Peak Day:** October 11, 2026 (672 messages, 10 calls, 8 voice notes)
 
 ---
 
@@ -28,14 +29,17 @@ The **NILA ARCHIVE** transforms raw exported messaging data into an editorial, i
   Powered by `@tanstack/react-virtual` to render thousands of messages smoothly at 60 FPS. Features a 24-hour timeline scrubber, sender alignment, photo lightbox, video playback, custom audio player, and floating reactions.
 
 * **🔍 Full-Text Global Search**:
-  Instant search across all 92,573 messages with exact keyword highlighting, sender filters, date boundaries, and one-click jump to context in the chat.
+  Instant search across all 5,436 messages with exact keyword highlighting, multi-sender filters, date boundaries, and one-click jump to context in the chat.
 
 * **📊 Deep Relationship Analytics**:
-  * 51.6% vs 48.4% communication balance
+  * Communication balance and marathon records
   * 24-hour diurnal activity rhythm chart
   * Day-of-the-week message frequency distribution
-  * Lexical tracker (*"I love you"*, apologies, greetings, promises)
-  * Nickname analysis and mention frequencies
+  * Lexical tracker (Bengali & Banglish pet names, apologies, sweet expressions)
+  * Nickname analysis ("penguin 🎀", "Historical landmark", "bauni")
+
+* **🔞 Intimate & Late-Night Vault**:
+  Dedicated uncensored section with 15 curated emotional and late-night sessions (568 messages, 6 audio notes).
 
 * **📁 Media & Reels Vault**:
   Dedicated tabbed explorer for Instagram Reels, Posts, Stories, Photos (with fullscreen zoom and download), Videos, and Voice Notes with audio playback.
@@ -61,7 +65,7 @@ The **NILA ARCHIVE** transforms raw exported messaging data into an editorial, i
 
 ### 1. Installation
 ```bash
-git clone https://github.com/farhanfreak9137-ai/our-archive.git
+git clone https://github.com/nihan-archive/our-archive.git
 cd our-archive
 npm install
 ```

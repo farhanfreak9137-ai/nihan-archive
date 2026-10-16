@@ -1,5 +1,5 @@
 {
-  "name": "nila-archive",
+  "name": "nihan-archive",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -11,7 +11,7 @@
     "build:data": "tsx scripts/build-archive.ts && tsx scripts/build-intimate-vault.ts",
     "verify:data": "tsx scripts/verify-data.ts",
     "cap:sync": "npx cap sync android",
-    "build:apk": "npm run build && npx cap sync android && powershell -Command \"$env:JAVA_HOME = 'C:\\Users\\RCP\\.jdk21\\jdk-21.0.6+7'; $env:ANDROID_HOME = 'C:\\Users\\RCP\\AppData\\Local\\Android\\Sdk'; cd android; .\\gradlew assembleDebug; Copy-Item app\\build\\outputs\\apk\\debug\\app-debug.apk ..\\NilaArchive.apk -Force\""
+    "build:apk": "npm run build && npx cap sync android && powershell -Command \"$env:JAVA_HOME = 'C:\\Users\\RCP\\.jdk21\\jdk-21.0.6+7'; $env:ANDROID_HOME = 'C:\\Users\\RCP\\AppData\\Local\\Android\\Sdk'; cd android; .\\gradlew assembleDebug; Copy-Item app\\build\\outputs\\apk\\debug\\app-debug.apk ..\\NihanArchive.apk -Force\""
   },
   "dependencies": {
     "@capacitor/android": "^8.5.1",

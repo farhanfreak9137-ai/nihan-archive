@@ -28,7 +28,7 @@ export const IntimateVaultView: React.FC<IntimateVaultViewProps> = ({ onSelectCo
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
-  const { nilaAvatar, farhanAvatar } = useAvatars();
+  const { sumaiyaAvatar, nihanAvatar } = useAvatars();
 
   // Audio player state
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
@@ -61,6 +61,13 @@ export const IntimateVaultView: React.FC<IntimateVaultViewProps> = ({ onSelectCo
       isCancelled = true;
     };
   }, []);
+
+  // Available months
+  const availableMonths = useMemo(() => {
+    if (!vaultData) return ['all'];
+    const months = Array.from(new Set(vaultData.sessions.map((s) => s.date.slice(0, 7)))).sort();
+    return ['all', ...months];
+  }, [vaultData]);
 
   // Filtered sessions
   const filteredSessions = useMemo(() => {
@@ -344,7 +351,7 @@ export const IntimateVaultView: React.FC<IntimateVaultViewProps> = ({ onSelectCo
           {/* Month Selector */}
           <div className="flex items-center gap-1.5 shrink-0 bg-[#161b22] border border-[#30363d] rounded-xl p-1">
             <span className="text-[10px] font-mono text-[#8b949e] px-2 uppercase">Month:</span>
-            {['all', '2026-07', '2026-08', '2026-09'].map((m) => (
+            {availableMonths.map((m) => (
               <button
                 key={m}
                 onClick={() => setSelectedMonth(m)}
@@ -445,12 +452,12 @@ export const IntimateVaultView: React.FC<IntimateVaultViewProps> = ({ onSelectCo
                       <div className="p-2.5 rounded-xl bg-[#0b0d10]/90 border border-[#21262d] text-xs font-mono text-slate-300 italic line-clamp-2">
                         <strong
                           className={
-                            session.previewQuote.sender === 'NILU'
+                            session.previewQuote.sender === 'SUMAIYA'
                               ? 'text-rose-400 not-italic mr-1'
                               : 'text-sky-400 not-italic mr-1'
                           }
                         >
-                          {session.previewQuote.sender === 'NILU' ? 'Nila:' : 'Farhan:'}
+                          {session.previewQuote.sender === 'SUMAIYA' ? 'Sumaiya:' : 'Nihan:'}
                         </strong>
                         "{session.previewQuote.text}"
                       </div>
@@ -574,33 +581,36 @@ export const IntimateVaultView: React.FC<IntimateVaultViewProps> = ({ onSelectCo
               {/* Thread Message Stream */}
               <div className="p-4 sm:p-6 space-y-3 max-h-[calc(100vh-320px)] overflow-y-auto bg-[#0b0d10]/95">
                 {activeSession.messages.map((msg) => {
-                  const isNila = msg.sender === 'NILU';
+                  const isIncoming = msg.sender !== 'NIHAN';
+                  const isSumaiya = msg.sender === 'SUMAIYA';
+                  const displayName = isSumaiya ? 'SUMAIYA' : msg.sender === 'NIHAN' ? 'NIHAN' : msg.sender;
+                  const avatar = isSumaiya ? sumaiyaAvatar : nihanAvatar;
 
                   return (
                     <div
                       key={msg.id}
-                      className={`flex flex-col ${isNila ? 'items-start' : 'items-end'}`}
+                      className={`flex flex-col ${isIncoming ? 'items-start' : 'items-end'}`}
                     >
                       <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#8b949e] mb-1 px-1">
                         <div
                           className={`w-4 h-4 rounded-full overflow-hidden shrink-0 border ${
-                            isNila
+                            isIncoming
                               ? 'border-rose-500/60 shadow-[0_0_6px_rgba(244,63,94,0.4)]'
                               : 'border-sky-500/60 shadow-[0_0_6px_rgba(56,189,248,0.4)]'
                           }`}
                         >
                           <img
-                            src={isNila ? nilaAvatar : farhanAvatar}
+                            src={avatar}
                             alt=""
                             className="w-full h-full object-cover object-[center_20%]"
                           />
                         </div>
                         <span
                           className={`font-semibold ${
-                            isNila ? 'text-rose-400' : 'text-sky-400'
+                            isIncoming ? 'text-rose-400' : 'text-sky-400'
                           }`}
                         >
-                          {isNila ? 'NILA' : 'FARHAN'}
+                          {displayName}
                         </span>
                         <span>•</span>
                         <span>{msg.time}</span>
@@ -608,7 +618,7 @@ export const IntimateVaultView: React.FC<IntimateVaultViewProps> = ({ onSelectCo
 
                       <div
                         className={`max-w-[85%] sm:max-w-[75%] p-3.5 rounded-2xl text-xs sm:text-sm font-sans leading-relaxed shadow-md border ${
-                          isNila
+                          isIncoming
                             ? 'bg-[#181318] text-rose-100 border-rose-500/30 rounded-tl-sm'
                             : 'bg-[#111923] text-sky-100 border-sky-500/30 rounded-tr-sm'
                         }`}

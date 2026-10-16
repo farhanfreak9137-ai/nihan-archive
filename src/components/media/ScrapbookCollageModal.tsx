@@ -91,7 +91,7 @@ export const ScrapbookCollageModal: React.FC<ScrapbookCollageModalProps> = ({
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 44px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('NILA & FARHAN • MEMORY SCRAPBOOK', width / 2, 85);
+      ctx.fillText('NIHAN & SUMAIYA • MEMORY SCRAPBOOK', width / 2, 85);
 
       ctx.fillStyle = '#f43f5e';
       ctx.font = '22px monospace';
@@ -168,7 +168,7 @@ export const ScrapbookCollageModal: React.FC<ScrapbookCollageModalProps> = ({
         ctx.font = 'bold 22px monospace';
         ctx.textAlign = 'left';
         ctx.fillText(
-          `${item.date} • ${item.sender === 'NILU' ? 'NILA' : 'FARHAN'}`,
+          `${item.date} • ${item.sender === 'SUMAIYA' ? 'SUMAIYA' : 'NIHAN'}`,
           -cardWidth / 2 + photoPad + 4,
           cardHeight / 2 - 40
         );
@@ -298,7 +298,7 @@ export const ScrapbookCollageModal: React.FC<ScrapbookCollageModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-5xl w-full py-4">
               {spreadPhotos.map((photo, i) => {
                 const tilt = tilts[i % tilts.length];
-                const isNila = photo.sender === 'NILU';
+                const isSumaiya = photo.sender === 'SUMAIYA';
 
                 return (
                   <div
@@ -329,8 +329,8 @@ export const ScrapbookCollageModal: React.FC<ScrapbookCollageModalProps> = ({
                     <div className="pt-3 pb-1 px-1 flex flex-col justify-between min-h-[58px]">
                       <div className="flex items-center justify-between text-[11px] font-mono font-bold tracking-tight text-neutral-800">
                         <span>{photo.date}</span>
-                        <span className={`px-1.5 py-0.5 rounded text-[10px] ${isNila ? 'text-rose-600 bg-rose-50' : 'text-sky-600 bg-sky-50'}`}>
-                          {isNila ? 'NILA' : 'FARHAN'}
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] ${isSumaiya ? 'text-rose-600 bg-rose-50' : 'text-sky-600 bg-sky-50'}`}>
+                          {isSumaiya ? 'SUMAIYA' : 'NIHAN'}
                         </span>
                       </div>
                       <p className="text-xs text-neutral-600 truncate italic font-sans">

@@ -1,286 +1,228 @@
 [
   {
-    "nickname": "pagli",
-    "totalCount": 277,
+    "nickname": "penguin",
+    "totalCount": 3,
     "bySender": {
-      "NILU": 22,
-      "farhannn": 255
+      "NIHAN": 3,
+      "SUMAIYA": 0
     },
     "sampleMessageIds": [
-      "m_1783594787570_farhannn",
-      "m_1783617776641_farhannn",
-      "m_1783707938395_farhannn",
-      "m_1783760466083_farhannn",
-      "m_1783786162110_farhannn"
+      "m_1790689736825_NIHAN",
+      "m_1791896001566_NIHAN",
+      "m_1791908614618_NIHAN"
     ]
+  },
+  {
+    "nickname": "bauni",
+    "totalCount": 1,
+    "bySender": {
+      "NIHAN": 1,
+      "SUMAIYA": 0
+    },
+    "sampleMessageIds": [
+      "m_1791723158074_NIHAN"
+    ]
+  },
+  {
+    "nickname": "landmark",
+    "totalCount": 1,
+    "bySender": {
+      "NIHAN": 0,
+      "SUMAIYA": 1
+    },
+    "sampleMessageIds": [
+      "m_1791723116996_SUMAIYA"
+    ]
+  },
+  {
+    "nickname": "historical landmark",
+    "totalCount": 1,
+    "bySender": {
+      "NIHAN": 0,
+      "SUMAIYA": 1
+    },
+    "sampleMessageIds": [
+      "m_1791723116996_SUMAIYA"
+    ]
+  },
+  {
+    "nickname": "sumaiya",
+    "totalCount": 7,
+    "bySender": {
+      "NIHAN": 5,
+      "SUMAIYA": 2
+    },
+    "sampleMessageIds": [
+      "m_1790670764361_SUMAIYA",
+      "m_1790700321919_NIHAN",
+      "m_1790925235714_SUMAIYA",
+      "m_1790954686031_NIHAN",
+      "m_1791520781247_NIHAN"
+    ]
+  },
+  {
+    "nickname": "nihan",
+    "totalCount": 7,
+    "bySender": {
+      "NIHAN": 6,
+      "SUMAIYA": 0,
+      "HASAN": 1
+    },
+    "sampleMessageIds": [
+      "m_1769107264933_NIHAN",
+      "m_1780157657125_NIHAN",
+      "m_1780853868956_HASAN",
+      "m_1780854351556_NIHAN",
+      "m_1791010651686_NIHAN"
+    ]
+  },
+  {
+    "nickname": "babu",
+    "totalCount": 0,
+    "bySender": {
+      "NIHAN": 0,
+      "SUMAIYA": 0
+    },
+    "sampleMessageIds": []
   },
   {
     "nickname": "baby",
-    "totalCount": 495,
+    "totalCount": 0,
     "bySender": {
-      "NILU": 250,
-      "farhannn": 245
+      "NIHAN": 0,
+      "SUMAIYA": 0
     },
-    "sampleMessageIds": [
-      "m_1783594182276_NILU",
-      "m_1783594208336_farhannn",
-      "m_1783594369405_NILU",
-      "m_1783594398579_farhannn",
-      "m_1783821557057_farhannn"
-    ]
+    "sampleMessageIds": []
   },
   {
     "nickname": "jaan",
-    "totalCount": 195,
+    "totalCount": 0,
     "bySender": {
-      "NILU": 100,
-      "farhannn": 95
+      "NIHAN": 0,
+      "SUMAIYA": 0
     },
-    "sampleMessageIds": [
-      "m_1783880073515_NILU",
-      "m_1783880211045_NILU",
-      "m_1783944326969_farhannn",
-      "m_1783973642027_NILU",
-      "m_1784024566305_farhannn"
-    ]
-  },
-  {
-    "nickname": "jano",
-    "totalCount": 101,
-    "bySender": {
-      "NILU": 17,
-      "farhannn": 84
-    },
-    "sampleMessageIds": [
-      "m_1783973545547_farhannn",
-      "m_1784053926389_farhannn",
-      "m_1784122813750_farhannn",
-      "m_1784136127292_farhannn",
-      "m_1784221262912_farhannn"
-    ]
-  },
-  {
-    "nickname": "pakhi",
-    "totalCount": 140,
-    "bySender": {
-      "NILU": 14,
-      "farhannn": 126
-    },
-    "sampleMessageIds": [
-      "m_1785610601248_farhannn",
-      "m_1785610900416_farhannn",
-      "m_1785612892635_farhannn",
-      "m_1785615186003_farhannn",
-      "m_1785615377849_farhannn"
-    ]
+    "sampleMessageIds": []
   },
   {
     "nickname": "shona",
-    "totalCount": 156,
+    "totalCount": 0,
     "bySender": {
-      "NILU": 34,
-      "farhannn": 122
+      "NIHAN": 0,
+      "SUMAIYA": 0
     },
-    "sampleMessageIds": [
-      "m_1784052690964_NILU",
-      "m_1784280233565_NILU",
-      "m_1784310813250_NILU",
-      "m_1784482319858_NILU",
-      "m_1784581696685_NILU"
-    ]
+    "sampleMessageIds": []
   },
   {
     "nickname": "bou",
-    "totalCount": 172,
+    "totalCount": 0,
     "bySender": {
-      "NILU": 50,
-      "farhannn": 122
+      "NIHAN": 0,
+      "SUMAIYA": 0
+    },
+    "sampleMessageIds": []
+  },
+  {
+    "nickname": "pagli",
+    "totalCount": 2,
+    "bySender": {
+      "NIHAN": 2,
+      "SUMAIYA": 0
     },
     "sampleMessageIds": [
-      "m_1783508559874_farhannn",
-      "m_1783513078270_farhannn",
-      "m_1783513110353_farhannn",
-      "m_1783533467341_farhannn",
-      "m_1783534083972_farhannn"
+      "m_1790960218222_NIHAN",
+      "m_1791426428199_NIHAN"
     ]
   },
   {
-    "nickname": "wifey",
-    "totalCount": 11,
+    "nickname": "pagol",
+    "totalCount": 7,
     "bySender": {
-      "NILU": 5,
-      "farhannn": 6
+      "NIHAN": 3,
+      "SUMAIYA": 4
     },
     "sampleMessageIds": [
-      "m_1785788879707_NILU",
-      "m_1786988226788_NILU",
-      "m_1788461019182_NILU",
-      "m_1788969043281_NILU",
-      "m_1789045640124_NILU"
+      "m_1790954686031_NIHAN",
+      "m_1791896056568_SUMAIYA",
+      "m_1791956586364_SUMAIYA",
+      "m_1791956602887_NIHAN",
+      "m_1791956661993_SUMAIYA"
     ]
   },
   {
-    "nickname": "jamai",
-    "totalCount": 44,
+    "nickname": "cute",
+    "totalCount": 22,
     "bySender": {
-      "NILU": 26,
-      "farhannn": 18
+      "NIHAN": 21,
+      "SUMAIYA": 1
     },
     "sampleMessageIds": [
-      "m_1783593781402_farhannn",
-      "m_1783606948110_NILU",
-      "m_1783606972946_farhannn",
-      "m_1783606986117_farhannn",
-      "m_1783606990041_farhannn"
-    ]
-  },
-  {
-    "nickname": "husband",
-    "totalCount": 29,
-    "bySender": {
-      "NILU": 21,
-      "farhannn": 8
-    },
-    "sampleMessageIds": [
-      "m_1783513247152_NILU",
-      "m_1783513309742_farhannn",
-      "m_1783513335518_NILU",
-      "m_1783533380245_farhannn",
-      "m_1783870277877_NILU"
+      "m_1790428638091_NIHAN",
+      "m_1790667234076_NIHAN",
+      "m_1790671321585_NIHAN",
+      "m_1790671529939_NIHAN",
+      "m_1790689727161_NIHAN"
     ]
   },
   {
     "nickname": "cutie",
-    "totalCount": 26,
+    "totalCount": 2,
     "bySender": {
-      "NILU": 1,
-      "farhannn": 25
+      "NIHAN": 1,
+      "SUMAIYA": 1
     },
     "sampleMessageIds": [
-      "m_1784655041543_farhannn",
-      "m_1785322730907_farhannn",
-      "m_1785322740497_farhannn",
-      "m_1785426722980_farhannn",
-      "m_1785872653950_farhannn"
-    ]
-  },
-  {
-    "nickname": "dushtu",
-    "totalCount": 153,
-    "bySender": {
-      "NILU": 59,
-      "farhannn": 94
-    },
-    "sampleMessageIds": [
-      "m_1783512618645_NILU",
-      "m_1783675039462_NILU",
-      "m_1783859950033_NILU",
-      "m_1783870653162_NILU",
-      "m_1783970943470_NILU"
-    ]
-  },
-  {
-    "nickname": "goru",
-    "totalCount": 14,
-    "bySender": {
-      "NILU": 10,
-      "farhannn": 4
-    },
-    "sampleMessageIds": [
-      "m_1783604851717_NILU",
-      "m_1783710036646_NILU",
-      "m_1783710042359_farhannn",
-      "m_1783710060136_NILU",
-      "m_1783710186233_NILU"
+      "m_1791010864191_NIHAN",
+      "m_1791296856582_SUMAIYA"
     ]
   },
   {
     "nickname": "queen",
-    "totalCount": 5,
+    "totalCount": 0,
     "bySender": {
-      "NILU": 1,
-      "farhannn": 4
+      "NIHAN": 0,
+      "SUMAIYA": 0
     },
-    "sampleMessageIds": [
-      "m_1789132536175_farhannn",
-      "m_1789415819973_farhannn",
-      "m_1789415954072_NILU",
-      "m_1789571884179_farhannn",
-      "m_1791565733772_farhannn"
-    ]
+    "sampleMessageIds": []
   },
   {
     "nickname": "king",
-    "totalCount": 4,
+    "totalCount": 1,
     "bySender": {
-      "NILU": 3,
-      "farhannn": 1
+      "NIHAN": 1,
+      "SUMAIYA": 0
     },
     "sampleMessageIds": [
-      "m_1784394437308_NILU",
-      "m_1784456257673_farhannn",
-      "m_1784542700567_NILU",
-      "m_1784746384631_NILU"
-    ]
-  },
-  {
-    "nickname": "princess",
-    "totalCount": 11,
-    "bySender": {
-      "NILU": 5,
-      "farhannn": 6
-    },
-    "sampleMessageIds": [
-      "m_1784394184496_NILU",
-      "m_1784453084019_farhannn",
-      "m_1785614803989_farhannn",
-      "m_1785772319786_farhannn",
-      "m_1786013053943_NILU"
-    ]
-  },
-  {
-    "nickname": "prince",
-    "totalCount": 7,
-    "bySender": {
-      "NILU": 5,
-      "farhannn": 2
-    },
-    "sampleMessageIds": [
-      "m_1784394285667_farhannn",
-      "m_1784394329984_NILU",
-      "m_1784394355754_farhannn",
-      "m_1784394384191_NILU",
-      "m_1784394433976_NILU"
+      "m_1791350163413_NIHAN"
     ]
   },
   {
     "nickname": "bestie",
-    "totalCount": 16,
+    "totalCount": 5,
     "bySender": {
-      "NILU": 4,
-      "farhannn": 12
+      "NIHAN": 5,
+      "SUMAIYA": 0
     },
     "sampleMessageIds": [
-      "m_1783839274169_NILU",
-      "m_1783881475141_farhannn",
-      "m_1783945190165_farhannn",
-      "m_1783950081785_farhannn",
-      "m_1783958103229_farhannn"
+      "m_1791380774318_NIHAN",
+      "m_1791381315273_NIHAN",
+      "m_1791381367107_NIHAN",
+      "m_1791381455827_NIHAN",
+      "m_1791387612151_NIHAN"
     ]
   },
   {
-    "nickname": "best friend",
-    "totalCount": 50,
+    "nickname": "friend",
+    "totalCount": 61,
     "bySender": {
-      "NILU": 23,
-      "farhannn": 27
+      "NIHAN": 41,
+      "SUMAIYA": 20
     },
     "sampleMessageIds": [
-      "m_1783607157036_farhannn",
-      "m_1783773170652_farhannn",
-      "m_1783786085661_farhannn",
-      "m_1783793469872_farhannn",
-      "m_1783851400140_farhannn"
+      "m_1769107264933_NIHAN",
+      "m_1769107582264_NIHAN",
+      "m_1769107994632_NIHAN",
+      "m_1790665795617_NIHAN",
+      "m_1790665908727_NIHAN"
     ]
   }
 ]

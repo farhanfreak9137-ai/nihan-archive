@@ -19,7 +19,7 @@ export default defineConfig({
     port: 3000,
     open: false,
     watch: {
-      ignored: ['**/nilu*/**', '**/Messages/**', '**/public/media/**', '**/android/**', '**/dist/**'],
+      ignored: ['**/Updates/**', '**/public/media/**', '**/android/**', '**/dist/**'],
     },
   },
 });

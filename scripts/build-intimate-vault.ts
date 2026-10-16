@@ -9,11 +9,16 @@ const __dirname = path.dirname(__filename);
 const daysDir = path.join(__dirname, '../public/data/days');
 const outputFile = path.join(__dirname, '../public/data/intimate_vault.json');
 
+if (!fs.existsSync(daysDir)) {
+  console.error('Days directory does not exist! Run build-archive.ts first.');
+  process.exit(1);
+}
+
 const files = fs.readdirSync(daysDir).filter((f) => f.endsWith('.json')).sort();
 
 interface RawMessage {
   id: string;
-  sender: 'NILU' | 'farhannn';
+  sender: string;
   content: string;
   time: string;
   timestamp: number;
@@ -24,30 +29,33 @@ interface RawMessage {
 
 const explicitTerms = [
   'fuck', 'sex', 'horny', 'nude', 'strip', 'bra', 'boob', 'breast',
-  'dhukai', 'dhukailam', 'dhukais', 'dhukaites', 'betha lagtese', 'penetrate',
+  'dhukai', 'dhukailam', 'dhukais', 'dhukaites', 'penetrate',
   'tippa', 'tippa marbo', 'hard fuck', 'pant er upor', '7inch', 'angul dhukai',
-  'pichon diye', 'pichone dhukai', 'mukhe jib dhukai', 'pani ber korbo', 'pani khabo',
-  'chete khabo', 'dudh tipbo', 'dudhu khabo', 'dudhu khabu', 'dudhu', 'dudhuu', 'dudhe haat',
+  'pichon diye', 'pichone dhukai', 'mukhe jib dhukai', 'pani ber korbo',
+  'chete khabo', 'dudh tipbo', 'dudhu khabo', 'dudhu', 'dudhuu', 'dudhe haat',
   'tomake khabo', 'tore khamu', 'tore khabo', 'khaia felbo', 'chushbo', 'jib chusho',
-  'panty', 'underwear', 'kapor khul', 'kapor khulta', 'kapor khule', 'shob kapor'
+  'panty', 'underwear', 'kapor khul', 'kapor khulta', 'kapor khule', 'shob kapor',
+  'tipe dibo'
 ];
 
 const sensualTerms = [
   'french kiss', 'kiss', 'chumu', 'chuma', 'lips', 'thot', 'thoth',
   'kamor', 'kamur', 'bite', 'chete', 'lick', 'golate kiss', 'golate', 'shirtless',
   'chul khamchaya', 'aggressive kiss', 'shob jaigai ador', 'joraia dhorbo',
-  'chaippa dhoira', 'mukhe amr boobs', 'kole uthe', 'kole bosh', 'kole niye',
-  'buuk e mukh', 'kaas e asho', 'buuke niye chuma', 'kole ghumais'
+  'chaippa dhoira', 'kole uthe', 'kole bosh', 'kole niye',
+  'buuk e mukh', 'kaas e asho', 'buuke niye chuma', 'kole ghumais',
+  'adore', 'ador korbo', 'ador kore dibo', 'cuddle', 'hug'
 ];
 
 const bedroomTerms = [
   'bed e jawar', 'loose t-shirt', 'bed ei to',
-  'nighty', 'shuye'
+  'nighty', 'shuye', 'sleeping together', 'blanket er niche'
 ];
 
 const teasingTerms = [
   'sexy daddy', 'hott mommy', 'beshi sexy', 'beshi hot', 'gorom lage',
-  'dushtu', 'horny hoye', 'tore horny', 'hotness'
+  'dushtu', 'horny hoye', 'tore horny', 'hotness', 'penguin 🎀', 'bauni😋',
+  'historical landmark', 'girlfriend lagi naki', 'crush'
 ];
 
 // False positive blacklist
@@ -115,81 +123,45 @@ function timeDiffMinutes(t1: string, t2: string): number {
 function deriveSessionTitle(messages: RawMessage[], category: VaultCategory): { title: string; subtitle: string } {
   const fullText = messages.map((m) => m.content || '').join(' ').toLowerCase();
 
-  if (fullText.includes('dudhu') || fullText.includes('dudhu khabo')) {
+  if (fullText.includes('girlfriend lagi') || fullText.includes('lagle to alhamdulillah')) {
     return {
-      title: 'Mommy Dudhu & Midnight Cuddles',
-      subtitle: 'Soft teasing, craving cuddles, and breastplay banter',
+      title: 'Girlfriend Banter & Sweet Confessions',
+      subtitle: 'Playful questioning, smiling reactions, and mutual fondness',
     };
   }
-  if (fullText.includes('dhukai') || fullText.includes('aste daddy') || fullText.includes('pichon diye')) {
+  if (fullText.includes('penguin') || fullText.includes('bauni') || fullText.includes('landmark')) {
     return {
-      title: 'The Daddy & Mommy Uncensored Roleplay',
-      subtitle: 'Uncensored late-night fantasy, position talk, and mutual surrender',
+      title: 'Landmark & Penguin Teasing',
+      subtitle: 'Special inside nicknames and affectionate late-night teasing',
     };
   }
-  if (fullText.includes('tomake khabo') || fullText.includes('chete khabo') || fullText.includes('tore khamu')) {
+  if (fullText.includes('tipe dibo')) {
     return {
-      title: 'Eating You Up & Sensual Hunger',
-      subtitle: 'Passionate whispers of tasting every inch and craving physical intimacy',
+      title: 'Gentle Care & Playful Banter',
+      subtitle: 'Tender promises to soothe aches and playful flirting',
     };
   }
-  if (fullText.includes('fuck')) {
+  if (fullText.includes('kiss') || fullText.includes('chumu') || fullText.includes('chuma')) {
     return {
-      title: 'Uncensored Midnight Confession',
-      subtitle: 'Raw, unfiltered mutual desires and deep midnight cravings',
+      title: 'Sweet Kisses & Close Yearning',
+      subtitle: 'Soft kiss fantasies and intimate expressions of affection',
     };
   }
-  if (fullText.includes('boobs') || fullText.includes('tippa marbo') || fullText.includes('pant er upor')) {
+  if (fullText.includes('crush') || fullText.includes('cute')) {
     return {
-      title: 'Body Contact & Provocative Teasing',
-      subtitle: 'Playful dirty talk, lap sitting, and body banter',
-    };
-  }
-  if (fullText.includes('french kiss') || fullText.includes('aggressive kiss') || fullText.includes('chul khamchaya')) {
-    return {
-      title: 'Aggressive Kisses & Hair Grips',
-      subtitle: 'Deep French kissing fantasies and intense lip locks',
-    };
-  }
-  if (fullText.includes('golate kiss') || fullText.includes('chete') || fullText.includes('bite') || fullText.includes('kamor')) {
-    return {
-      title: 'Neck Kisses & Biting Desires',
-      subtitle: 'Whispering close and leaving marks of passion',
-    };
-  }
-  if (fullText.includes('shirtless') || fullText.includes('buuk er sathe')) {
-    return {
-      title: 'Shirtless Embraces & Warmth',
-      subtitle: 'Skin-to-skin warmth, holding tight against chest, and sweet murmurs',
-    };
-  }
-  if (fullText.includes('bed e jawar') || fullText.includes('loose t-shirt') || fullText.includes('nighty')) {
-    return {
-      title: 'Late-Night Bed Outfits & Nightwear',
-      subtitle: 'Planning nightwear and dreaming of sharing one bed',
-    };
-  }
-  if (fullText.includes('horny')) {
-    return {
-      title: 'Midnight Heat & Desire',
-      subtitle: 'Conversations when the heat takes over',
-    };
-  }
-  if (fullText.includes('daddy') && fullText.includes('sexy')) {
-    return {
-      title: 'Sexy Daddy & Hot Mommy',
-      subtitle: 'Playful alter-egos and escalating sexual tension',
+      title: 'Mutual Compliments & Flirting',
+      subtitle: 'Noticing every aesthetic detail and flirting effortlessly',
     };
   }
   if (category === 'explicit') {
     return {
-      title: 'Raw 18+ Intimacy',
+      title: 'Raw 18+ Late-Night Intimacy',
       subtitle: 'Uncensored mutual passion and late-night desires',
     };
   }
   if (category === 'sensual') {
     return {
-      title: 'Sensual Kisses & Close Touch',
+      title: 'Sensual Whispers & Close Touch',
       subtitle: 'Deep physical yearning and intimate affection',
     };
   }
@@ -222,8 +194,7 @@ for (const file of files) {
 
   if (hits.length === 0) continue;
 
-  // Group hits into continuous conversation episodes:
-  // Hits belong together if time diff <= 20 minutes OR message gap <= 25 with active dialogue
+  // Group hits into continuous conversation episodes
   const rawClusters: { hits: typeof hits }[] = [];
   let currentGroup = [hits[0]];
 
@@ -242,40 +213,36 @@ for (const file of files) {
   }
   rawClusters.push({ hits: currentGroup });
 
-  // For each cluster, expand backwards to conversation start, and forwards to conversation end
+  // Expand backwards and forwards
   const daySessions: { startIdx: number; endIdx: number; hits: typeof hits }[] = [];
 
   for (const cluster of rawClusters) {
     let startIdx = cluster.hits[0].idx;
     let endIdx = cluster.hits[cluster.hits.length - 1].idx;
 
-    // Expand backwards to the start of the conversation (setup messages)
     while (startIdx > 0) {
       const prevMsg = messages[startIdx - 1];
       const curMsg = messages[startIdx];
       const gap = timeDiffMinutes(prevMsg.time, curMsg.time);
-      if (gap > 8) break; // Silence / break in conversation
+      if (gap > 8) break;
       startIdx--;
-      if (cluster.hits[0].idx - startIdx >= 10) break; // Keep lead-in focused
+      if (cluster.hits[0].idx - startIdx >= 10) break;
     }
 
-    // Expand forwards to find natural end: voice note, call, topic change, or silence
     while (endIdx < messages.length - 1) {
       const curMsg = messages[endIdx];
       const nextMsg = messages[endIdx + 1];
       const gap = timeDiffMinutes(curMsg.time, nextMsg.time);
-      if (gap > 12) break; // 12+ min pause = conversation break
+      if (gap > 12) break;
 
       endIdx++;
 
-      // Check voice notes & calls
       const isVoice = nextMsg.type === 'audio' || (nextMsg.content && nextMsg.content.includes('audio'));
       const isCall = nextMsg.content && (
         nextMsg.content.toLowerCase().includes('call') ||
         nextMsg.content.toLowerCase().includes('missed video')
       );
 
-      // If voice note or call reached, include consecutive voice notes and closing resolution
       if (isVoice || isCall) {
         let lookAhead = 0;
         while (lookAhead < 4 && endIdx + 1 < messages.length && timeDiffMinutes(messages[endIdx].time, messages[endIdx + 1].time) <= 3) {
@@ -285,16 +252,11 @@ for (const file of files) {
         break;
       }
 
-      // Check topic change phrases
       const lower = (nextMsg.content || '').toLowerCase();
       if (
         lower.includes('ghumao') ||
-        lower.includes('shorir kharap farhan') ||
         lower.includes('pora sesh') ||
         lower.includes('bhat kha') ||
-        lower.includes('uni jabo') ||
-        lower.includes('class ase') ||
-        lower.includes('mommy sesh') ||
         lower.includes('good night')
       ) {
         let lookAhead = 0;
@@ -305,7 +267,6 @@ for (const file of files) {
         break;
       }
 
-      // Don't wander endlessly if no more intimate hits
       if (endIdx - cluster.hits[cluster.hits.length - 1].idx > 25) {
         break;
       }
@@ -314,7 +275,7 @@ for (const file of files) {
     daySessions.push({ startIdx, endIdx, hits: cluster.hits });
   }
 
-  // Merge any overlapping or adjacent sessions on the same day
+  // Merge overlapping sessions
   const mergedDaySessions: { startIdx: number; endIdx: number; hits: typeof hits }[] = [];
   for (const s of daySessions) {
     if (mergedDaySessions.length === 0) {
@@ -335,7 +296,6 @@ for (const file of files) {
     const s = mergedDaySessions[cIdx];
     const sessionMsgs = messages.slice(s.startIdx, s.endIdx + 1);
 
-    // Filter out trivial 1-2 message blips if no heat >= 2
     let maxHeat: 1 | 2 | 3 = 1;
     let category: VaultCategory = 'teasing';
 
@@ -346,7 +306,6 @@ for (const file of files) {
       }
     }
 
-    // Best preview quote from an intimate hit
     const hitMsg = messages[s.hits[0].idx] || sessionMsgs[0];
     const previewQuote = {
       sender: hitMsg.sender,
@@ -355,7 +314,6 @@ for (const file of files) {
 
     const { title, subtitle } = deriveSessionTitle(sessionMsgs, category);
 
-    // Audio note count
     const voiceCount = sessionMsgs.filter(
       (m) => m.type === 'audio' || (m.mediaUrl && m.mediaUrl.endsWith('.aac'))
     ).length;
@@ -375,7 +333,7 @@ for (const file of files) {
       voiceNoteCount: voiceCount,
       messages: sessionMsgs.map((m) => ({
         id: m.id,
-        sender: m.sender,
+        sender: m.sender as any,
         content: m.content || '',
         time: m.time,
         timestamp: m.timestamp,
@@ -387,10 +345,8 @@ for (const file of files) {
   }
 }
 
-// Sort sessions reverse-chronologically (newest dates first)
 rawSessions.sort((a, b) => b.date.localeCompare(a.date));
 
-// Build Metadata
 const totalSessions = rawSessions.length;
 const totalMessages = rawSessions.reduce((acc, s) => acc + s.messageCount, 0);
 const totalVoiceNotes = rawSessions.reduce((acc, s) => acc + s.voiceNoteCount, 0);
@@ -427,7 +383,7 @@ const vaultData: VaultData = {
 
 fs.writeFileSync(outputFile, JSON.stringify(vaultData, null, 2), 'utf8');
 
-console.log('✅ Full Intimate Vault dataset successfully generated:');
+console.log('✅ Intimate Vault dataset successfully generated:');
 console.log(`   - Sessions: ${totalSessions}`);
 console.log(`   - Total Messages: ${totalMessages.toLocaleString()}`);
 console.log(`   - Voice Notes: ${totalVoiceNotes}`);
