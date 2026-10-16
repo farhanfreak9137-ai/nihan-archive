@@ -112,6 +112,34 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
     const avgMessagesPerDay = Math.round(metadata.totalMessages / Math.max(1, metadata.activeDays));
     const avgVoiceNotesPerDay = (metadata.media.audio / Math.max(1, metadata.activeDays)).toFixed(1);
 
+    // 6. Streak calculation
+    const sortedDates = [...dailyStats].map(d => d.date).sort();
+    let maxStreak = 0;
+    let curStreak = 1;
+    let maxStart = sortedDates[0] || metadata.startDate;
+    let maxEnd = sortedDates[0] || metadata.endDate;
+    let curStart = sortedDates[0] || metadata.startDate;
+
+    for (let i = 1; i < sortedDates.length; i++) {
+      const prev = new Date(sortedDates[i - 1]);
+      const curr = new Date(sortedDates[i]);
+      const diffDays = Math.round((curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24));
+      if (diffDays === 1) {
+        curStreak++;
+        if (curStreak > maxStreak) {
+          maxStreak = curStreak;
+          maxStart = curStart;
+          maxEnd = sortedDates[i];
+        }
+      } else {
+        curStreak = 1;
+        curStart = sortedDates[i];
+      }
+    }
+    if (maxStreak === 0 && sortedDates.length > 0) {
+      maxStreak = 1;
+    }
+
     return {
       nightMessages,
       nightPercentage,
@@ -129,6 +157,9 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       whiteHeartsData,
       avgMessagesPerDay,
       avgVoiceNotesPerDay,
+      maxStreak,
+      maxStreakStart: maxStart,
+      maxStreakEnd: maxEnd,
     };
   }, [metadata, dailyStats]);
 
@@ -426,7 +457,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 </h3>
               </div>
               <p className="text-xs text-[#8b949e]">
-                Every single day without exception was marked by communication.
+                Communication spanned across {metadata.activeDays} active days, highlighted by a peak unbroken streak of {surpriseStats.maxStreak} consecutive days.
               </p>
 
               <div className="p-4 rounded-2xl bg-[#161b22] border border-[#21262d] space-y-3">
@@ -449,7 +480,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
                 </div>
 
                 <div className="p-3 rounded-xl bg-[#0b0d10] border border-[#21262d] text-xs font-mono text-[#8b949e]">
-                  Active Streak: <strong className="text-white">{metadata.activeDays} consecutive active days</strong> from {metadata.startDate} to {metadata.endDate}.
+                  Peak Unbroken Streak: <strong className="text-white">{surpriseStats.maxStreak} consecutive days</strong> ({surpriseStats.maxStreakStart} to {surpriseStats.maxStreakEnd}) across {metadata.activeDays} total active days.
                 </div>
               </div>
             </div>

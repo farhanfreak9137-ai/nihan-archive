@@ -98,6 +98,26 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
     return null;
   }, [dailyStats]);
 
+  // Longest consecutive streak
+  const peakStreak = useMemo(() => {
+    if (dailyStats.length === 0) return 0;
+    const sorted = [...dailyStats].map((d) => d.date).sort();
+    let max = 0;
+    let cur = 1;
+    for (let i = 1; i < sorted.length; i++) {
+      const prev = new Date(sorted[i - 1]);
+      const curr = new Date(sorted[i]);
+      const diffDays = Math.round((curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24));
+      if (diffDays === 1) {
+        cur++;
+        if (cur > max) max = cur;
+      } else {
+        cur = 1;
+      }
+    }
+    return Math.max(max, 1);
+  }, [dailyStats]);
+
   // Top Nicknames
   const topNicknames = useMemo(() => {
     return [...nicknames].sort((a, b) => b.totalCount - a.totalCount).slice(0, 3);
@@ -136,11 +156,11 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
         theme: 'from-purple-950 via-slate-950 to-[#0b0d10]',
         badge: 'CHAPTER 1 • THE ODYSSEY',
         badgeColor: 'text-purple-400 bg-purple-500/20 border-purple-500/30',
-        title: `Across ${metadata.activeDays} Unbroken Days`,
+        title: `Across ${metadata.activeDays} Active Days`,
         metric: metadata.totalMessages.toLocaleString(),
         unit: 'Messages Exchanged',
         subtitle: `${formatDateString(metadata.startDate)} – ${formatDateString(metadata.endDate)}`,
-        narrative: `You two never missed a single day. Over an unbroken ${metadata.activeDays}-day journey, you averaged over ~${dailyAverage.toLocaleString()} thoughts, laughs, and moments shared every 24 hours.`,
+        narrative: `Across ${metadata.activeDays} active days and an unbroken ${peakStreak}-day peak streak, you shared over ~${dailyAverage.toLocaleString()} thoughts, laughs, and moments on active days.`,
         icon: MessageCircle,
         accent: 'text-purple-400',
       },
@@ -307,14 +327,14 @@ export const ArchiveWrappedModal: React.FC<ArchiveWrappedModalProps> = ({
         title: 'Our Story in Numbers',
         metric: `${metadata.totalMessages.toLocaleString()} Memories`,
         unit: 'And Still Counting',
-        subtitle: `${metadata.activeDays} Unbroken Days • Preserved 100% Offline`,
+        subtitle: `${metadata.activeDays} Active Days • ${peakStreak}-Day Peak Streak • Preserved 100% Offline`,
         narrative:
-          'Every single day, every voice note, every photo, and every late-night conversation is securely preserved forever here in your private archive.',
+          'Every shared moment, every voice note, every photo, and every late-night conversation is securely preserved forever here in your private archive.',
         icon: Sparkles,
         accent: 'text-rose-400',
       },
     ];
-  }, [metadata, dailyStats, sumaiyaCount, nihanCount, sumaiyaPct, nihanPct, dailyAverage, midnightMessages, peakDay, topNicknames, loveExpr, sorryExpr, missExpr, topReaction]);
+  }, [metadata, dailyStats, peakStreak, sumaiyaCount, nihanCount, sumaiyaPct, nihanPct, dailyAverage, midnightMessages, peakDay, topNicknames, loveExpr, sorryExpr, missExpr, topReaction]);
 
   const totalSlides = slides.length;
 

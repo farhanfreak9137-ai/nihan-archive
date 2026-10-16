@@ -80,10 +80,60 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     return dailyStats.reduce((sum, d) => sum + d.totalMessages, 0);
   }, [dailyStats]);
 
-  const streakDescription = useMemo(() => {
-    if (dailyStats.length === 0) return '';
+  const streakStats = useMemo(() => {
+    if (dailyStats.length === 0) {
+      return {
+        longestStreak: 0,
+        longestStreakStart: '',
+        longestStreakEnd: '',
+        totalSpanDays: 0,
+        activeDays: 0,
+        description: '',
+      };
+    }
     const sorted = [...dailyStats].sort((a, b) => a.date.localeCompare(b.date));
-    return `Talked every single day from ${sorted[0].date} to ${sorted[sorted.length - 1].date} without missing a day.`;
+    let maxStreak = 0;
+    let curStreak = 1;
+    let maxStart = sorted[0].date;
+    let maxEnd = sorted[0].date;
+    let curStart = sorted[0].date;
+
+    for (let i = 1; i < sorted.length; i++) {
+      const prev = new Date(sorted[i - 1].date);
+      const curr = new Date(sorted[i].date);
+      const diffDays = Math.round((curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24));
+      if (diffDays === 1) {
+        curStreak++;
+        if (curStreak > maxStreak) {
+          maxStreak = curStreak;
+          maxStart = curStart;
+          maxEnd = sorted[i].date;
+        }
+      } else {
+        curStreak = 1;
+        curStart = sorted[i].date;
+      }
+    }
+    if (maxStreak === 0) {
+      maxStreak = 1;
+      maxStart = sorted[0].date;
+      maxEnd = sorted[0].date;
+    }
+
+    const firstDate = new Date(sorted[0].date);
+    const lastDate = new Date(sorted[sorted.length - 1].date);
+    const totalSpanDays = Math.round((lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+    const description = `${sorted.length} active days across a ${totalSpanDays}-day journey, peaking with an unbroken ${maxStreak}-day streak from ${maxStart} to ${maxEnd}.`;
+
+    return {
+      longestStreak: maxStreak,
+      longestStreakStart: maxStart,
+      longestStreakEnd: maxEnd,
+      totalSpanDays,
+      activeDays: sorted.length,
+      description,
+    };
   }, [dailyStats]);
 
   // Month metadata
@@ -177,7 +227,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         onJumpToDate={onSelectDate}
       />
 
-      {/* 60-Day Unbroken Chat Streak Banner */}
+      {/* Dynamic Chat Streak & Activity Banner */}
       <div className="relative overflow-hidden rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-rose-500/15 via-purple-500/10 to-sky-500/15 border border-rose-500/25 shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -185,16 +235,16 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               <Flame className="w-6 h-6 fill-white text-white animate-bounce" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-base sm:text-lg font-editorial text-white font-semibold">
-                  {dailyStats.length}-Day Unbroken Chat Streak
+                  {streakStats.activeDays} Active Days • {streakStats.longestStreak}-Day Peak Streak
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                  100% Active
+                  Peak: {streakStats.longestStreakStart} → {streakStats.longestStreakEnd}
                 </span>
               </div>
               <p className="text-xs text-[#8b949e]">
-                {streakDescription}
+                {streakStats.description}
               </p>
             </div>
           </div>
